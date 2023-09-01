@@ -1,0 +1,23 @@
+{
+  "name": "bedroom-party-website",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sylviiu/BedroomPartyWebsite.git"
+  },
+  "author": "Syl <hi@sylviiu.dev>",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/sylviiu/BedroomPartyWebsite/issues"
+  },
+  "homepage": "https://github.com/sylviiu/BedroomPartyWebsite#readme",
+  "dependencies": {
+    "animejs": "^3.2.1",
+    "fastify": "^4.22.2",
+    "superagent": "^8.1.2",
+    "uglify-js": "^3.17.4",
+    "ws": "^8.13.0"
+  }
+}
