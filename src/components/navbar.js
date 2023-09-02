@@ -1,0 +1,47 @@
+import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
+
+const row = {
+    display: `flex`,
+    flexDirection: `row`,
+    alignItems: `center`,
+    justifyContent: `center`,
+}
+
+export default class Navbar extends Component {
+    height = 60;
+    
+    render() {
+        return (
+            <div style={{
+                ...row,
+                width: `100vw`,
+                height: `${this.height}px`,
+                padding: `0px 20px`,
+                boxSizing: `border-box`,
+                textAlign: `center`,
+                backgroundColor: `rgba(8, 8, 8, 0.5)`,
+                boxShadow: `0 3px 10px rgb(0 0 0 / 0.2)`,
+                backdropFilter: `blur(10px)`,
+                position: `absolute`,
+                top: `0px`,
+            }}>
+                <div style={{ ...row, justifyContent: `left` }}>
+                    <h3 style={{
+                        fontFamily: `Alata`,
+                        fontWeight: `normal`,
+                        margin: `0px`,
+                    }}>Bedroom Party</h3>
+                </div>
+
+                <div style={{ ...row, flexGrow: 1, justifyContent: `right` }}>
+                    <h3 style={{
+                        fontFamily: `Alata`,
+                        fontWeight: `normal`,
+                        margin: `0px`,
+                    }}>something will go on this side eventually</h3>
+                </div>
+            </div>
+        );
+    }
+}
