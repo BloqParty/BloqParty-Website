@@ -1,0 +1,11 @@
+body {
+    background-color: rgb(25, 25, 25);
+    color: rgb(255, 255, 255);
+}
+
+* {
+    font-family: Alata, Helvetica, sans-serif;
+    font-weight: normal;
+    margin: 0;
+    padding: 0;
+}

@@ -46,7 +46,7 @@ app.prepare().then(() => {
 
             for(const path of endpoint.endpoints) {
                 server[endpoint.method](path, (req, res) => {
-                    return require(`./src/endpoints/${endpoint.file}`).handle(req, res);
+                    return require(`./src/endpoints/${endpoint.file}`).handle({ app }, req, res);
                 });
 
                 console.debug(`| Set up regular endpoint: "${path}" -> ${endpoint.name}`);
