@@ -3,6 +3,11 @@ body {
     color: rgb(255, 255, 255);
 }
 
+div {
+    align-items: center;
+    justify-content: center;
+}
+
 * {
     font-family: Alata, Helvetica, sans-serif;
     font-weight: normal;

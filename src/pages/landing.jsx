@@ -1,4 +1,4 @@
-const styles = require(`../../util/styles`)
+import React, { Component } from 'react';
 
 import Heading from '../components/heading'
 

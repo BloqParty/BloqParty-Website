@@ -23,7 +23,7 @@ export default class Navbar extends Component {
                 backgroundColor: `rgba(8, 8, 8, 0.5)`,
                 boxShadow: `0 3px 10px rgb(0 0 0 / 0.2)`,
                 backdropFilter: `blur(10px)`,
-                position: `absolute`,
+                position: `fixed`,
                 top: `0px`,
             }}>
                 <div style={{ ...row, justifyContent: `left` }}>
