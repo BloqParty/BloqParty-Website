@@ -12,7 +12,8 @@
   "scripts": {
     "dev": "node index",
     "build": "next build",
-    "start": "node index production"
+    "start": "next build && node index production",
+    "startnb": "node index production"
   },
   "bugs": {
     "url": "https://github.com/sylviiu/BedroomPartyWebsite/issues"
