@@ -7,7 +7,7 @@ const config = require(`./core/config`)
 const express = require('express');
 const next = require('next');
 
-const app = next({ dev: process.env.NODE_ENV !== 'production' });
+const app = next({ dev: !process.argv.includes(`production`) });
 
 const handle = app.getRequestHandler();
 

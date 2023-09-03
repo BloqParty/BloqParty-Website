@@ -9,6 +9,11 @@
   },
   "author": "Syl <hi@sylviiu.dev>",
   "license": "GPL-3.0",
+  "scripts": {
+    "dev": "node index",
+    "build": "next build",
+    "start": "node index production"
+  },
   "bugs": {
     "url": "https://github.com/sylviiu/BedroomPartyWebsite/issues"
   },
