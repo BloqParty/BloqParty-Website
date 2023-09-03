@@ -10,7 +10,7 @@ import Navbar from '../components/navbar'
 export default function MyApp({ Component, pageProps }) {
     return (
         <>
-            <div style={{ marginTop: new Navbar().height, padding: `35px 35px` }} >
+            <div style={{ padding: `35px`, paddingTop: `${new Navbar().height + 35}px` }} >
                 <Component { ...pageProps } />
             </div>
             <Navbar />
