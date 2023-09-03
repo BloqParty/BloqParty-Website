@@ -1,0 +1,8 @@
+#width1 {
+    min-width: 400px;
+    width: min(75vw, 1230px);
+}
+
+#leaderboard {
+    
+}
