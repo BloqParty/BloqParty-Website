@@ -16,17 +16,38 @@ const heights = {
 export default function MyApp({ Component, pageProps }) {
     return (
         <>
-            <div style={{
+            <div className="bg" style={{
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                justifyContent: 'flex-start',
+                justifyContent: 'center',
+                height: `100vh`,
+                width: `100vw`,
+                backgroundSize: `cover`,
+                backgroundPosition: `center`,
+                backgroundRepeat: `no-repeat`,
+                position: `fixed`,
+                opacity: 0.5,
+                top: 0,
+            }} />
+
+            <div className="fg" style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'space-between',
                 paddingTop: `${heights.navbar + 35}px`,
-                height: `calc(100vh - ${heights.footing}px - ${heights.navbar + 35}px)`,
+                width: '100%',
+                height: `calc(100vh - ${heights.navbar + 35}px)`,
+                position: `fixed`,
+                backgroundColor: `rgba(25, 25, 25, 0.6)`,
+                top: 0,
+                overflow: `scroll`,
             }}>
                 <Component { ...pageProps } />
+                <Footing />
             </div>
-            <Footing />
+
             <Navbar />
         </>
     )
