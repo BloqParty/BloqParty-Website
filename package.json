@@ -11,11 +11,8 @@
   "license": "GPL-3.0",
   "scripts": {
     "dev": "node index",
-    "build-site": "next build",
-    "compile": "nexe --build index.js",
-    "start": "next build && node index production",
-    "startnb": "node index production",
-    "nexe": "nexe"
+    "build": "next build",
+    "start": "node index production"
   },
   "bugs": {
     "url": "https://github.com/BedroomParty/BedroomPartyWebsite/issues"
