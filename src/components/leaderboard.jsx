@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import Error from './errormsg'
+import { motion, circOut, AnimatePresence } from 'framer-motion';
 
-import Entry from './leaderboard/entry';
+import { Entry, EntryNoStyle, EntryStyle } from './leaderboard/entry';
 
 export default class Leaderboard extends Component {
     render() {
@@ -11,7 +12,7 @@ export default class Leaderboard extends Component {
 
         const entries = this.props.entries;
 
-        if(Array.isArray(entries) && entries.length && (!error || !Object.keys(error).length)) {
+        if(Array.isArray(entries) && (!error || !Object.keys(error).length)) {
             return (
                 <div style={{
                     display: `flex`,
@@ -26,9 +27,22 @@ export default class Leaderboard extends Component {
                     padding: `25px`,
                     overflowX: `scroll`,
                 }}>
-                    {
-                        entries.map((entry, index) => (<Entry position={Number(index) + 1 + (offset || 0)} entry={entry} key={entry.key || entry.value} />))
-                    }
+                    <AnimatePresence>
+                        {
+                            entries.map((entry, index) => (
+                                <motion.div
+                                    key={entry.id.toString()}
+                                    transition={{ duration: 0.2, ease: circOut, delay: index * 0.1 }}
+                                    initial={{ opacity: 0, x: 300, }}
+                                    animate={{ opacity: 1, x: 0, }}
+                                    exit={{ opacity: 0, x: -300, }}
+                                    style={EntryStyle}
+                                >
+                                    <EntryNoStyle index={Number(index)} position={Number(index) + 1 + (offset || 0)} entry={entry} />
+                                </motion.div>
+                            ))
+                        }
+                    </AnimatePresence>
                 </div>
             );
         } else if(error) return (

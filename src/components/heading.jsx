@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import DetailBlock from './detailblock';
+import Splitter from './splitter';
 
 const commonStyle = {
     boxSizing: `border-box`,
@@ -34,20 +35,29 @@ export default class Heading extends Component {
         )
     }
 
-    tags() {
-        return this.props.tags && Array.isArray(this.props.tags) ? (
+    tags(props) {
+        return props && Array.isArray(props) && props.length ? (
             <>
-                { this.props.tags.map(({icon, value, title, color, key}) => (
-                    <DetailBlock icon={icon} value={value} title={title} color={color} key={key} />
-                )) }
+                {
+                    props.map(({icon, value, title, color, key, onClick, style}) => (
+                        typeof onClick == `function` ? (
+                            <a onClick={onClick} key={key} style={{cursor: `pointer`}}>
+                                <DetailBlock icon={icon} value={value} title={title} color={color} style={style} />
+                            </a>
+                        ) : (
+                            <DetailBlock icon={icon} value={value} title={title} color={color} key={key} style={style} />
+                        )
+                    ))
+                }
             </>
-        ) : null
+        ) : null;
     }
 
     render() {
         const text = this.text();
         const image = this.image();
-        const tags = this.tags();
+        const tags = this.tags(this.props.tags);
+        const diffTags = this.tags(this.props.diffTags);
 
         console.log(`tags`, tags, this.props.tags)
 
@@ -92,7 +102,7 @@ export default class Heading extends Component {
                         {text}
                     )}
 
-                    { tags ? (
+                    { tags && diffTags ? (
                         <div style={{
                             display: `flex`,
                             flexDirection: `row`,
@@ -101,6 +111,18 @@ export default class Heading extends Component {
                             marginTop: `20px`,
                         }}>
                             {tags}
+                            <Splitter height="20"/>
+                            {diffTags}
+                        </div>
+                    ) : tags || diffTags ? (
+                        <div style={{
+                            display: `flex`,
+                            flexDirection: `row`,
+                            alignItems: `center`,
+                            justifyContent: `center`,
+                            marginTop: `20px`,
+                        }}>
+                            {tags || diffTags}
                         </div>
                     ) : null }
                 </div>

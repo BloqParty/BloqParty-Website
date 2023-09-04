@@ -21,7 +21,7 @@ export default class DetailBlock extends Component {
         };
 
         return (
-            <div href={this.props.href || null} title={this.props.title || this.props.value} style={{
+            <div title={this.props.title || this.props.value} style={{
                 display: `flex`,
                 flexDirection: `row`,
                 alignItems: `center`,
@@ -38,6 +38,8 @@ export default class DetailBlock extends Component {
                 borderRadius: `10px`,
                 background: color,
                 userSelect: `none`,
+                textDecoration: `none`,
+                color: `white`,
                 ...this.props.style,
             }}>
                 {this.props.icon ? <FontAwesomeIcon icon={this.props.icon} style={{marginRight: `4px`}} /> : null}

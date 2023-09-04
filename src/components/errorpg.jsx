@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 
+import Splitter from './splitter';
 import DetailBlock from './detailblock';
 
 export default class ErrorPage extends Component {
@@ -16,13 +17,8 @@ export default class ErrorPage extends Component {
                     fontSize: `1.5em`,
                     padding: `10px 12px`
                 }} />
-    
-                <div style={{
-                    width: `2px`,
-                    height: `50px`,
-                    backgroundColor: `rgba(255,255,255,0.5)`,
-                    margin: `20px`,
-                }} />
+
+                <Splitter height="50"/>
     
                 <h3 style={{
                     margin: `0px`,
