@@ -1,6 +1,8 @@
 import React, { Component, useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { icon } from '@fortawesome/fontawesome-svg-core/import.macro'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { motion } from 'framer-motion';
 
 import { useSearchParams } from 'next/navigation'
 
@@ -31,6 +33,7 @@ export default function LeaderboardList() {
 
     const [scores, setScores] = useState({
         page: 1,
+        total: (<FontAwesomeIcon icon={icon({name: 'circle-notch'})} spin style={{width: `20px`, height: `20px`}} />),
         offset: 0,
         difficultyMap: {},
         entries: [],
@@ -67,6 +70,7 @@ export default function LeaderboardList() {
         setScores({
             ...scores,
             page: 1,
+            total: (<FontAwesomeIcon icon={icon({name: 'circle-notch'})} spin style={{width: `20px`, height: `20px`}} />),
             offset: 0,
             difficultyMap: {},
             entries: [],
@@ -84,6 +88,7 @@ export default function LeaderboardList() {
                     setScores({
                         ...scores,
                         page: page,
+                        total: data.scoreCount,
                         offset: (page - 1) * perPage,
                         difficultyMap: thisVersion.diffs.find(({ characteristic, difficulty }) => characteristic == opts.char && difficulty == enums.diff[opts.diff]) || {},
                         entries: data.scores,
@@ -116,6 +121,7 @@ export default function LeaderboardList() {
                     console.error(e);
                     setScores({
                         ...scores,
+                        total: (<FontAwesomeIcon icon={icon({name: 'circle-exclamation'})} style={{width: `20px`, height: `20px`}} />),
                         error: {
                             title: `Leaderboard data could not be parsed`,
                             description: `${e.name} / ${e.message}`
@@ -126,6 +132,7 @@ export default function LeaderboardList() {
             console.error(`overview failed`, e);
             setScores({
                 ...scores,
+                total: (<FontAwesomeIcon icon={icon({name: 'circle-exclamation'})} style={{width: `20px`, height: `20px`}} />),
                 error: {
                     title: `Leaderboard overview could not be parsed`,
                     description: `${e.name} / ${e.message}`
@@ -218,6 +225,11 @@ export default function LeaderboardList() {
                         title: `Map not found`,
                         description: `The map you are looking for could not be found.`,
                     })
+
+                    setScores({
+                        ...scores,
+                        total: (<FontAwesomeIcon icon={icon({name: 'circle-exclamation'})} style={{width: `20px`, height: `20px`}} />)
+                    })
                 })
         }
     }, [params.get(`map`)])
@@ -225,7 +237,7 @@ export default function LeaderboardList() {
     return (
         <div>
             <Heading mapper={state.mapper} image={state.image} artist={state.artist} title={state.title} description={state.description} tags={state.tags} diffTags={state.diffTags} />
-            <Leaderboard error={scores.error} entries={(scores.entries || []).map(o => ({...o, key: `${o.id}`}))} offset={scores.offset} />
+            <Leaderboard error={scores.error} total={scores.total} entries={(scores.entries || []).map(o => ({...o, key: `${o.id}`}))} offset={scores.offset} />
         </div>
     )
 }
