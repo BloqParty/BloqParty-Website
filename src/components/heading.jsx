@@ -9,6 +9,10 @@ const commonStyle = {
     borderRadius: `10px`,
 }
 
+const block = {
+    margin: `0px 4px`
+}
+
 export default class Heading extends Component {
     image() {
         return (
@@ -42,10 +46,10 @@ export default class Heading extends Component {
                     props.map(({icon, value, title, color, key, onClick, style}) => (
                         typeof onClick == `function` ? (
                             <a onClick={onClick} key={key} style={{cursor: `pointer`}}>
-                                <DetailBlock icon={icon} value={value} title={title} color={color} style={style} />
+                                <DetailBlock icon={icon} value={value} title={title} color={color} style={{...block, ...(style || {})}} />
                             </a>
                         ) : (
-                            <DetailBlock icon={icon} value={value} title={title} color={color} key={key} style={style} />
+                            <DetailBlock icon={icon} value={value} title={title} color={color} key={key} style={{...block, ...(style || {})}} />
                         )
                     ))
                 }
@@ -102,29 +106,31 @@ export default class Heading extends Component {
                         {text}
                     )}
 
-                    { tags && diffTags ? (
-                        <div style={{
-                            display: `flex`,
-                            flexDirection: `row`,
-                            alignItems: `center`,
-                            justifyContent: `center`,
-                            marginTop: `20px`,
-                        }}>
-                            {tags}
-                            <Splitter height="20px"/>
-                            {diffTags}
-                        </div>
-                    ) : tags || diffTags ? (
-                        <div style={{
-                            display: `flex`,
-                            flexDirection: `row`,
-                            alignItems: `center`,
-                            justifyContent: `center`,
-                            marginTop: `20px`,
-                        }}>
-                            {tags || diffTags}
-                        </div>
-                    ) : null }
+                    <div id="tags" style={{marginLeft: `-4px`}}>
+                        { tags && diffTags ? (
+                            <div style={{
+                                display: `flex`,
+                                flexDirection: `row`,
+                                alignItems: `center`,
+                                justifyContent: `center`,
+                                marginTop: `20px`,
+                            }}>
+                                {tags}
+                                <Splitter height="20px"/>
+                                {diffTags}
+                            </div>
+                        ) : tags || diffTags ? (
+                            <div style={{
+                                display: `flex`,
+                                flexDirection: `row`,
+                                alignItems: `center`,
+                                justifyContent: `center`,
+                                marginTop: `20px`,
+                            }}>
+                                {tags || diffTags}
+                            </div>
+                        ) : null }
+                    </div>
                 </div>
             </div>
         );

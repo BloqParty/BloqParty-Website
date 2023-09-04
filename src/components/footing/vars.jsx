@@ -14,7 +14,8 @@ const strStyle = {
 const blockStyle = {
     maxWidth: null,
     width: null,
-    color: `white`
+    color: `white`,
+    marginLeft: `7px`
 }
 
 export default [

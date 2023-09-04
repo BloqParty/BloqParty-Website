@@ -26,7 +26,7 @@ export default class DetailBlock extends Component {
                 flexDirection: `row`,
                 alignItems: `center`,
                 justifyContent: `center`,
-                marginLeft: `8px`,
+                //marginLeft: `8px`,
                 minWidth: this.props.width || `50px`,
                 minHeight: this.props.height || `28px`,
                 maxHeight: this.props.height || `28px`,
