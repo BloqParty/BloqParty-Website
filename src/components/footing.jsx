@@ -15,12 +15,13 @@ export default class Footing extends Component {
                 justifyContent: `center`,
                 width: `100vw`,
                 height: `${this.height}px`,
+                minHeight: `${this.height}px`,
                 padding: `0px 20px`,
                 boxSizing: `border-box`,
                 textAlign: `center`,
                 //backgroundColor: `rgba(8, 8, 8, 0.5)`,
                 //boxShadow: `0 3px 10px rgb(0 0 0 / 0.2)`,
-                backdropFilter: `blur(10px)`,
+                //backdropFilter: `blur(10px)`,
             }}>
                 {vars.map((v, i) => (
                     <>
@@ -38,7 +39,7 @@ export default class Footing extends Component {
                         <h5 style={{
                             fontFamily: `Alata`,
                             fontWeight: `normal`,
-                            opacity: 0.5,
+                            color: `rgba(255, 255, 255, 0.5)`,
                             marginTop: `-3px`
                         }}>{v}</h5>
                     </>
