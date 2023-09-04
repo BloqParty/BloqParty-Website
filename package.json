@@ -11,9 +11,11 @@
   "license": "GPL-3.0",
   "scripts": {
     "dev": "node index",
-    "build": "next build",
+    "build-site": "next build",
+    "compile": "nexe --build index.js",
     "start": "next build && node index production",
-    "startnb": "node index production"
+    "startnb": "node index production",
+    "nexe": "nexe"
   },
   "bugs": {
     "url": "https://github.com/sylviiu/BedroomPartyWebsite/issues"
@@ -24,6 +26,7 @@
     "@babel/preset-react": "^7.22.5",
     "@fontsource/alata": "^5.0.8",
     "@fortawesome/fontawesome-svg-core": "^6.4.2",
+    "@fortawesome/free-brands-svg-icons": "^6.4.2",
     "@fortawesome/free-regular-svg-icons": "^6.4.2",
     "@fortawesome/free-solid-svg-icons": "^6.4.2",
     "@fortawesome/react-fontawesome": "^0.2.0",
@@ -40,6 +43,7 @@
   "devDependencies": {
     "@types/node": "20.5.9",
     "@types/react": "18.2.21",
+    "nexe": "^4.0.0-rc.2",
     "typescript": "5.2.2"
   }
 }

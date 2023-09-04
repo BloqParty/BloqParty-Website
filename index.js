@@ -7,9 +7,13 @@ const config = require(`./core/config`)
 const express = require('express');
 const next = require('next');
 
-const app = next({ dev: !process.argv.includes(`production`) });
+const app = next({ dev: require(`./core/session`).dev });
 
 const handle = app.getRequestHandler();
+
+const static = require(`./core/static`);
+
+console.debug(`Static variables:`, static);
 
 app.prepare().then(() => {
     console.debug('Starting server...');

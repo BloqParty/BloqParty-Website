@@ -13,7 +13,7 @@ export default class Navbar extends Component {
     
     render() {
         return (
-            <div style={{
+            <div id="navbar" style={{
                 ...row,
                 width: `100vw`,
                 height: `${this.height}px`,

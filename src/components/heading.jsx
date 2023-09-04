@@ -45,8 +45,6 @@ export default class Heading extends Component {
     }
 
     render() {
-        console.log(this.props);
-
         const text = this.text();
         const image = this.image();
         const tags = this.tags();
@@ -88,7 +86,7 @@ export default class Heading extends Component {
                         {text}
                     )}
 
-                    { tags ? (
+                    { tags && Array.isArray(tags) && tags.length ? (
                         <div style={{
                             display: `flex`,
                             flexDirection: `row`,

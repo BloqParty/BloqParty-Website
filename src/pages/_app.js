@@ -5,14 +5,28 @@ import '@fontsource/alata/index.css'
 
 import '@fortawesome/fontawesome-svg-core/styles.css'
 
-import Navbar from '../components/navbar'
+import Navbar from '../components/navbar';
+import Footing from '../components/footing';
+
+const heights = {
+    navbar: new Navbar().height,
+    footing: new Footing().height
+}
 
 export default function MyApp({ Component, pageProps }) {
     return (
         <>
-            <div style={{ padding: `35px`, paddingTop: `${new Navbar().height + 35}px` }} >
+            <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'flex-start',
+                paddingTop: `${heights.navbar + 35}px`,
+                height: `calc(100vh - ${heights.footing}px - ${heights.navbar + 35}px)`,
+            }}>
                 <Component { ...pageProps } />
             </div>
+            <Footing />
             <Navbar />
         </>
     )
