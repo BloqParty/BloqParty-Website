@@ -19,11 +19,11 @@ export default class Error extends Component {
     render() {
         return (
             <div style={{
-                width: `min(100vw, 400px)`,
+                width: `min(100vw, 600px)`,
                 color: `#ff5555`,
                 textAlign: `center`,
                 padding: `24px 20px`,
-                backgroundColor: `rgba(0, 0, 0, 0.4)`,
+                backgroundColor: `rgba(168, 49, 61, 0.1)`,
                 borderRadius: `10px`,
             }}>
                 <div style={{
