@@ -1,10 +1,13 @@
 import React, { Component, useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import { icon } from '@fortawesome/fontawesome-svg-core/import.macro'
 
 import { useSearchParams } from 'next/navigation'
 
 import Heading from '../components/heading'
 import Leaderboard from '../components/leaderboard'
+
+import Wallpaper from '../scripts/wallpaper';
 
 const enums = {
     diff: {
@@ -39,10 +42,13 @@ export default function Landing() {
         offset: 0,
         difficultyMap: {},
         entries: [],
+        error: null,
     });
 
     let mapDetails = {};
     let thisVersion = {};
+
+    let wallpaper;
 
     const getScores = (mapHash, page = 1) => {
         const link = `https://api.thebedroom.party/leaderboard/${mapHash}?limit=${perPage}&sort=${opts.sort}&page=${page}&char=${opts.char}&diff=${opts.diff}&id=${opts.id}`;
@@ -57,11 +63,19 @@ export default function Landing() {
                     page: page,
                     offset: (page - 1) * perPage,
                     difficultyMap: thisVersion.diffs.find(({ characteristic, difficulty }) => characteristic == opts.char && difficulty == enums.diff[opts.diff]) || {},
-                    entries: data.scores
+                    entries: data.scores,
+                    error: null
                 })
             })
             .catch(e => {
                 console.error(e);
+                setScores({
+                    ...scores,
+                    error: {
+                        title: `Leaderboard data could not be parsed`,
+                        description: `${e.name} / ${e.message}`
+                    }
+                })
             })
     }
 
@@ -71,6 +85,10 @@ export default function Landing() {
         if(ran) return;
 
         ran = true;
+
+        wallpaper = new Wallpaper(document.querySelector(`.bg`), document.querySelector(`.fg`));
+
+        console.log(`wallpaper`, wallpaper);
 
         const mapHash = params.get(`map`);
     
@@ -95,6 +113,10 @@ export default function Landing() {
                     mapDetails = data;
                     thisVersion = data.versions.find(o => o.hash == mapHash.toLowerCase()) || {};
 
+                    wallpaper.set({
+                        url: thisVersion.coverURL || `https://cdn.beatsaver.com/${mapHash.toLowerCase()}.jpg`
+                    });
+
                     const newState = {
                         title: data.name,
                         description: `Uploaded ${Math.floor((Date.now() - new Date(thisVersion.createdAt || data.uploaded).getTime())/8.64e+7)} days ago`,
@@ -106,12 +128,14 @@ export default function Landing() {
                                 icon: icon({name: 'angle-up'}),
                                 value: data.stats.upvotes,
                                 title: `${data.stats.upvotes} Upvotes`,
+                                key: `upvotes`,
                                 color: `#5ac452`
                             },
                             {
                                 icon: icon({name: 'angle-down'}),
                                 value: data.stats.downvotes,
                                 title: `${data.stats.downvotes} Downvotes`,
+                                key: `downvotes`,
                                 color: `#c45262`
                             }
                         ],
@@ -138,7 +162,7 @@ export default function Landing() {
     return (
         <div>
             <Heading mapper={state.mapper} image={state.image} artist={state.artist} title={state.title} description={state.description} tags={[...state.tags, ...state.diffTags]} />
-            <Leaderboard entries={scores.entries} offset={scores.offset} />
+            <Leaderboard error={scores.error} entries={scores.entries} offset={scores.offset} />
         </div>
     )
 }
