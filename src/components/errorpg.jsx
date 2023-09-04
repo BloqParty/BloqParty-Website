@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import DetailBlock from './leaderboard/detailblock';
+import DetailBlock from './detailblock';
 
 export default class ErrorPage extends Component {
     render() {

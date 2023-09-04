@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import DetailBlock from './leaderboard/detailblock';
+import DetailBlock from './detailblock';
 
 const commonStyle = {
     boxSizing: `border-box`,
@@ -52,9 +52,11 @@ export default class Heading extends Component {
         return (
             <div id="headingbg" style={{
                 marginBottom: `50px`,
+                boxShadow: `0 3px 10px rgb(0 0 0 / 0.5)`,
+                ...this.props.bgStyle || {},
                 ...commonStyle,
-                ...(this.props.image ? {
-                    backgroundImage: `url("${this.props.image}")`,
+                ...(this.props.bgimage ? {
+                    backgroundImage: `url("${this.props.bgimage}")`,
                     backgroundSize: `cover`,
                     backgroundPosition: `center`,
                     backgroundRepeat: `no-repeat`,
@@ -70,7 +72,9 @@ export default class Heading extends Component {
                     justifyContent: `center`,
                     padding: `30px 20px`,
                     textAlign: `left`,
-                    backdropFilter: this.props.image ? `blur(10px) grayscale(40%) brightness(0.6)` : null
+                    ...(this.props.bgimage ? {
+                        backdropFilter: this.props.image ? `blur(10px) grayscale(40%) brightness(0.6)` : null
+                    } : {})
                 }}>
                     { image ? (
                         <div style={{
