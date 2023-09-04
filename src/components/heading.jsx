@@ -35,19 +35,21 @@ export default class Heading extends Component {
     }
 
     tags() {
-        return (
+        return this.props.tags && Array.isArray(this.props.tags) ? (
             <>
-                { this.props.tags ? this.props.tags.map(({icon, value, title, color}) => (
-                    <DetailBlock icon={icon} value={value} title={title} color={color} />
-                )) : null }
+                { this.props.tags.map(({icon, value, title, color, key}) => (
+                    <DetailBlock icon={icon} value={value} title={title} color={color} key={key} />
+                )) }
             </>
-        )
+        ) : null
     }
 
     render() {
         const text = this.text();
         const image = this.image();
         const tags = this.tags();
+
+        console.log(`tags`, tags, this.props.tags)
 
         return (
             <div id="headingbg" style={{
@@ -90,7 +92,7 @@ export default class Heading extends Component {
                         {text}
                     )}
 
-                    { tags && Array.isArray(tags) && tags.length ? (
+                    { tags ? (
                         <div style={{
                             display: `flex`,
                             flexDirection: `row`,
