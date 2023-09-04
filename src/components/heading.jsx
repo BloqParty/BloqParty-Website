@@ -111,7 +111,7 @@ export default class Heading extends Component {
                             marginTop: `20px`,
                         }}>
                             {tags}
-                            <Splitter height="20"/>
+                            <Splitter height="20px"/>
                             {diffTags}
                         </div>
                     ) : tags || diffTags ? (

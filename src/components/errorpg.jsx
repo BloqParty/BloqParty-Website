@@ -18,7 +18,7 @@ export default class ErrorPage extends Component {
                     padding: `10px 12px`
                 }} />
 
-                <Splitter height="50"/>
+                <Splitter height="50px"/>
     
                 <h3 style={{
                     margin: `0px`,
