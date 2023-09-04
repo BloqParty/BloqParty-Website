@@ -44,6 +44,6 @@ module.exports = {
             module.exports.check().then(updated => {
                 if(updated) module.exports.restart();
             })
-        }, 300000)
+        }, 60000)
     }
 }
