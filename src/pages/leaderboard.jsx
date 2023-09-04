@@ -162,7 +162,7 @@ export default function Landing() {
     return (
         <div>
             <Heading mapper={state.mapper} image={state.image} artist={state.artist} title={state.title} description={state.description} tags={[...state.tags, ...state.diffTags]} />
-            <Leaderboard error={scores.error} entries={scores.entries} offset={scores.offset} />
+            <Leaderboard error={scores.error} entries={scores.entries.map(o => ({...o, key: `${o.id}`}))} offset={scores.offset} />
         </div>
     )
 }

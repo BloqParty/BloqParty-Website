@@ -3,31 +3,35 @@ import ReactDOM from 'react-dom';
 
 import vars from './footing/vars';
 
+const row = {
+    display: `flex`,
+    flexDirection: `row`,
+    alignItems: `center`,
+    justifyContent: `center`,
+    boxSizing: `border-box`,
+    textAlign: `center`,
+}
+
 export default class Footing extends Component {
     height = 80;
     
     render() {
         return (
             <div id="footing" style={{
-                display: `flex`,
-                flexDirection: `row`,
-                alignItems: `center`,
-                justifyContent: `center`,
+                ...row,
                 width: `100vw`,
                 height: `${this.height}px`,
                 minHeight: `${this.height}px`,
                 padding: `0px 20px`,
-                boxSizing: `border-box`,
-                textAlign: `center`,
                 //backgroundColor: `rgba(8, 8, 8, 0.5)`,
                 //boxShadow: `0 3px 10px rgb(0 0 0 / 0.2)`,
                 //backdropFilter: `blur(10px)`,
             }}>
                 {vars.map((v, i) => (
-                    <>
+                    <div key={`footing-entry-${i}`} style={row}>
                         {
                             i > 0 ? (
-                                <div style={{
+                                <div key={`separator-${i}`} style={{
                                     width: `2px`,
                                     height: `20px`,
                                     backgroundColor: `rgba(255,255,255,0.5)`,
@@ -36,13 +40,13 @@ export default class Footing extends Component {
                             ) : null
                         }
                         
-                        <h5 style={{
+                        <h5 key={`footing-txt-${i}`} style={{
                             fontFamily: `Alata`,
                             fontWeight: `normal`,
                             color: `rgba(255, 255, 255, 0.5)`,
                             marginTop: `-3px`
                         }}>{v}</h5>
-                    </>
+                    </div>
                 ))}
             </div>
         );
