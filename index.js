@@ -17,6 +17,8 @@ const next = require('next');
         if(updated) {
             update.restart();
         } else if(!session.dev) {
+            update.startInterval();
+
             console.log(`Building pages...`);
     
             const proc = require(`child_process`).exec(`npm run build`);
