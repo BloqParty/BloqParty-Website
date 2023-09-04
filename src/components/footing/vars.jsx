@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import DetailBlock from '../leaderboard/detailblock';
+import DetailBlock from '../detailblock';
 import { icon } from '@fortawesome/fontawesome-svg-core/import.macro'
 
 import staticVars from '../../../static.json';
@@ -13,19 +13,20 @@ const strStyle = {
 
 const blockStyle = {
     maxWidth: null,
-    width: null
+    width: null,
+    color: `white`
 }
 
 export default [
     (
         <div style={strStyle}>
             Bedroom Party
-            <DetailBlock value="GitHub" icon={icon({style: "brands", name: "github"})} title="GitHub Organization" href={staticVars.version.href} color="#6f34b3" style={blockStyle}/>
+            <DetailBlock value="GitHub" icon={icon({style: "brands", name: "github"})} title="GitHub Organization" href={staticVars.organization} color="#080808" style={blockStyle}/>
         </div>
     ),
     (
         <div style={strStyle}>
-            built from
+            Build commit
             <DetailBlock value={staticVars.version.value} title={staticVars.version.full} href={staticVars.version.href} color="#6f34b3" style={blockStyle}/>
         </div>
     ),
