@@ -109,19 +109,19 @@ export default function LeaderboardList() {
                             value: `${characteristic} / ${difficulty}`,
                             title: `${characteristic} / ${difficulty}`,
                             key: `${characteristic}-${difficulty}`,
-                            ...(characteristic == opts.char && difficulty == enums.diff[newOpts.diff] ? {
+                            ...(characteristic == newOpts.char && difficulty == enums.diff[newOpts.diff] ? {
                                 color: `#52c49e`
                             } : {
                                 color: `rgba(0, 0, 0, 0.2)`,
                                 onClick: () => {
-                                    const newOpts = {
-                                        ...opts,
+                                    const newNewOpts = {
+                                        ...newOpts,
                                         char: characteristic,
                                         diff: enums.diff[difficulty],
                                     }
 
-                                    setOpts(newOpts);
-                                    getScores(mapHash, newOpts, newNewState, 1);
+                                    setOpts(newNewOpts);
+                                    getScores(mapHash, newNewOpts, newNewState, 1);
                                 }
                             }),
                         }))
