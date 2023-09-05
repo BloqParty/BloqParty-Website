@@ -18,11 +18,11 @@ export default function LeaderboardList() {
 
     const perPage = 10;
 
-    const opts = {
+    const [opts, setOpts] = useState({
         unset: true,
         sort: `top`,
         id: `76561198345634943` // not sure what to do with this
-    }
+    });
 
     const [state, setState] = useState({
         title: `Loading...`,
@@ -33,9 +33,11 @@ export default function LeaderboardList() {
 
     const [scores, setScores] = useState({
         page: 1,
+        totalPages: 0,
         total: (<FontAwesomeIcon icon={icon({name: 'circle-notch'})} spin style={{width: `20px`, height: `20px`}} />),
         offset: 0,
         difficultyMap: {},
+        mapHash: null,
         entries: [],
         error: null,
     });
@@ -66,19 +68,22 @@ export default function LeaderboardList() {
             .catch(rej)
     })
 
-    const getScores = (mapHash, newState, page = 1) => {
+    const getScores = (mapHash, newOpts=opts, newState=state, page = 1) => {
         setScores({
             ...scores,
             page: 1,
+            totalPages: 0,
             total: (<FontAwesomeIcon icon={icon({name: 'circle-notch'})} spin style={{width: `20px`, height: `20px`}} />),
             offset: 0,
             difficultyMap: {},
+            mapHash: mapHash,
             entries: [],
             error: null,
         });
 
         getOverview(mapHash).then(overview => {
-            const link = `https://api.thebedroom.party/leaderboard/${mapHash}?limit=${perPage}&sort=${opts.sort}&page=${page-1}&char=${opts.char}&diff=${opts.diff}&id=${opts.id}`;
+            console.log(`opts`, opts);
+            const link = `https://api.thebedroom.party/leaderboard/${mapHash}?limit=${perPage}&sort=${newOpts.sort}&page=${page-1}&char=${newOpts.char}&diff=${newOpts.diff}&id=${newOpts.id}`;
             console.log(`fetching ${link}`);
             fetch(link)
                 .then(res => res.json())
@@ -88,9 +93,11 @@ export default function LeaderboardList() {
                     setScores({
                         ...scores,
                         page: page,
+                        totalPages: data.scoreCount ? Math.ceil(data.scoreCount / perPage) : 1,
                         total: data.scoreCount,
                         offset: (page - 1) * perPage,
-                        difficultyMap: thisVersion.diffs.find(({ characteristic, difficulty }) => characteristic == opts.char && difficulty == enums.diff[opts.diff]) || {},
+                        difficultyMap: thisVersion.diffs.find(({ characteristic, difficulty }) => characteristic == newOpts.char && difficulty == enums.diff[newOpts.diff]) || {},
+                        mapHash: mapHash,
                         entries: data.scores,
                         error: null
                     });
@@ -102,14 +109,19 @@ export default function LeaderboardList() {
                             value: `${characteristic} / ${difficulty}`,
                             title: `${characteristic} / ${difficulty}`,
                             key: `${characteristic}-${difficulty}`,
-                            ...(characteristic == opts.char && difficulty == enums.diff[opts.diff] ? {
+                            ...(characteristic == opts.char && difficulty == enums.diff[newOpts.diff] ? {
                                 color: `#52c49e`
                             } : {
                                 color: `rgba(0, 0, 0, 0.2)`,
                                 onClick: () => {
-                                    opts.char = characteristic;
-                                    opts.diff = enums.diff[difficulty];
-                                    getScores(mapHash, newNewState, 1);
+                                    const newOpts = {
+                                        ...opts,
+                                        char: characteristic,
+                                        diff: enums.diff[difficulty],
+                                    }
+
+                                    setOpts(newOpts);
+                                    getScores(mapHash, newOpts, newNewState, 1);
                                 }
                             }),
                         }))
@@ -158,7 +170,7 @@ export default function LeaderboardList() {
     
         if(opts.unset) {
             console.log(`setting opts`);
-            Object.assign(opts, {
+            setOpts({
                 unset: false, 
                 char: params.get(`char`),
                 diff: params.get(`diff`),
@@ -209,13 +221,16 @@ export default function LeaderboardList() {
                     setState({ ...state, ...newState});
     
                     const highest = thisVersion?.diffs.filter(o => o.characteristic == `Standard`).slice(-1)[0] || thisVersion.diffs.slice(-1)[0] || {}
-    
-                    Object.assign(opts, {
+
+                    const newOpts = {
+                        ...opts,
                         char: opts.char || highest.characteristic,
                         diff: opts.diff || Object.entries(enums.diff).find(o => o[1] == highest.difficulty)[0],
-                    });
+                    }
     
-                    getScores(mapHash, newState, 1);
+                    setOpts(newOpts);
+    
+                    getScores(mapHash, newOpts, newState, 1);
                 })
                 .catch(err => {
                     console.error(err);
@@ -237,7 +252,11 @@ export default function LeaderboardList() {
     return (
         <div>
             <Heading mapper={state.mapper} image={state.image} artist={state.artist} title={state.title} description={state.description} tags={state.tags} diffTags={state.diffTags} />
-            <Leaderboard error={scores.error} total={scores.total} entries={(scores.entries || []).map(o => ({...o, key: `${o.id}`}))} offset={scores.offset} />
+            <Leaderboard error={scores.error} mapHash={scores.mapHash} total={scores.total} entries={(scores.entries || []).map(o => ({...o, key: `${o.id}`}))} offset={scores.offset} page={{
+                current: scores.page,
+                total: scores.totalPages,
+                set: (hash, num) => getScores(hash, null, null, num)
+            }} />
         </div>
     )
 }
