@@ -84,18 +84,28 @@ export default class Leaderboard extends Component {
                     }}>
                         <h3 style={{paddingBottom: `4px`}}>{typeof this.props.total == `number` ? `${this.props.total} score${this.props.total == 1 ? `` : `s`}` : this.props.total}</h3>
                         <Splitter style={{ flexGrow: 1, margin: `0px 16px` }} />
-                        { (page.current <= page.total && page.total != 0) ? (
-                            <div style={{
-                                display: `flex`,
-                                flexDirection: `row`,
-                                alignItems: `center`,
-                                justifyContent: `center`,
-                            }}>
-                                { this.navButton(`prev`) }
-                                <h3 style={{paddingBottom: `4px`}}>page {page.current} / {page.total}</h3>
-                                { this.navButton(`next`) }
-                            </div>
-                        ) : null }
+                        <AnimatePresence>
+                        { 
+                            (page.current <= page.total && page.total != 0) ? (
+                                <motion.div 
+                                    transition={{ duration: 0.2, ease: circOut }}
+                                    initial={{ opacity: 0, margin: `0px -50px`, scaleX: 0, x: 50 }}
+                                    animate={{ opacity: 1, margin: `0px 0px`, scaleX: 1, x: 0, }}
+                                    exit={{ opacity: 0, margin: `0px -50px`, scaleX: 0, x: 50 }}
+                                    style={{
+                                        display: `flex`,
+                                        flexDirection: `row`,
+                                        alignItems: `center`,
+                                        justifyContent: `center`,
+                                    }}
+                                >
+                                    { this.navButton(`prev`) }
+                                    <h3 style={{paddingBottom: `4px`}}>page {page.current} / {page.total}</h3>
+                                    { this.navButton(`next`) }
+                                </motion.div>
+                            ) : null 
+                        }
+                        </AnimatePresence>
                     </div>
                     <div style={{
                         display: `flex`,

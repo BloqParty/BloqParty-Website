@@ -1,8 +1,6 @@
 import React, { Component, useState, useEffect } from 'react';
-import ReactDOM from 'react-dom';
 import { icon } from '@fortawesome/fontawesome-svg-core/import.macro'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { motion } from 'framer-motion';
 
 import { useSearchParams } from 'next/navigation'
 
