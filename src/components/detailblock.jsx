@@ -44,14 +44,15 @@ export default class DetailBlock extends Component {
             }}>
                 {this.props.icon ? <FontAwesomeIcon icon={this.props.icon} style={{marginRight: `4px`}} /> : null}
                 <h3>{this.props.value}</h3>
+                {this.props.iconR ? <FontAwesomeIcon icon={this.props.iconR} style={{marginLeft: `4px`}} /> : null}
             </div>
         );
     }
 
     render() {
-        if(this.props.href) {
+        if(this.props.href || this.props.onClick) {
             return (
-                <a href={this.props.href} style={{
+                <a href={this.props.href} onClick={this.props.onClick} style={{
                     color: `white`,
                     textDecoration: `none`,
                 }}>
