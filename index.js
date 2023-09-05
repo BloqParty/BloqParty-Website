@@ -10,6 +10,8 @@ const update = require(`./core/update`);
 const express = require('express');
 const next = require('next');
 
+const cookiesMiddleware = require('universal-cookie-express');
+
 (() => new Promise(async res => {
     console.log(`Running in ${session.dev ? `development` : `production`} mode!`);
 
@@ -52,6 +54,8 @@ const next = require('next');
         console.debug('Starting server...');
     
         const server = express();
+
+        server.use(cookiesMiddleware());
     
         const endpoints = fs.readdirSync(`./src/endpoints`).map(s => {
             const module = require(`./src/endpoints/${s}`);

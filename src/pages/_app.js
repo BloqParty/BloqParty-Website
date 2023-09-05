@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { CookiesProvider } from 'react-cookie';
 
 import '../styles/global/global.css'
 import '@fontsource/alata/index.css'
@@ -15,7 +16,11 @@ const heights = {
 
 export default function MyApp({ Component, pageProps }) {
     return (
-        <>
+        <CookiesProvider defaultSetOptions={{
+            path: `/`,
+            sameSite: `strict`,
+            expires: new Date(Date.now() * 1.98e+7), // 5.5 hours; supposed to expire at 6 hours so let's keep it safe or something?
+        }}>
             <div className="bg" style={{
                 display: 'flex',
                 flexDirection: 'column',
@@ -49,6 +54,6 @@ export default function MyApp({ Component, pageProps }) {
             </div>
 
             <Navbar />
-        </>
+        </CookiesProvider>
     )
 }

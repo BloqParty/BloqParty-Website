@@ -1,4 +1,6 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
+
+import User from './navbar/user';
 
 const row = {
     display: `flex`,
@@ -39,6 +41,7 @@ export default class Navbar extends Component {
                         fontWeight: `normal`,
                         margin: `0px`,
                     }}>something will go on this side eventually</h3>
+                    <User />
                 </div>
             </div>
         );
