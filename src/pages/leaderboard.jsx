@@ -78,7 +78,7 @@ export default function LeaderboardList() {
         });
 
         getOverview(mapHash).then(overview => {
-            const link = `https://api.thebedroom.party/leaderboard/${mapHash}?limit=${perPage}&sort=${opts.sort}&page=${page}&char=${opts.char}&diff=${opts.diff}&id=${opts.id}`;
+            const link = `https://api.thebedroom.party/leaderboard/${mapHash}?limit=${perPage}&sort=${opts.sort}&page=${page-1}&char=${opts.char}&diff=${opts.diff}&id=${opts.id}`;
             console.log(`fetching ${link}`);
             fetch(link)
                 .then(res => res.json())
