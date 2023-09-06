@@ -4,7 +4,9 @@ module.exports = {
     method: `get`,
     endpoint: `/pullAndRestart`,
     handle: async ({ app }, req, res) => {
-        if(req.headers[`Authorization`] === bpPrivateApi) {
+        console.debug(`Pull and restart:`, req.headers);
+
+        if(req.headers[`authorization`] === bpPrivateApi) {
             require(`../../core/update`).check().then(updates => {
                 if(updates) {
                     res.send(`okay fine you've twisted my arm`);
