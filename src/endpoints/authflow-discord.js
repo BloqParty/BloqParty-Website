@@ -51,8 +51,9 @@ module.exports = [
                                 discordID: BigInt(id),
                                 gameID: BigInt(steamTemp.steamID),
                             }).then(r => {
-                                console.debug(`User created:`, r.body);
-                                res.send(`Created user account. You're stuck with this page because I couldn't be bothered to finish the flow yet. :)`)
+                                const { apiKey } = JSON.parse(r.text);
+                                console.debug(`User created:`, r.text);
+                                res.send(`Created user account. You're stuck with this here API key because I couldn't be bothered to finish the flow yet. :)\n\n${apiKey}`)
                             })
                         } else {
                             console.error(`User not in Bedroom Party`);
