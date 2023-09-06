@@ -18,22 +18,6 @@ import DetailBlock from './detailblock';
 */
 
 export default function ErrorPage() {
-    const [ state, setState ] = useState({
-        image: null
-    });
-
-    let ran = false;
-
-    useEffect(() => {
-        if(!ran && window.location.protocol && window.location.host) {
-            ran = true;
-
-            setState({
-                image: `${window.location.protocol}//${window.location.host}/static/suspicious.jpg`
-            })
-        }
-    }, [ typeof window !== `undefined` ])
-
     return (
         <div style={{
             height: `80vh`,
@@ -42,7 +26,7 @@ export default function ErrorPage() {
             alignItems: `center`,
             justifyContent: `right`,
         }}>
-            <img src={state.image} style={{
+            <img src="/static/suspicious.jpg" style={{
                 width: `calc(min(100vw, 100vh) * 0.75)`,
                 height: `calc(min(100vw, 100vh) * 0.75)`,
             }} />
