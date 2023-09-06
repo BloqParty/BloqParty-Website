@@ -8,8 +8,6 @@ const fs = require('fs');
 const config = require(`./core/config`);
 const session = require(`./core/session`);
 
-const update = require(`./core/update`);
-
 const express = require('express');
 const next = require('next');
 
@@ -20,32 +18,26 @@ const authMiddleware = require('passport');
 (() => new Promise(async res => {
     console.log(`Running in ${session.dev ? `development` : `production`} mode!`);
 
-    update.check().then(updated => {
-        if(updated) {
-            update.restart();
-        } else if(!session.dev) {
-            update.startInterval();
+    if(!session.dev) {
+        console.log(`Building pages...`);
 
-            console.log(`Building pages...`);
-    
-            const proc = require(`child_process`).exec(`npm run build`);
-    
-            proc.stdout.on(`data`, data => {
-                const str = data.toString().trim();
-                console.debug(`[BUILD/OUT] ${str.split(`\n`).join(`\n[BUILD/OUT] `)}`);
-            });
-    
-            proc.stderr.on(`data`, data => {
-                const str = data.toString().trim();
-                console.error(`[BUILD/ERR] ${str.split(`\n`).join(`\n[BUILD/ERR] `)}`);
-            });
-    
-            proc.once(`exit`, code => {
-                console.log(`Successfully built pages! (code ${code})`);
-                res();
-            })
-        } else res();
-    })
+        const proc = require(`child_process`).exec(`npm run build`);
+
+        proc.stdout.on(`data`, data => {
+            const str = data.toString().trim();
+            console.debug(`[BUILD/OUT] ${str.split(`\n`).join(`\n[BUILD/OUT] `)}`);
+        });
+
+        proc.stderr.on(`data`, data => {
+            const str = data.toString().trim();
+            console.error(`[BUILD/ERR] ${str.split(`\n`).join(`\n[BUILD/ERR] `)}`);
+        });
+
+        proc.once(`exit`, code => {
+            console.log(`Successfully built pages! (code ${code})`);
+            res();
+        })
+    } else res();
 }))().then(async() => {
     const app = next({ dev: session.dev });
     

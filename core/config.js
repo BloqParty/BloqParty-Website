@@ -12,6 +12,7 @@ const defaults = {
     },
 
     api: {
+        bpPrivateApi: null,
         bpApi: null,
         sessionSecret: crypto.randomBytes(32).toString(`hex`),
         steam: null,
