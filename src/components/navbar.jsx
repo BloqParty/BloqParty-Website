@@ -36,11 +36,6 @@ export default class Navbar extends Component {
                 </div>
 
                 <div style={{ ...row, flexGrow: 1, justifyContent: `right` }}>
-                    <h3 style={{
-                        fontFamily: `Alata`,
-                        fontWeight: `normal`,
-                        margin: `0px`,
-                    }}>something will go on this side eventually</h3>
                     <User />
                 </div>
             </div>

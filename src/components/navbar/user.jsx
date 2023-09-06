@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { instanceOf } from 'prop-types';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { icon } from '@fortawesome/fontawesome-svg-core/import.macro'
 import { withCookies, Cookies } from 'react-cookie';
+
+import DetailBlock from '../detailblock';
 
 class User extends Component {
     static propTypes = {
@@ -32,7 +33,7 @@ class User extends Component {
                 alignItems: `center`,
                 justifyContent: `center`,
             }}>
-                hi
+                <DetailBlock href="/login" value="Login, but you actually don't login and are left with the state of sadness" icon={icon({name: 'user'})} />
             </div>
         )
     }
