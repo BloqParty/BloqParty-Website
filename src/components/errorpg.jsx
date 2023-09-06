@@ -1,30 +1,51 @@
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 
 import Splitter from './splitter';
 import DetailBlock from './detailblock';
 
-export default class ErrorPage extends Component {
-    render() {
-        return (
-            <div style={{
-                height: `80vh`,
-                display: `flex`,
-                flexDirection: `row`,
-                alignItems: `center`,
-                justifyContent: `right`,
-            }}>
-                <DetailBlock title={`Error`} value={this.props.status} color={`#ff5555`} width={`auto`} height={`auto`} style={{
-                    fontSize: `1.5em`,
-                    padding: `10px 12px`
-                }} />
+/*
+    <DetailBlock title={`Error`} value={this.props.status} color={`#ff5555`} width={`auto`} height={`auto`} style={{
+        fontSize: `1.5em`,
+        padding: `10px 12px`
+    }} />
 
-                <Splitter height="50px"/>
-    
-                <h3 style={{
-                    margin: `0px`,
-                    textAlign: `center`,
-                }}>{this.props.message}</h3>
-            </div>
-        )
-    }
+    <Splitter height="50px"/>
+
+    <h3 style={{
+        margin: `0px`,
+        textAlign: `center`,
+    }}>{this.props.message}</h3>
+*/
+
+export default function ErrorPage() {
+    const [ state, setState ] = useState({
+        image: null
+    });
+
+    let ran = false;
+
+    useEffect(() => {
+        if(!ran && window.location.protocol && window.location.host) {
+            ran = true;
+
+            setState({
+                image: `${window.location.protocol}//${window.location.host}/static/suspicious.jpg`
+            })
+        }
+    }, [ typeof window !== `undefined` ])
+
+    return (
+        <div style={{
+            height: `80vh`,
+            display: `flex`,
+            flexDirection: `row`,
+            alignItems: `center`,
+            justifyContent: `right`,
+        }}>
+            <img src={state.image} style={{
+                width: `calc(min(100vw, 100vh) * 0.75)`,
+                height: `calc(min(100vw, 100vh) * 0.75)`,
+            }} />
+        </div>
+    )
 }
