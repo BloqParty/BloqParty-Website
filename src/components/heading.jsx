@@ -43,13 +43,13 @@ export default class Heading extends Component {
         return props && Array.isArray(props) && props.length ? (
             <>
                 {
-                    props.map(({icon, value, title, color, key, onClick, style}) => (
-                        typeof onClick == `function` ? (
-                            <a onClick={onClick} key={key} style={{cursor: `pointer`}}>
-                                <DetailBlock icon={icon} value={value} title={title} color={color} style={{...block, ...(style || {})}} />
+                    props.map(({icon, value, title, color, key, onClick, href, style}) => (
+                        typeof onClick == `function` || href == `string` ? (
+                            <a onClick={onClick} href={href} key={key} style={{cursor: `pointer`}}>
+                                <DetailBlock icon={icon} href={href} value={value} title={title} color={color} style={{...block, ...(style || {})}} />
                             </a>
                         ) : (
-                            <DetailBlock icon={icon} value={value} title={title} color={color} key={key} style={{...block, ...(style || {})}} />
+                            <DetailBlock icon={icon} href={href} value={value} title={title} color={color} key={key} style={{...block, ...(style || {})}} />
                         )
                     ))
                 }

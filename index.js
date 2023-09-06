@@ -1,5 +1,8 @@
 require(`./core/logger`)();
 
+process.on(`uncaughtException`, (err) => console.error(err))
+process.on(`unhandledRejection`, (err) => console.error(err))
+
 const fs = require('fs');
 
 const config = require(`./core/config`);
@@ -10,7 +13,9 @@ const update = require(`./core/update`);
 const express = require('express');
 const next = require('next');
 
+const sessionMiddleware = require('express-session');
 const cookiesMiddleware = require('universal-cookie-express');
+const authMiddleware = require('passport');
 
 (() => new Promise(async res => {
     console.log(`Running in ${session.dev ? `development` : `production`} mode!`);
@@ -55,19 +60,42 @@ const cookiesMiddleware = require('universal-cookie-express');
     
         const server = express();
 
+        server.set('trust proxy', 1)
+
         server.use(cookiesMiddleware());
+        server.use(sessionMiddleware({
+            secret: config.api.sessionSecret,
+            resave: false,
+            saveUninitialized: false,
+            cookie: {
+                secure: !session.dev,
+                maxAge: 604800000,
+            }
+        }));
+        server.use(authMiddleware.initialize());
+        server.use(authMiddleware.session());
     
-        const endpoints = fs.readdirSync(`./src/endpoints`).map(s => {
-            const module = require(`./src/endpoints/${s}`);
-    
-            return {
-                file: s,
-                name: s.split(`.`).slice(0, -1).join(`.`),
-                render: fs.existsSync(`./src/pages/${s.split(`.`).slice(0, -1).join(`.`)}.jsx`),
-                method: (module.method && typeof server[module.method.toLowerCase()] == `function`) ? module.method.toLowerCase() : `get`,
-                endpoints: typeof module.endpoint == `string` ? [module.endpoint] : module.endpoint,
-            };
-        });
+        const endpoints = fs.readdirSync(`./src/endpoints`).map(file => {
+            const module = require(`./src/endpoints/${file}`);
+
+            const map = (o, s) => {
+                return {
+                    file: s,
+                    name: o.name || s.split(`.`).slice(0, -1).join(`.`),
+                    render: fs.existsSync(`./src/pages/${s.split(`.`).slice(0, -1).join(`.`)}.jsx`),
+                    middleware: o.middleware || [],
+                    method: (o.method && typeof server[o.method.toLowerCase()] == `function`) ? o.method.toLowerCase() : `get`,
+                    endpoints: !Array.isArray(o.endpoint) ? [o.endpoint] : o.endpoint,
+                    handle: o.handle || (() => {})
+                };
+            }
+
+            if(Array.isArray(module)) {
+                return module.map(o => map(o, file));
+            } else {
+                return map(module, file);
+            }
+        }).reduce((a,b) => Array.isArray(b) ? a.concat(...b) : a.concat(b), []);
     
         console.debug(`Found ${endpoints.length} (${endpoints.filter(o => o.render).length} react) endpoints! [ ${endpoints.map(o => o.name).join(`, `)} ]`);
     
@@ -76,7 +104,7 @@ const cookiesMiddleware = require('universal-cookie-express');
                 console.debug(`Setting up react endpoint: ${endpoint.name} [ ${endpoint.endpoints.join(`, `)} ]`);
     
                 for(const path of endpoint.endpoints) {
-                    server[endpoint.method](path, (req, res) => {
+                    server[endpoint.method](path, ...endpoint.middleware, (req, res) => {
                         return app.render(req, res, `/${endpoint.name}`, req.query);
                     });
     
@@ -86,8 +114,8 @@ const cookiesMiddleware = require('universal-cookie-express');
                 console.debug(`Setting up regular endpoint: ${endpoint.name} [ ${endpoint.endpoints.join(`, `)} ]`);
     
                 for(const path of endpoint.endpoints) {
-                    server[endpoint.method](path, (req, res) => {
-                        return require(`./src/endpoints/${endpoint.file}`).handle({ app }, req, res);
+                    server[endpoint.method](path, ...endpoint.middleware, (req, res) => {
+                        return endpoint.handle({ app }, req, res);
                     });
     
                     console.debug(`| Set up regular endpoint: "${path}" -> ${endpoint.name}`);

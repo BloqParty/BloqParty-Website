@@ -41,9 +41,7 @@ class Login extends Component {
                         icon: icon({name: 'steam', style: 'brands'}),
                         value: `Sign in with Steam`,
                         key: `steam`,
-                        onClick: () => {
-
-                        }
+                        href: `/login/authflow/steam`,
                     }
                 ]} />
             </div>
