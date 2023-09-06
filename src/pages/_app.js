@@ -47,7 +47,8 @@ export default function MyApp({ Component, pageProps }) {
                 position: `fixed`,
                 backgroundColor: `rgba(25, 25, 25, 0.6)`,
                 top: 0,
-                overflow: `scroll`,
+                overflowY: `auto`,
+                overflowX: `hidden`,
             }}>
                 <Component { ...pageProps } />
                 <Footing />
