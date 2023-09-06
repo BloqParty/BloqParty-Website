@@ -1,0 +1,1 @@
+module.exports = (s) => s.toString().trim().replace(/\B(?=(\d{3})+(?!\d))/g, ",")

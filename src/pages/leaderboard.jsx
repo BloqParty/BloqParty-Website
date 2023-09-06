@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { icon } from '@fortawesome/fontawesome-svg-core/import.macro'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
@@ -18,6 +18,7 @@ export default function LeaderboardList() {
 
     const [opts, setOpts] = useState({
         unset: true,
+        ran: false,
         sort: `top`,
         id: `76561198345634943` // not sure what to do with this
     });
@@ -25,6 +26,9 @@ export default function LeaderboardList() {
     const [state, setState] = useState({
         title: `Loading...`,
         description: `Loading map info...`,
+        mapData: {},
+        mapVersion: {},
+        difficultyMap: {},
         tags: [],
         diffTags: [],
     });
@@ -34,16 +38,12 @@ export default function LeaderboardList() {
         totalPages: 0,
         total: (<FontAwesomeIcon icon={icon({name: 'circle-notch'})} spin style={{width: `20px`, height: `20px`}} />),
         offset: 0,
-        difficultyMap: {},
         mapHash: null,
         entries: [],
         error: null,
     });
 
     let overview = {};
-
-    let mapDetails = {};
-    let thisVersion = {};
 
     let wallpaper;
 
@@ -64,29 +64,49 @@ export default function LeaderboardList() {
                 res(data);
             })
             .catch(rej)
-    })
+    });
 
-    const getScores = (mapHash, newOpts=opts, newState=state, page = 1) => {
+    const getScores = (mapHash, newState=state, page = 1) => {
         setScores({
             ...scores,
             page: 1,
             totalPages: 0,
             total: (<FontAwesomeIcon icon={icon({name: 'circle-notch'})} spin style={{width: `20px`, height: `20px`}} />),
             offset: 0,
-            difficultyMap: {},
             mapHash: mapHash,
             entries: [],
             error: null,
         });
 
         getOverview(mapHash).then(overview => {
-            console.log(`opts`, opts);
+            const matchedDiffs = newState.mapVersion.diffs.filter(({ characteristic, difficulty }) => overview.scores[characteristic] && overview.scores[characteristic][enums.diff[difficulty]]);
+    
+            const highest = matchedDiffs.slice(-1)[0];
+    
+            const newOpts = {
+                ...opts,
+                ran: true,
+            };
+
+            if(!overview.scores[opts.char]?.[opts.diff]) Object.assign(newOpts, {
+                char: highest.characteristic,
+                diff: Object.entries(enums.diff).find(o => o[1] == highest.difficulty)[0],
+            });
+    
+            setOpts(newOpts);
+            
             const link = `https://api.thebedroom.party/leaderboard/${mapHash}?limit=${perPage}&sort=${newOpts.sort}&page=${page-1}&char=${newOpts.char}&diff=${newOpts.diff}&id=${newOpts.id}`;
             console.log(`fetching ${link}`);
+
             fetch(link)
                 .then(res => res.json())
                 .then(data => {
+                    const mapDetails = newState.mapDetails;
+                    const thisVersion = newState.mapVersion;
+                    const difficultyMap = thisVersion.diffs.find(({ characteristic, difficulty }) => characteristic == newOpts.char && difficulty == enums.diff[newOpts.diff]) || {}
+
                     console.log(`LB`, data);
+                    console.log(`thisVersion`, thisVersion);
     
                     setScores({
                         ...scores,
@@ -94,7 +114,6 @@ export default function LeaderboardList() {
                         totalPages: data.scoreCount ? Math.ceil(data.scoreCount / perPage) : 1,
                         total: data.scoreCount,
                         offset: (page - 1) * perPage,
-                        difficultyMap: thisVersion.diffs.find(({ characteristic, difficulty }) => characteristic == newOpts.char && difficulty == enums.diff[newOpts.diff]) || {},
                         mapHash: mapHash,
                         entries: data.scores,
                         error: null
@@ -102,7 +121,7 @@ export default function LeaderboardList() {
 
                     let newNewState = {
                         ...newState,
-                        diffTags: thisVersion.diffs.filter(({ characteristic, difficulty }) => overview.scores[characteristic] && overview.scores[characteristic][enums.diff[difficulty]]).map(({ characteristic, difficulty }) => ({
+                        diffTags: matchedDiffs.map(({ characteristic, difficulty }) => ({
                             icon: icon({name: 'trophy'}),
                             value: `${characteristic} / ${difficulty}`,
                             title: `${characteristic} / ${difficulty}`,
@@ -119,7 +138,7 @@ export default function LeaderboardList() {
                                     }
 
                                     setOpts(newNewOpts);
-                                    getScores(mapHash, newNewOpts, newNewState, 1);
+                                    getScores(mapHash, newNewState, 1);
                                 }
                             }),
                         }))
@@ -149,16 +168,19 @@ export default function LeaderboardList() {
                 }
             })
         })
-    }
-
-    let ran = false;
+    };
     
+    let ran = false;
+
     useEffect(() => {
-        if(ran) return;
+        if(!params.has(`map`)) return console.log(`no map`);
+        if(opts.ran) return console.log(`opts already ran`);
 
-        ran = params.has(`map`);
+        console.log(`running opts and setting ran to true`);
 
-        if(!ran) return;
+        setOpts({ ...opts, ran: true });
+        
+        console.log(`newOpts`, opts);
 
         wallpaper = new Wallpaper(document.querySelector(`.bg`), document.querySelector(`.fg`));
 
@@ -166,16 +188,6 @@ export default function LeaderboardList() {
 
         let mapHash = `${params.get(`map`)}`.toUpperCase();
     
-        if(opts.unset) {
-            console.log(`setting opts`);
-            setOpts({
-                unset: false, 
-                char: params.get(`char`),
-                diff: params.get(`diff`),
-            });
-            console.log(`newOpts`, opts);
-        }
-
         if(mapHash) {
             console.log(`loading map ${mapHash}`)
     
@@ -184,8 +196,9 @@ export default function LeaderboardList() {
                 .then(data => {
                     console.log(`MAP`, data);
     
-                    mapDetails = data;
-                    thisVersion = data.versions.find(o => o.hash == mapHash.toLowerCase()) || {};
+                    const thisVersion = data.versions.find(o => o.hash.toLowerCase() == mapHash.toLowerCase()) || {};
+
+                    if(!thisVersion) throw new Error(`Map version from hash not found`)
 
                     wallpaper.set({
                         url: thisVersion.coverURL || `https://cdn.beatsaver.com/${mapHash.toLowerCase()}.jpg`
@@ -194,6 +207,8 @@ export default function LeaderboardList() {
                     const newState = {
                         title: data.name,
                         description: `Uploaded ${Math.floor((Date.now() - new Date(thisVersion.createdAt || data.uploaded).getTime())/8.64e+7)} days ago`,
+                        mapDetails: data,
+                        mapVersion: thisVersion,
                         image: thisVersion.coverURL || `https://cdn.beatsaver.com/${mapHash.toLowerCase()}.jpg`,
                         artist: data.metadata.songAuthorName,
                         mapper: data.metadata.levelAuthorName,
@@ -214,21 +229,13 @@ export default function LeaderboardList() {
                             }
                         ],
                         diffTags: [],
-                    }
+                    };
+
+                    console.log(`newState`, newState);
     
                     setState({ ...state, ...newState});
     
-                    const highest = thisVersion?.diffs.filter(o => o.characteristic == `Standard`).slice(-1)[0] || thisVersion.diffs.slice(-1)[0] || {}
-
-                    const newOpts = {
-                        ...opts,
-                        char: opts.char || highest.characteristic,
-                        diff: opts.diff || Object.entries(enums.diff).find(o => o[1] == highest.difficulty)[0],
-                    }
-    
-                    setOpts(newOpts);
-    
-                    getScores(mapHash, newOpts, newState, 1);
+                    getScores(mapHash, newState, 1);
                 })
                 .catch(err => {
                     console.error(err);
@@ -236,7 +243,7 @@ export default function LeaderboardList() {
                     setState({
                         ...state,
                         title: `Map not found`,
-                        description: `The map you are looking for could not be found.`,
+                        description: `${err.message || `The map you are looking for could not be found.`}`,
                     })
 
                     setScores({
@@ -245,6 +252,24 @@ export default function LeaderboardList() {
                     })
                 })
         }
+    }, [ opts ]);
+    
+    useEffect(() => {
+        if(ran) return;
+
+        ran = params.has(`map`);
+
+        if(!ran) return;
+    
+        if(opts.unset) {
+            console.log(`setting opts`);
+            setOpts({
+                ...opts,
+                unset: false,
+                char: params.get(`char`),
+                diff: params.get(`diff`),
+            });
+        };
     }, [params.get(`map`)])
 
     return (
@@ -253,7 +278,7 @@ export default function LeaderboardList() {
             <Leaderboard error={scores.error} mapHash={scores.mapHash} total={scores.total} entries={(scores.entries || []).map(o => ({...o, key: `${o.id}`}))} offset={scores.offset} page={{
                 current: scores.page,
                 total: scores.totalPages,
-                set: (hash, num) => getScores(hash, null, null, num)
+                set: (hash, num) => getScores(hash, undefined, num)
             }} />
         </div>
     )

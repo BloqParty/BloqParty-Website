@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { icon } from '@fortawesome/fontawesome-svg-core/import.macro'
 import DetailBlock from '../detailblock';
+import thousands from '../../../util/thousands';
 
 const row = {
     display: `flex`,
@@ -46,7 +47,7 @@ export class EntryNoStyle extends Component {
                         marginRight: `20px`,
                     }}>{position}</p>
 
-                    <img src={entry.image} style={{
+                    <img src={`https://api.thebedroom.party/user/${entry.id}/avatar`} style={{
                         backgroundSize: `cover`,
                         backgroundPosition: `center`,
                         backgroundRepeat: `no-repeat`,
@@ -92,7 +93,7 @@ export class EntryNoStyle extends Component {
                     justifyContent: `right`,
                     flexGrow: 1,
                 }}>
-                    <h4 style={{marginRight: `12px`}}>{entry.score.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</h4>
+                    <h4 style={{marginRight: `12px`}} title={`Without multipliers: ${thousands(entry.multipliedScore)}`}>{thousands(entry.modifiedScore)}</h4>
 
                     {
                         entry.fullCombo ? (

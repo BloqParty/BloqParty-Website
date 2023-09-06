@@ -122,8 +122,8 @@ export default class Leaderboard extends Component {
                             {
                                 entries.map((entry, index) => (
                                     <motion.div
-                                        key={entry?.id.toString() || index}
-                                        transition={{ duration: 0.2, ease: circOut, delay: index * 0.1 }}
+                                        key={`${Number(index) + 1 + (offset || 0)}`}
+                                        transition={{ duration: 0.2, ease: circOut, delay: index * 0.03 }}
                                         initial={{ opacity: 0, x: 300, }}
                                         animate={{ opacity: 1, x: 0, }}
                                         exit={{ opacity: 0, x: -300, }}
