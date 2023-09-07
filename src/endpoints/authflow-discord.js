@@ -45,7 +45,7 @@ module.exports = [
                         const inBedroomParty = body.find(o => o.id == api.discordGuildID);
     
                         if(inBedroomParty) {
-                            console.debug(`User in Bedroom Party.`, req.cookies, usr);
+                            console.debug(`User in Bedroom Party.`, req.cookies);
                             superagent.post(`https://api.thebedroom.party/user/create`).set(`Authorization`, api.bpApi).send({
                                 username: steamTemp.steamName,
                                 discordID: id,
