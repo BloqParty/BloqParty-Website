@@ -18,7 +18,7 @@ export default class Footing extends Component {
     
     render() {
         return (
-            <div class="footing" id="footing" style={{
+            <div className="footing" id="footing" style={{
                 ...row,
                 width: `100vw`,
                 minHeight: `${this.height}px`,
@@ -30,7 +30,7 @@ export default class Footing extends Component {
                 {vars.map((v, i) => {
                     const a = [];
 
-                    if(i > 0) a.push(<Splitter height="20px" />);
+                    if(i > 0) a.push(<Splitter key={`footing-split-${i}`} height="20px" />);
 
                     a.push(
                         <h5 key={`footing-txt-${i}`} style={{

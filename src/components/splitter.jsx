@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 export default class Splitter extends Component {
     render() {
         return this.props.height ? (
-            <div class="splitter-vertical" style={{
+            <div className="splitter-vertical" style={{
                 width: `2px`,
                 minWidth: `2px`,
                 height: `${this.props.height}`,
@@ -12,7 +12,7 @@ export default class Splitter extends Component {
                 ...(this.props.style || {})
             }} />
         ) : (
-            <div class="splitter-horizontal" style={{
+            <div className="splitter-horizontal" style={{
                 width: `${this.props.width}`,
                 height: `2px`,
                 minHeight: `2px`,
