@@ -212,7 +212,7 @@ export default function LeaderboardList() {
 
                     const newState = {
                         title: data.name,
-                        description: `Uploaded ${time(Math.floor((Date.now() - new Date(thisVersion.createdAt || data.uploaded).getTime()))).string} ago`,
+                        description: `Uploaded ${time(Date.now() - new Date(thisVersion.createdAt || data.uploaded).getTime()).string} ago`,
                         mapDetails: data,
                         mapVersion: thisVersion,
                         image: thisVersion.coverURL || `https://cdn.beatsaver.com/${mapHash.toLowerCase()}.jpg`,
