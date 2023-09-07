@@ -60,7 +60,7 @@ function Login({ cookies }) {
                             value: `Get scary file contents`,
                             key: `scary`,
                             onClick: () => {
-                                alert(`scary file contents oOooOOOOOoooOOoOO\n\nwhenever we're more confident in shit working, this will be automated.\n\n${btoa(`${state.user.key},${state.user.game_id}`)}\n\nfor now, place this text in "{BS INSTALL LOCATION}/UserData/BPLB/scary/DO_NOT_SHARE.SCARY"`)
+                                alert(`scary file contents oOooOOOOOoooOOoOO\n\nwhenever we're more confident in shit working, this will be automated.\n\n${btoa(`${state.user.key},${state.user.id}`)}\n\nfor now, place this text in "{BS INSTALL LOCATION}/UserData/BPLB/scary/DO_NOT_SHARE.SCARY"`)
                             }
                         }
                     ] : !state.loading ? [
