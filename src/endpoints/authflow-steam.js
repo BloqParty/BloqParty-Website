@@ -1,5 +1,7 @@
 const passport = require(`passport`)
-const SteamStrategy = require(`passport-steam`).Strategy
+const SteamStrategy = require(`passport-steam`).Strategy;
+const sessions = require(`../../core/authflow`);
+const authflowMiddleware = require('../../core/authflow-middleware');
 
 const superagent = require(`superagent`);
 
@@ -27,31 +29,43 @@ module.exports = [
     {
         method: `get`,
         endpoint: `/login/authflow/steam`,
-        middleware: [passport.authenticate(`steam`)],
+        middleware: [ authflowMiddleware, passport.authenticate(`steam`) ],
         handle: (...data) => {}
     },
     {
         method: `get`,
         endpoint: `/login/authflow/steam/return`,
-        middleware: [passport.authenticate(`steam`, { failureRedirect: `/login` })],
+        middleware: [ authflowMiddleware, passport.authenticate(`steam`, { failureRedirect: `/login` }) ],
         handle: ({ app }, req, res) => {
-            console.debug(`Steam login return:`, req.user);
+            const currentSession = req.currentSession;
+
+            console.debug(`Steam login return:`, req.user, currentSession);
 
             superagent.get(`https://api.thebedroom.party/user/${req.user.id}`).then(({ text }) => {
                 const body = JSON.parse(text);
-                console.debug(`User lookup:`, body);
+                console.debug(`User exists:`, body);
+
+                superagent.post(`https://api.thebedroom.party/user/${body.game_id}/apikey`).set(`Authorization`, api.bpApi).then(({ text }) => {
+                    res.finishLogin({
+                        id: body.game_id,
+                        key: JSON.parse(text).apiKey
+                    });
+                }).catch(e => {
+                    console.error(`Failed user api key retrieval ${e}`);
+                    res.status(500).send(`Internal Server Error (BP API Key Retrieval) -- ${e}`);
+                })
             }).catch(e => {
                 if(e.status == 404) {
                     console.error(`Failed user lookup ${e}`);
-                    res.cookie(`steam`, JSON.stringify({
+                    currentSession.steam = {
                         steamID: req.user.id,
                         steamName: req.user.displayName,
                         avatar: req.user.photos[2].value,
-                    }), { httpOnly: false });
+                    };
                     res.redirect(`/login/link`);
                 } else {
                     console.error(`Failed user lookup ${e}`);
-                    res.status(500).send(`Internal Server Error -- ${e}`);
+                    res.status(500).send(`Internal Server Error (BP API User Lookup) -- ${e}`);
                 }
             });
         }
