@@ -12,6 +12,7 @@ import Leaderboard from '../components/leaderboard'
 import Wallpaper from '../scripts/wallpaper';
 
 import enums from '../../util/enum';
+import time from '../../util/time';
 
 export default function LeaderboardList() {
     const params = useSearchParams();
@@ -211,7 +212,7 @@ export default function LeaderboardList() {
 
                     const newState = {
                         title: data.name,
-                        description: `Uploaded ${Math.floor((Date.now() - new Date(thisVersion.createdAt || data.uploaded).getTime())/8.64e+7)} days ago`,
+                        description: `Uploaded ${time(Math.floor((Date.now() - new Date(thisVersion.createdAt || data.uploaded).getTime()))).string} ago`,
                         mapDetails: data,
                         mapVersion: thisVersion,
                         image: thisVersion.coverURL || `https://cdn.beatsaver.com/${mapHash.toLowerCase()}.jpg`,
