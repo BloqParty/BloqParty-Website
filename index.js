@@ -66,15 +66,21 @@ const authMiddleware = require('passport');
         }));
         server.use(authMiddleware.initialize());
         server.use(authMiddleware.session());
+
+        server.use((req, res, next) => {
+            console.debug(`[${req.method.toUpperCase()}] ${req.url}`);
+            next();
+        });
     
         const endpoints = fs.readdirSync(`./src/endpoints`).map(file => {
             const module = require(`./src/endpoints/${file}`);
 
             const map = (o, s) => {
+                const name = o.name || s.split(`.`).slice(0, -1).join(`.`);
+
                 return {
-                    file: s,
-                    name: o.name || s.split(`.`).slice(0, -1).join(`.`),
-                    render: fs.existsSync(`./src/pages/${s.split(`.`).slice(0, -1).join(`.`)}.jsx`),
+                    file: s, name,
+                    render: fs.existsSync(`./src/pages/${name}.jsx`),
                     middleware: o.middleware || [],
                     method: (o.method && typeof server[o.method.toLowerCase()] == `function`) ? o.method.toLowerCase() : `get`,
                     endpoints: !Array.isArray(o.endpoint) ? [o.endpoint] : o.endpoint,
@@ -100,7 +106,7 @@ const authMiddleware = require('passport');
                         return app.render(req, res, `/${endpoint.name}`, req.query);
                     });
     
-                    console.debug(`| Set up react endpoint: "${path}" -> ${endpoint.name}`);
+                    console.debug(`| Set up react endpoint with ${endpoint.middleware.length} middlepoint(s): "${path}" -> ${endpoint.name}`);
                 }
             } else {
                 console.debug(`Setting up regular endpoint: ${endpoint.name} [ ${endpoint.endpoints.join(`, `)} ]`);
@@ -110,7 +116,7 @@ const authMiddleware = require('passport');
                         return endpoint.handle({ app }, req, res);
                     });
     
-                    console.debug(`| Set up regular endpoint: "${path}" -> ${endpoint.name}`);
+                    console.debug(`| Set up regular endpoint with ${endpoint.middleware.length} middlepoint(s): "${path}" -> ${endpoint.name}`);
                 }
             }
         };
