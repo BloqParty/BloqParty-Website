@@ -1,7 +1,7 @@
 const superagent = require(`superagent`);
 const { api, web } = require(`../../core/config`);
 
-require(`json-bigint-patch`)
+const JSONbig = require(`json-bigint`);
 
 const redirect_uri = `${web.protocol}://${web.hostname}/login/authflow/discord/return`;
 
@@ -46,11 +46,11 @@ module.exports = [
     
                         if(inBedroomParty) {
                             console.debug(`User in Bedroom Party.`, req.cookies);
-                            superagent.post(`https://api.thebedroom.party/user/create`).set(`Authorization`, api.bpApi).send({
+                            superagent.post(`https://api.thebedroom.party/user/create`).set(`Authorization`, api.bpApi).send(JSONbig.stringify({
                                 username: steamTemp.steamName,
                                 discordID: BigInt(id),
                                 gameID: BigInt(steamTemp.steamID),
-                            }).then(r => {
+                            })).then(r => {
                                 const { apiKey } = JSON.parse(r.text);
                                 console.debug(`User created:`, r.text);
                                 res.send(`Created user account. You're stuck with this here API key because I couldn't be bothered to finish the flow yet. :)\n\n${apiKey}`)

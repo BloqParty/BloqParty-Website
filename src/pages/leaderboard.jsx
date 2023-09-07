@@ -4,6 +4,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import { useSearchParams } from 'next/navigation'
 
+import JSONbig from 'json-bigint';
+
 import Heading from '../components/heading'
 import Leaderboard from '../components/leaderboard'
 
@@ -51,7 +53,8 @@ export default function LeaderboardList() {
         if(overview._mapHash == mapHash && overview._fetched + 60000 > Date.now()) return res(overview);
 
         fetch(`https://api.thebedroom.party/leaderboard/${mapHash}/overview`)
-            .then(res => res.json())
+            .then(res => res.text())
+            .then(res => Promise.resolve(JSONbig.parse(res)))
             .then(data => {
                 Object.assign(data, {
                     _mapHash: mapHash,
@@ -99,7 +102,8 @@ export default function LeaderboardList() {
             console.log(`fetching ${link}`);
 
             fetch(link)
-                .then(res => res.json())
+                .then(res => res.text())
+                .then(res => Promise.resolve(JSONbig.parse(res)))
                 .then(data => {
                     const mapDetails = newState.mapDetails;
                     const thisVersion = newState.mapVersion;
@@ -192,7 +196,8 @@ export default function LeaderboardList() {
             console.log(`loading map ${mapHash}`)
     
             fetch(`https://api.beatsaver.com/maps/hash/${mapHash}`)
-                .then(res => res.json())
+                .then(res => res.text())
+                .then(res => Promise.resolve(JSONbig.parse(res)))
                 .then(data => {
                     console.log(`MAP`, data);
     
@@ -275,7 +280,7 @@ export default function LeaderboardList() {
     return (
         <div>
             <Heading mapper={state.mapper} image={state.image} artist={state.artist} title={state.title} description={state.description} tags={state.tags} diffTags={state.diffTags} />
-            <Leaderboard error={scores.error} mapHash={scores.mapHash} total={scores.total} entries={(scores.entries || []).map(o => ({...o, key: `${o.id}`}))} offset={scores.offset} page={{
+            <Leaderboard error={scores.error} mapHash={scores.mapHash} total={scores.total} entries={(scores.entries || []).map((o, i) => ({...o, key: `${o.id.toString() || i}`, id:o.id.toString() }))} offset={scores.offset} page={{
                 current: scores.page,
                 total: scores.totalPages,
                 set: (hash, num) => getScores(hash, undefined, num)
