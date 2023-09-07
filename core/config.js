@@ -22,6 +22,15 @@ const defaults = {
     }
 };
 
+const end = !fs.existsSync(`./config-example.json`) && !fs.existsSync(`./config.json`)
+
+fs.writeFileSync(`./config-example.json`, JSON.stringify(defaults, null, 4));
+
+if(end) {
+    console.log(`No config file was found! A config-example.json template file has been created for you. Please rename it to config.json and fill in the values.`);
+    return process.exit(1);
+}
+
 let config = {};
 
 try {
@@ -29,5 +38,3 @@ try {
 } catch(e) { config = {} }
 
 module.exports = recursiveAssign(defaults, config);
-
-fs.writeFileSync(`./config.json`, JSON.stringify(module.exports, null, 4));
