@@ -60,7 +60,13 @@ function Login({ cookies }) {
                             value: `Get scary file contents`,
                             key: `scary`,
                             onClick: () => {
-                                alert(`scary file contents oOooOOOOOoooOOoOO\n\nwhenever we're more confident in shit working, this will be automated.\n\n${btoa(`${state.user.key},${state.user.id}`)}\n\nfor now, place this text in "{BS INSTALL LOCATION}/UserData/BPLB/scary/DO_NOT_SHARE.SCARY"`)
+                                const a = document.createElement('a');
+
+                                a.href = `data:text/plain;charset=utf-8,${btoa(`${state.user.key},${state.user.id}`)}`;
+                                a.download = `DO_NOT_SHARE.SCARY`;
+                                a.click();
+
+                                //alert(`scary file contents oOooOOOOOoooOOoOO\n\nwhenever we're more confident in shit working, this will be automated.\n\n${btoa(`${state.user.key},${state.user.id}`)}\n\nfor now, place this text in "{BS INSTALL LOCATION}/UserData/BPLB/scary/DO_NOT_SHARE.SCARY"`)
                             }
                         }
                     ] : !state.loading ? [
