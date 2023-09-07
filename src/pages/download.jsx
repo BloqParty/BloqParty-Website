@@ -48,7 +48,7 @@ function Login({ cookies }) {
                 }
                 description={
                     state.exists ? 
-                        "Complete your account creation by linking your Discord account! This helps us verify that you are in the Bedroom Party server." : 
+                        "Download the BeatSaber mod files here!" : 
                     state.loading ? null :
                     state.error ? `Error: ${state.error}` :
                         `It doesn't look like you're logged in! Log back in through the button below, and try again.`
