@@ -1,18 +1,14 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { CookiesProvider } from 'react-cookie';
 
 import '../styles/global/global.css'
+import '../styles/overlays.css'
 import '@fontsource/alata/index.css'
 
 import '@fortawesome/fontawesome-svg-core/styles.css'
 
 import Navbar from '../components/navbar';
 import Footing from '../components/footing';
-
-const heights = {
-    navbar: new Navbar().height,
-    footing: new Footing().height
-}
 
 export default function MyApp({ Component, pageProps }) {
     return (
@@ -41,9 +37,7 @@ export default function MyApp({ Component, pageProps }) {
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                paddingTop: `${heights.navbar + 35}px`,
                 width: '100%',
-                height: `calc(100vh - ${heights.navbar + 35}px)`,
                 position: `fixed`,
                 backgroundColor: `rgba(25, 25, 25, 0.6)`,
                 top: 0,
