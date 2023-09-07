@@ -61,7 +61,7 @@ const authMiddleware = require('passport');
             saveUninitialized: false,
             cookie: {
                 secure: !session.dev,
-                maxAge: 604800000,
+                maxAge: 3.156e+10, // 1 year
             }
         }));
         server.use(authMiddleware.initialize());
