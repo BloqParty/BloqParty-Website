@@ -56,26 +56,26 @@ module.exports = [
                                 res.cookie(`apiKey`, apiKey, { httpOnly: false })
                                 res.send(`Created user account. You're stuck with this here API key because I couldn't be bothered to finish the flow yet. :)\n\n${apiKey}`)
                             }).catch(e => {
-                                console.error(`Failed user creation ${e}`, e.response.text);
+                                console.error(`Failed user creation ${e}`, e.response?.text);
                             })
                         } else {
                             console.error(`User not in Bedroom Party`);
                             res.redirect(`/login?error=NotInDiscordServer`);
                         }
                     }).catch(e => {
-                        console.error(`Failed guild lookup ${e}`, e.response.text);
+                        console.error(`Failed guild lookup ${e}`, e.response?.text);
                         res.status(500).send(`Internal Server Error (at guild lookup) -- ${e}`);
                     })
                 }).catch(e => {
-                    console.error(`Failed guild lookup ${e}`, e.response.text);
+                    console.error(`Failed guild lookup ${e}`, e.response?.text);
                     res.status(500).send(`Internal Server Error (at user lookup) -- ${e}`);
                 })
             }).catch(e => {
                 if(e.status == 404) {
-                    console.error(`Failed user lookup ${e}`, e.response.text);
+                    console.error(`Failed user lookup ${e}`, e.response?.text);
                     res.redirect(`/login?error=Discord404`);
                 } else {
-                    console.error(`Failed user lookup ${e}`, e.response.text);
+                    console.error(`Failed user lookup ${e}`, e.response?.text);
                     res.status(500).send(`Internal Server Error (at oauth flow) -- ${e}`);
                 }
             });
