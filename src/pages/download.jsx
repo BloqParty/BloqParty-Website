@@ -3,6 +3,8 @@ import { instanceOf } from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { icon } from '@fortawesome/fontawesome-svg-core/import.macro'
 import { withCookies, Cookies } from 'react-cookie';
+import { redirect } from 'next/dist/server/api-utils';
+//import { redirect } from 'next/navigation';
 
 import Heading from '../components/heading'
 
@@ -25,7 +27,9 @@ function Login({ cookies }) {
 
         const newState = Object.assign({ exists: true }, typeof steamTemp == `object` ? steamTemp : {
             exists: false,
-        })
+        });
+
+        if(!newState.exists) window.location.href = `/login`;
 
         setState(newState);
 
@@ -58,52 +62,18 @@ function Login({ cookies }) {
                         "Complete your account creation by linking your Discord account! This helps us verify that you are in the Bedroom Party server." : 
                         `Your Steam account details were not saved from the initial login. Please make sure the website has access to save cookies, and try again.`
                 } 
-                tags={
-                    state.exists ? [
-                        {
-                            icon: icon({name: 'discord', style: 'brands'}),
-                            value: `Sign in with Discord`,
-                            color: `#5865F2`,
-                            key: `discord`,
-                            href: `/login/authflow/discord`,
-                        }
-                    ] : !state.loading ? [
-                        {
-                            icon: icon({name: 'user'}),
-                            value: `Back to Login`,
-                            key: `login`,
-                            href: `/login`,
-                        }
-                    ] : []
-                } 
+                tags={[
+                    {
+                        icon: icon({name: 'discord', style: 'brands'}),
+                        value: `Sign in with Discord`,
+                        color: `#5865F2`,
+                        key: `discord`,
+                        href: `/login/authflow/discord`,
+                    }
+                ]} 
             />
         </div>
     )
 }
-
-/*class Login extends Component {
-    static propTypes = {
-        cookies: instanceOf(Cookies).isRequired,
-    };
-
-    constructor(props) {
-        super(props);
-
-        const { cookies } = props;
-
-        const steamTemp = cookies.get('steam');
-
-        console.log(`steamTemp`, steamTemp)
-
-        this.state = Object.assign({ exists: true }, typeof steamTemp == `object` ? steamTemp : {
-            exists: false,
-        });
-
-        console.log(`state`, this.state)
-    }
-
-    render() {
-    }
-}*/
 
 export default withCookies(Login);

@@ -37,12 +37,13 @@ module.exports = [
         handle: ({ app }, req, res) => {
             console.debug(`Steam login return:`, req.user);
 
-            superagent.get(`https://api.thebedroom.party/user/${req.user.id}`).then(({ body }) => {
+            superagent.get(`https://api.thebedroom.party/user/${req.user.id}`).then(({ text }) => {
+                const body = JSON.parse(text);
                 console.debug(`User lookup:`, body);
             }).catch(e => {
                 if(e.status == 404) {
                     console.error(`Failed user lookup ${e}`);
-                    res.cookie(`steam-temp`, JSON.stringify({
+                    res.cookie(`steam`, JSON.stringify({
                         steamID: req.user.id,
                         steamName: req.user.displayName,
                         avatar: req.user.photos[2].value,

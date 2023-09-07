@@ -21,7 +21,7 @@ module.exports = [
         handle: ({ app }, req, res) => {
             const { code } = req.query;
 
-            const steamTemp = req.universalCookies.get(`steam-temp`);
+            const steamTemp = req.universalCookies.get(`steam`);
 
             if(!steamTemp || !steamTemp.steamID || !steamTemp.steamName) return res.redirect(`/login?error=NoSteamTempCookie`);
 
@@ -33,7 +33,7 @@ module.exports = [
                 redirect_uri
             };
 
-            console.debug(`Discord login return code: ${code}`, sendParams, req.universalCookies.get(`steam-temp`));
+            console.debug(`Discord login return code: ${code}`, sendParams, req.universalCookies.get(`steam`));
 
             superagent.post(`https://discord.com/api/oauth2/token`).type('form').send(sendParams).then(({ body }) => {
                 console.debug(`User lookup:`, body);
@@ -45,15 +45,17 @@ module.exports = [
                         const inBedroomParty = body.find(o => o.id == api.discordGuildID);
     
                         if(inBedroomParty) {
-                            console.debug(`User in Bedroom Party.`, req.cookies);
-                            superagent.post(`https://api.thebedroom.party/user/create`).set(`Authorization`, api.bpApi).send(JSONbig.stringify({
+                            console.debug(`User in Bedroom Party.`, req.cookies, usr);
+                            superagent.post(`https://api.thebedroom.party/user/create`).set(`Authorization`, api.bpApi).send({
                                 username: steamTemp.steamName,
-                                discordID: BigInt(id),
-                                gameID: BigInt(steamTemp.steamID),
-                            })).then(r => {
+                                discordID: id,
+                                gameID: steamTemp.steamID,
+                            }).then(r => {
                                 const { apiKey } = JSON.parse(r.text);
                                 console.debug(`User created:`, r.text);
                                 res.send(`Created user account. You're stuck with this here API key because I couldn't be bothered to finish the flow yet. :)\n\n${apiKey}`)
+                            }).catch(e => {
+                                console.error(`Failed user creation ${e}`, e.response.text);
                             })
                         } else {
                             console.error(`User not in Bedroom Party`);
