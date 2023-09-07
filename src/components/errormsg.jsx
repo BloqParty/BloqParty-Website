@@ -19,7 +19,8 @@ export default class Error extends Component {
     render() {
         return (
             <div style={{
-                width: `min(100vw, 600px)`,
+                width: `75vw`,
+                maxWidth: `600px`,
                 color: `#ff5555`,
                 textAlign: `center`,
                 padding: `24px 20px`,

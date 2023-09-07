@@ -7,6 +7,7 @@ import { useSearchParams } from 'next/navigation'
 import JSONbig from 'json-bigint';
 
 import Heading from '../components/heading'
+import Spinner from '../components/spinner';
 import Leaderboard from '../components/leaderboard'
 
 import Wallpaper from '../scripts/wallpaper';
@@ -39,7 +40,7 @@ export default function LeaderboardList() {
     const [scores, setScores] = useState({
         page: 1,
         totalPages: 0,
-        total: (<FontAwesomeIcon icon={icon({name: 'circle-notch'})} spin style={{width: `20px`, height: `20px`}} />),
+        total: (<Spinner />),
         offset: 0,
         mapHash: null,
         entries: [],
@@ -75,7 +76,7 @@ export default function LeaderboardList() {
             ...scores,
             page: 1,
             totalPages: 0,
-            total: (<FontAwesomeIcon icon={icon({name: 'circle-notch'})} spin style={{width: `20px`, height: `20px`}} />),
+            total: (<Spinner />),
             offset: 0,
             mapHash: mapHash,
             entries: [],

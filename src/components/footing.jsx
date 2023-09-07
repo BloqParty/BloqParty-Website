@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import Splitter from './splitter';
+
 import vars from './footing/vars';
 
 const row = {
@@ -16,37 +18,31 @@ export default class Footing extends Component {
     
     render() {
         return (
-            <div id="footing" style={{
+            <div class="footing" id="footing" style={{
                 ...row,
                 width: `100vw`,
-                height: `${this.height}px`,
                 minHeight: `${this.height}px`,
                 padding: `0px 20px`,
                 //backgroundColor: `rgba(8, 8, 8, 0.5)`,
                 //boxShadow: `0 3px 10px rgb(0 0 0 / 0.2)`,
                 //backdropFilter: `blur(10px)`,
             }}>
-                {vars.map((v, i) => (
-                    <div key={`footing-entry-${i}`} style={row}>
-                        {
-                            i > 0 ? (
-                                <div key={`separator-${i}`} style={{
-                                    width: `2px`,
-                                    height: `20px`,
-                                    backgroundColor: `rgba(255,255,255,0.5)`,
-                                    margin: `0px 12px`,
-                                }} />
-                            ) : null
-                        }
-                        
+                {vars.map((v, i) => {
+                    const a = [];
+
+                    if(i > 0) a.push(<Splitter height="20px" />);
+
+                    a.push(
                         <h5 key={`footing-txt-${i}`} style={{
                             fontFamily: `Alata`,
                             fontWeight: `normal`,
                             color: `rgba(255, 255, 255, 0.5)`,
                             marginTop: `-3px`
                         }}>{v}</h5>
-                    </div>
-                ))}
+                    );
+
+                    return a;
+                }).reduce((a,b) => a.concat(b), [])}
             </div>
         );
     }
