@@ -36,7 +36,7 @@ export default function Navbar() {
                     return theseEntries;
                 },
                 set: (arr) => {
-                    arr = arr.reverse();
+                    arr = arr;
                     setEntries(arr);
                     if(state.navbarShowing.length) opts.navbar.show();
                 },
@@ -44,14 +44,14 @@ export default function Navbar() {
                     const showing = theseEntries.map((o, i2) => {
                         return (
                             <div key={i2} style={{
-                                margin: `10px 0px`,
+                                margin: `10px 10px`,
                             }}>
                                 {o}
                             </div>
                         )
                     });
                     setState({ ...state, navbarShowing: showing });
-                    setNavbarEntries([...showing]);
+                    setNavbarEntries(showing);
                 },
                 hide: () => {
                     setState({ ...state, navbarShowing: [] });
@@ -76,7 +76,6 @@ export default function Navbar() {
             backgroundColor: `rgba(8, 8, 8, 0.5)`,
             boxShadow: `0 3px 10px rgb(0 0 0 / 0.2)`,
             backdropFilter: `blur(10px)`,
-            position: `fixed`,
             top: `0px`,
         }}>
             <div className="navbar" style={{
@@ -106,21 +105,22 @@ export default function Navbar() {
                 </div>
             </div>
 
-            <div style={{
+            <div className="navbarEntries" style={{
                 ...row,
                 width: `100%`,
                 justifyContent: `right`
             }}>
-                <AnimatePresence style={{ ...row, width: `100%`, justifyContent: `right` }}>
+                <AnimatePresence className="navbarEntries" style={{ ...row, width: `100%`, justifyContent: `right` }}>
                     {
                         navbarEntries.map((o, i) => (
                             <motion.div
+                                key={i}
                                 transition={{ duration: 0.5, ease: easings.out.expo, staggerChildren: 0.03, staggerDirection: -1 }}
                                 initial={{ opacity: 0, marginTop: `-24px`, marginBottom: `-24px`, x: -200 }}
                                 animate={{ opacity: 1, marginTop: `0px`, marginBottom: `0px`, x: 0 }}
-                                exit={{ opacity: 0, marginTop: `-24px`, marginBottom: `-24px`, x: -20, color: `rgba(255,255,255,0)` }}
+                                exit={{ opacity: 0, marginTop: `-24px`, marginBottom: `-24px`, x: 100, scale: 0.6 }}
                             >
-                                {navbarEntries}
+                                {o}
                             </motion.div>
                         ))
                     }
