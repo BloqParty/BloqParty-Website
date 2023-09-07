@@ -3,50 +3,51 @@ import { instanceOf } from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { icon } from '@fortawesome/fontawesome-svg-core/import.macro'
 import { withCookies, Cookies } from 'react-cookie';
+import { useSearchParams } from 'next/navigation'
 
 import Heading from '../components/heading'
+import Error from '../components/errormsg';
 
-class Login extends Component {
-    static propTypes = {
-        cookies: instanceOf(Cookies).isRequired,
-    };
+function Login({ cookies }) {
+    const params = useSearchParams();
 
-    constructor(props) {
-        super(props);
+    const [ errorMsg, setErrorMsg ] = useState(null);
 
-        const { cookies } = props;
-        this.state = {
-            token: cookies.get('token') || null,
+    useEffect(() => {
+        if(errorMsg) return;
 
-            name: cookies.get('name') || null,
-            id: cookies.get('id') || null,
-            avatarURL: cookies.get('avatarURL') || null,
-        };
+        const error = params.get('error');
 
-        console.log(`state`, this.state)
-    }
-
-    render() {
-        return (
-            <div style={{
-                display: `flex`,
-                flexDirection: `column`,
-                alignItems: `center`,
-                justifyContent: `center`,
-                height: `100vh`,
-                width: `100vw`,
-            }}>
-                <Heading title="Login" description="Sign in with your account here!" tags={[
-                    {
-                        icon: icon({name: 'steam', style: 'brands'}),
-                        value: `Sign in with Steam`,
-                        key: `steam`,
-                        href: `/login/session`,
-                    }
-                ]} />
-            </div>
-        )
-    }
+        if(error) {
+            setErrorMsg(error);
+        }
+    }, [params.get('error')])
+    
+    return (
+        <div style={{
+            display: `flex`,
+            flexDirection: `column`,
+            alignItems: `center`,
+            justifyContent: `center`,
+            height: `100vh`,
+            width: `100vw`,
+        }}>
+            {
+                errorMsg && <Error title="An error occurred whilst trying to sign you in!" description={`Code: "${errorMsg}"`} />
+            }
+            <Heading bgStyle={{
+                marginBottom: `100px`,
+                marginTop: `50px`
+            }} title="Login" description="Sign in with your account here!" tags={[
+                {
+                    icon: icon({name: 'steam', style: 'brands'}),
+                    value: `Sign in with Steam`,
+                    key: `steam`,
+                    href: `/login/session`,
+                }
+            ]} />
+        </div>
+    )
 }
 
 export default withCookies(Login);
