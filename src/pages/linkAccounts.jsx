@@ -5,10 +5,12 @@ import { icon } from '@fortawesome/fontawesome-svg-core/import.macro'
 import { withCookies, Cookies } from 'react-cookie';
 
 import Heading from '../components/heading'
-
+import Spinner from '../components/spinner';
 import Wallpaper from '../scripts/wallpaper'
 
 function Login({ cookies }) {
+    console.log(`cookies`, cookies);
+
     const [ state, setState ] = useState({
         loading: true,
         exists: false,
@@ -19,19 +21,27 @@ function Login({ cookies }) {
     useEffect(() => {
         if(!wallpaper) wallpaper = new Wallpaper(document.querySelector(`.bg`), document.querySelector(`.fg`));
 
-        const steamTemp = cookies.get('steam');
-
-        console.log(`steamTemp`, steamTemp);
-
-        const newState = Object.assign({ exists: true }, typeof steamTemp == `object` ? steamTemp : {
-            exists: false,
-        })
-
-        setState(newState);
-
-        console.log(`state`, newState);
-
-        if(newState.avatar) wallpaper.set({ url: newState.avatar });
+        fetch(`/login/currentsession`)
+            .then(res => res.json())
+            .then(({ steam }) => {
+                console.log(`steam`, steam);
+        
+                const newState = Object.assign({ exists: true }, typeof steam == `object` ? steam : {
+                    exists: false,
+                })
+        
+                setState(newState);
+        
+                console.log(`state`, newState);
+        
+                if(newState.avatar) wallpaper.set({ url: newState.avatar });
+            })
+            .catch(e => {
+                setState({
+                    exists: false,
+                    error: `${e}`
+                })
+            });
     }, [])
 
     return (
@@ -48,6 +58,8 @@ function Login({ cookies }) {
                 title={
                     state.exists ? 
                         `Finish your account creation, ${state.steamName}!` : 
+                    !state.loading ?
+                        <Spinner /> :
                     <>
                         <FontAwesomeIcon icon={icon({name: 'circle-exclamation'})} style={{marginRight: `8px`, width: `20px`, height: `20px`}} />
                         <span>Something went wrong.</span>
@@ -56,6 +68,8 @@ function Login({ cookies }) {
                 description={
                     state.exists ? 
                         "Complete your account creation by linking your Discord account! This helps us verify that you are in the Bedroom Party server." : 
+                    state.loading ? null :
+                    state.error ? `Error: ${state.error}` :
                         `Your Steam account details were not saved from the initial login. Please make sure the website has access to save cookies, and try again.`
                 } 
                 tags={
@@ -80,30 +94,5 @@ function Login({ cookies }) {
         </div>
     )
 }
-
-/*class Login extends Component {
-    static propTypes = {
-        cookies: instanceOf(Cookies).isRequired,
-    };
-
-    constructor(props) {
-        super(props);
-
-        const { cookies } = props;
-
-        const steamTemp = cookies.get('steam');
-
-        console.log(`steamTemp`, steamTemp)
-
-        this.state = Object.assign({ exists: true }, typeof steamTemp == `object` ? steamTemp : {
-            exists: false,
-        });
-
-        console.log(`state`, this.state)
-    }
-
-    render() {
-    }
-}*/
 
 export default withCookies(Login);
