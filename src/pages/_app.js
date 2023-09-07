@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { Component, useState, createContext } from 'react';
 import { CookiesProvider } from 'react-cookie';
 
 import '../styles/global/global.css'
@@ -10,8 +10,12 @@ import '@fortawesome/fontawesome-svg-core/styles.css'
 import Navbar from '../components/navbar';
 import Footing from '../components/footing';
 
+export const Context = {
+    User: createContext({ loading: true })
+}
+
 export default function MyApp({ Component, pageProps }) {
-    return (
+    const page = (
         <CookiesProvider defaultSetOptions={{
             path: `/`,
             sameSite: `strict`,
@@ -50,5 +54,17 @@ export default function MyApp({ Component, pageProps }) {
 
             <Navbar />
         </CookiesProvider>
-    )
+    );
+
+    return (
+        Object.values(Context).reduce((a, B) => {
+            const [ state, setState ] = useState({ loading: true });
+
+            return (
+                <B.Provider value={{ state, setState }}>
+                    { a || page }
+                </B.Provider>
+            )
+        }, null)
+    );
 }
