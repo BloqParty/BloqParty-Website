@@ -8,7 +8,7 @@ import Heading from '../components/heading'
 import Spinner from '../components/spinner';
 import Wallpaper from '../scripts/wallpaper'
 
-function Login({ cookies }) {
+function LinkAccounts({ cookies }) {
     console.log(`cookies`, cookies);
 
     const [ state, setState ] = useState({
@@ -50,15 +50,13 @@ function Login({ cookies }) {
             flexDirection: `column`,
             alignItems: `center`,
             justifyContent: `center`,
-            height: `100vh`,
-            width: `100vw`,
         }}>
             <Heading 
                 image={state.avatar}
                 title={
                     state.exists ? 
                         `Finish your account creation, ${state.steamName}!` : 
-                    !state.loading ?
+                    state.loading ?
                         <Spinner /> :
                     <>
                         <FontAwesomeIcon icon={icon({name: 'circle-exclamation'})} style={{marginRight: `8px`, width: `20px`, height: `20px`}} />
@@ -95,4 +93,4 @@ function Login({ cookies }) {
     )
 }
 
-export default withCookies(Login);
+export default withCookies(LinkAccounts);

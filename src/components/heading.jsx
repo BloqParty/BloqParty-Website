@@ -88,9 +88,11 @@ export default class Heading extends Component {
                     justifyContent: `center`,
                     padding: `30px 20px`,
                     textAlign: `left`,
+                    flexWrap: `revert`,
                     ...(this.props.bgimage ? {
                         backdropFilter: this.props.image ? `blur(10px) grayscale(40%) brightness(0.6)` : null
-                    } : {})
+                    } : {}),
+                    ...this.props.style || {},
                 }}>
                     { image ? (
                         <div style={{
@@ -98,6 +100,7 @@ export default class Heading extends Component {
                             flexDirection: `row`,
                             alignItems: `center`,
                             justifyContent: `center`,
+                            flexWrap: `revert`,
                         }}>
                             {image}
                             {text}

@@ -31,6 +31,10 @@
         padding-top: 15px;
     }
 
+    .navbarEntries {
+        flex-direction: column !important;
+    }
+
     .footing {
         min-height: 100px !important;
         padding-bottom: 15px;

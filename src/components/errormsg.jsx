@@ -26,6 +26,7 @@ export default class Error extends Component {
                 padding: `24px 20px`,
                 backgroundColor: `rgba(168, 49, 61, 0.1)`,
                 borderRadius: `10px`,
+                ...this.props.bgStyle || {}
             }}>
                 <div style={{
                     display: `flex`,
