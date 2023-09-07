@@ -1,42 +1,25 @@
-import React, { Component, useState, useEffect } from 'react';
-import { instanceOf } from 'prop-types';
+import React, { Component, useState, useEffect, useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { icon } from '@fortawesome/fontawesome-svg-core/import.macro'
 import { withCookies, Cookies } from 'react-cookie';
-import { redirect } from 'next/dist/server/api-utils';
-//import { redirect } from 'next/navigation';
 
 import Heading from '../components/heading'
+import Spinner from '../components/spinner';
 
 import Wallpaper from '../scripts/wallpaper'
 
+import { Context } from './_app';
+
 function Login({ cookies }) {
-    const [ state, setState ] = useState({
-        loading: true,
-        exists: false,
-    });
+    const { state, setState } = useContext(Context.User);
+
+    console.log(`ctx`, Context);
 
     let wallpaper = null;
 
     useEffect(() => {
-        if(!wallpaper) wallpaper = new Wallpaper(document.querySelector(`.bg`), document.querySelector(`.fg`));
-
-        const steamTemp = cookies.get('steam');
-
-        console.log(`steamTemp`, steamTemp);
-
-        const newState = Object.assign({ exists: true }, typeof steamTemp == `object` ? steamTemp : {
-            exists: false,
-        });
-
-        if(!newState.exists) window.location.href = `/login`;
-
-        setState(newState);
-
-        console.log(`state`, newState);
-
-        if(newState.avatar) wallpaper.set({ url: newState.avatar });
-    }, [])
+        console.log(`user loading`, state.loading);
+    }, [state.loading])
 
     return (
         <div style={{
@@ -49,9 +32,15 @@ function Login({ cookies }) {
         }}>
             <Heading 
                 image={state.avatar}
+                style={state.loading ? {
+                    alignItems: `center`,
+                    justifyContent: `center`,
+                } : {}}
                 title={
                     state.exists ? 
-                        `Finish your account creation, ${state.steamName}!` : 
+                        `speecil smells` : 
+                    state.loading ?
+                        <Spinner /> :
                     <>
                         <FontAwesomeIcon icon={icon({name: 'circle-exclamation'})} style={{marginRight: `8px`, width: `20px`, height: `20px`}} />
                         <span>Something went wrong.</span>
@@ -60,17 +49,29 @@ function Login({ cookies }) {
                 description={
                     state.exists ? 
                         "Complete your account creation by linking your Discord account! This helps us verify that you are in the Bedroom Party server." : 
-                        `Your Steam account details were not saved from the initial login. Please make sure the website has access to save cookies, and try again.`
+                    state.loading ? null :
+                    state.error ? `Error: ${state.error}` :
+                        `It doesn't look like you're logged in! Log back in through the button below, and try again.`
                 } 
-                tags={[
-                    {
-                        icon: icon({name: 'discord', style: 'brands'}),
-                        value: `Sign in with Discord`,
-                        color: `#5865F2`,
-                        key: `discord`,
-                        href: `/login/authflow/discord`,
-                    }
-                ]} 
+                tags={
+                    state.exists ? [
+                        {
+                            icon: icon({name: 'ghost'}),
+                            value: `Get scary file contents`,
+                            key: `scary`,
+                            onClick: () => {
+                                alert(`scary file contents oOooOOOOOoooOOoOO\n\nwhenever we're more confident in shit working, this will be automated.\n\n${btoa(`${state.user.key},${state.user.game_id}`)}\n\nfor now, place this text in "{BS INSTALL LOCATION}/UserData/BPLB/scary/DO_NOT_SHARE.SCARY"`)
+                            }
+                        }
+                    ] : !state.loading ? [
+                        {
+                            icon: icon({name: 'user'}),
+                            value: `Back to Login`,
+                            key: `login`,
+                            href: `/login`,
+                        }
+                    ] : []
+                } 
             />
         </div>
     )
