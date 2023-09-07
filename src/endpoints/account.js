@@ -3,8 +3,21 @@ const sessionMiddleware = require(`../../core/authflow-middleware`);
 
 module.exports = [
     {
+        name: `login`,
         method: `get`,
         endpoint: [`/login`],
+    },
+    {
+        name: `logout`,
+        method: `get`,
+        endpoint: [`/logout`],
+        handle: ({ app }, req, res) => {
+            console.debug(`Logging out`);
+            req.currentSession?.destroy();
+            res.clearCookie(`login-session`);
+            res.clearCookie(`auth`);
+            res.redirect(`/`);
+        }
     },
     {
         name: `createLoginSession`,
@@ -14,7 +27,7 @@ module.exports = [
             console.debug(`Creating login session`);
             const session = sessions.createSession();
             res.cookie(`login-session`, session.id, { httpOnly: true });
-            res.redirect(307, `/login/authflow/steam`);
+            res.redirect(`/login/authflow/steam`);
         }
     },
     {
