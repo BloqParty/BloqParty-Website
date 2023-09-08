@@ -44,7 +44,7 @@ function User({ cookies, navbar }) {
                     });
                     navbar.set([
                         <DetailBlock color="#c24c44" href="/logout" value={`Log out`} icon={icon({name: 'arrow-right-from-bracket'})} />,
-                        <DetailBlock href="/download" value={`Get mod`} icon={icon({name: 'download'})} />,
+                        <DetailBlock href="/download" value={`Download`} icon={icon({name: 'download'})} />,
                         <DetailBlock value={user.username} icon={icon({name: 'user'})} />,
                     ]);
                 })

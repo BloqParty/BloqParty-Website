@@ -43,7 +43,7 @@ export default function Navbar() {
                 show: () => {
                     const showing = theseEntries.map((o, i2) => {
                         return (
-                            <div key={i2} style={{
+                            <div key={Date.now() + Number(i2)} style={{
                                 margin: `10px 10px`,
                             }}>
                                 {o}
@@ -114,11 +114,11 @@ export default function Navbar() {
                     {
                         navbarEntries.map((o, i) => (
                             <motion.div
-                                key={i}
-                                transition={{ duration: 0.5, ease: easings.out.expo, staggerChildren: 0.03, staggerDirection: -1 }}
+                                key={`${Date.now}-${i}`}
+                                transition={{ duration: 0.5 + ((navbarEntries.length - (Number(i) + 1)) * (1/navbarEntries.length)), ease: easings.out.expo, delay: (navbarEntries.length - (Number(i) + 1)) * 0.03 }}
                                 initial={{ opacity: 0, marginTop: `-24px`, marginBottom: `-24px`, x: -200 }}
                                 animate={{ opacity: 1, marginTop: `0px`, marginBottom: `0px`, x: 0 }}
-                                exit={{ opacity: 0, marginTop: `-24px`, marginBottom: `-24px`, x: 100, scale: 0.6 }}
+                                exit={{ opacity: 0, marginTop: `-24px`, marginBottom: `-24px`, x: 0, scale: 0.6 }}
                             >
                                 {o}
                             </motion.div>
