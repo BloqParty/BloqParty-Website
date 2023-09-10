@@ -11,7 +11,7 @@ const fgStyles = [
 ];
 
 export default class Wallpaper {
-    constructor(bg, fg) {
+    constructor(bg=document.querySelector(`.bg`), fg=document.querySelector(`.fg`)) {
         this.bg = bg
         this.fg = fg
     }
@@ -58,7 +58,7 @@ export default class Wallpaper {
                 targets: this.bg,
                 opacity: [0, 1],
                 duration,
-                scale: [1, 1.15],
+                //scale: [1, 1.15],
                 easing: `easeOutExpo`,
                 begin: () => {
                     this.bg.style.backgroundImage = `url("${url}")`;
