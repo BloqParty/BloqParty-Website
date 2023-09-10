@@ -33,7 +33,9 @@ export const EntryStyle = {
 
 export class EntryNoStyle extends Component {
     render() {
-        const { entry, position } = this.props;
+        const { entry } = this.props;
+
+        console.log(entry);
 
         return (
             <>
@@ -45,7 +47,7 @@ export class EntryNoStyle extends Component {
                         fontWeight: `bold`,
                         fontSize: `1.5em`,
                         marginRight: `20px`,
-                    }}>{position}</p>
+                    }}>{entry.position}</p>
 
                     <img src={`https://api.thebedroom.party/user/${entry.id}/avatar`} style={{
                         backgroundSize: `cover`,
@@ -104,7 +106,7 @@ export class EntryNoStyle extends Component {
                     }
 
                     <DetailBlock style={block} icon={icon({name: 'percent'})} title={`Accuracy: ${entry.accuracy}`} value={(parseFloat(entry.accuracy || 0.00)).toFixed(2)} />
-                    <DetailBlock style={block} icon={icon({name: 'gear'})} title={`Modifiers Used: ${entry.modifiers}`} value={entry.modifiers.trim().split(` `).join(`, `)} />
+                    <DetailBlock style={block} color={entry.modifiers.trim().length ? undefined : `#1a1a1a78`} icon={icon({name: 'gear'})} title={entry.modifiers.trim().length ? `Modifiers Used: ${entry.modifiers}` : `No Modifiers Used`} value={`[${entry.modifiers.trim().split(` `).filter(Boolean).length}]`} />
                 </div>
             </>
         )

@@ -58,7 +58,7 @@ export default function LeaderboardList() {
             newState: newState
         });
 
-        fetch(`https://api.thebedroom.party/leaderboard/${mapHash}/overview`)
+        fetch(`https://dev.thebedroom.party/leaderboard/${mapHash}/overview`)
             .then(res => res.text())
             .then(res => Promise.resolve(JSONbig.parse(res)))
             .then(data => {
@@ -113,7 +113,7 @@ export default function LeaderboardList() {
     
             setOpts(newOpts);
             
-            const link = `https://api.thebedroom.party/leaderboard/${mapHash}?limit=${perPage}&sort=${newOpts.sort}&page=${page-1}&char=${newOpts.char}&diff=${newOpts.diff}&id=${newOpts.id}`;
+            const link = `https://dev.thebedroom.party/leaderboard/${mapHash}?limit=${perPage}&sort=${newOpts.sort}&page=${page-1}&char=${newOpts.char}&diff=${newOpts.diff}&id=${newOpts.id}`;
             console.log(`fetching ${link}`);
 
             fetch(link)
@@ -140,7 +140,7 @@ export default function LeaderboardList() {
 
                     let newNewState = {
                         ...newState,
-                        diffTags: matchedDiffs.map(({ characteristic, difficulty }) => ({
+                        diffTags: /*matchedDiffs*/newState.mapVersion.diffs.map(({ characteristic, difficulty }) => ({
                             icon: icon({name: 'trophy'}),
                             value: `${characteristic} / ${difficulty}`,
                             title: `${characteristic} / ${difficulty}`,
