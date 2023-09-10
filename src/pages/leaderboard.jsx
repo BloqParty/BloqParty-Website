@@ -32,6 +32,7 @@ export default function LeaderboardList() {
         description: `Loading map info...`,
         mapData: {},
         mapVersion: {},
+        mapOverview: {},
         difficultyMap: {},
         tags: [],
         diffTags: [],
@@ -47,12 +48,15 @@ export default function LeaderboardList() {
         error: null,
     });
 
-    let overview = {};
-
     let wallpaper;
 
-    const getOverview = (mapHash) => new Promise(async (res, rej) => {
-        if(overview._mapHash == mapHash && overview._fetched + 60000 > Date.now()) return res(overview);
+    const getOverview = ({mapHash, newState=state}) => new Promise(async (res, rej) => {
+        console.log(`getting overview for ${mapHash}`, newState.mapOverview)
+
+        if(newState.mapOverview?._mapHash == mapHash/* && newState.mapOverview?._fetched + 60000 > Date.now()*/) return res({
+            overview: newState.mapOverview,
+            newState: newState
+        });
 
         fetch(`https://api.thebedroom.party/leaderboard/${mapHash}/overview`)
             .then(res => res.text())
@@ -64,9 +68,18 @@ export default function LeaderboardList() {
                 });
 
                 console.log(`overview`, data);
-                overview = data;
+
+                const newNewState = {
+                    ...newState,
+                    mapOverview: data
+                }
+
+                setState(newNewState)
                 
-                res(data);
+                res({
+                    overview: data,
+                    newState: newNewState
+                });
             })
             .catch(rej)
     });
@@ -83,8 +96,8 @@ export default function LeaderboardList() {
             error: null,
         });
 
-        getOverview(mapHash).then(overview => {
-            const matchedDiffs = newState.mapVersion.diffs.filter(({ characteristic, difficulty }) => overview.scores[characteristic] && overview.scores[characteristic][enums.diff[difficulty]]);
+        getOverview({mapHash, newState: newState || state}).then(({overview, newState}) => {
+            const matchedDiffs = newState.mapVersion.diffs.filter(({ characteristic, difficulty }) => overview[characteristic]?.includes(enums.diff[difficulty].toString()));
     
             const highest = matchedDiffs.slice(-1)[0];
     
@@ -93,7 +106,7 @@ export default function LeaderboardList() {
                 ran: true,
             };
 
-            if(!overview.scores[opts.char]?.[opts.diff]) Object.assign(newOpts, {
+            if(!overview[opts.char]?.includes(opts.diff)) Object.assign(newOpts, {
                 char: highest.characteristic,
                 diff: Object.entries(enums.diff).find(o => o[1] == highest.difficulty)[0],
             });
@@ -104,12 +117,12 @@ export default function LeaderboardList() {
             console.log(`fetching ${link}`);
 
             fetch(link)
-                .then(res => res.text())
-                .then(res => Promise.resolve(JSONbig.parse(res)))
-                .then(data => {
-                    const mapDetails = newState.mapDetails;
+                .then(async response => {
+                    let data = await new Promise(r => response.text().then(r).catch(r)).then(JSONbig.parse);
+
+                    console.log(`response`, response);
+
                     const thisVersion = newState.mapVersion;
-                    const difficultyMap = thisVersion.diffs.find(({ characteristic, difficulty }) => characteristic == newOpts.char && difficulty == enums.diff[newOpts.diff]) || {}
 
                     console.log(`LB`, data);
                     console.log(`thisVersion`, thisVersion);
@@ -196,68 +209,73 @@ export default function LeaderboardList() {
     
         if(mapHash) {
             console.log(`loading map ${mapHash}`)
-    
-            fetch(`https://api.beatsaver.com/maps/hash/${mapHash}`)
-                .then(res => res.text())
-                .then(res => Promise.resolve(JSONbig.parse(res)))
-                .then(data => {
-                    console.log(`MAP`, data);
-    
-                    const thisVersion = data.versions.find(o => o.hash.toLowerCase() == mapHash.toLowerCase()) || {};
 
-                    if(!thisVersion) throw new Error(`Map version from hash not found`)
+            new Promise(async res => {
+                if(!state.mapDetails) {
+                    fetch(`https://api.beatsaver.com/maps/hash/${mapHash}`)
+                        .then(res => res.text())
+                        .then(res => Promise.resolve(JSONbig.parse(res)))
+                        .then(res);
+                } else res(Object.assign({}, state.mapDetails, {
+                    _cached: true
+                }))
+            }).then(data => {
+                console.log(`MAP (cached: ${data._cached})`, data);
 
-                    wallpaper.set({
-                        url: thisVersion.coverURL || `https://cdn.beatsaver.com/${mapHash.toLowerCase()}.jpg`
-                    });
+                const thisVersion = data.versions.find(o => o.hash.toLowerCase() == mapHash.toLowerCase()) || {};
 
-                    const newState = {
-                        title: data.name,
-                        description: `Uploaded ${time(Date.now() - new Date(thisVersion.createdAt || data.uploaded).getTime()).string} ago`,
-                        mapDetails: data,
-                        mapVersion: thisVersion,
-                        image: thisVersion.coverURL || `https://cdn.beatsaver.com/${mapHash.toLowerCase()}.jpg`,
-                        artist: data.metadata.songAuthorName,
-                        mapper: data.metadata.levelAuthorName,
-                        tags: [
-                            {
-                                icon: icon({name: 'angle-up'}),
-                                value: data.stats.upvotes,
-                                title: `${data.stats.upvotes} Upvotes`,
-                                key: `upvotes`,
-                                color: `#5ac452`
-                            },
-                            {
-                                icon: icon({name: 'angle-down'}),
-                                value: data.stats.downvotes,
-                                title: `${data.stats.downvotes} Downvotes`,
-                                key: `downvotes`,
-                                color: `#c45262`
-                            }
-                        ],
-                        diffTags: [],
-                    };
+                if(!thisVersion) throw new Error(`Map version from hash not found`)
 
-                    console.log(`newState`, newState);
-    
-                    setState({ ...state, ...newState});
-    
-                    getScores(mapHash, newState, 1);
+                wallpaper.set({
+                    url: thisVersion.coverURL || `https://cdn.beatsaver.com/${mapHash.toLowerCase()}.jpg`
+                });
+
+                const newState = {
+                    title: data.name,
+                    description: `Uploaded ${time(Date.now() - new Date(thisVersion.createdAt || data.uploaded).getTime()).string} ago`,
+                    mapDetails: data,
+                    mapVersion: thisVersion,
+                    image: thisVersion.coverURL || `https://cdn.beatsaver.com/${mapHash.toLowerCase()}.jpg`,
+                    artist: data.metadata.songAuthorName,
+                    mapper: data.metadata.levelAuthorName,
+                    tags: [
+                        {
+                            icon: icon({name: 'angle-up'}),
+                            value: data.stats.upvotes,
+                            title: `${data.stats.upvotes} Upvotes`,
+                            key: `upvotes`,
+                            color: `#5ac452`
+                        },
+                        {
+                            icon: icon({name: 'angle-down'}),
+                            value: data.stats.downvotes,
+                            title: `${data.stats.downvotes} Downvotes`,
+                            key: `downvotes`,
+                            color: `#c45262`
+                        }
+                    ],
+                    diffTags: [],
+                };
+
+                console.log(`newState`, newState);
+
+                setState({ ...state, ...newState});
+
+                getScores(mapHash, newState, 1);
+            }).catch(err => {
+                console.error(err);
+
+                setState({
+                    ...state,
+                    title: `Map not found`,
+                    description: `${err.message || `The map you are looking for could not be found.`}`,
                 })
-                .catch(err => {
-                    console.error(err);
 
-                    setState({
-                        ...state,
-                        title: `Map not found`,
-                        description: `${err.message || `The map you are looking for could not be found.`}`,
-                    })
-
-                    setScores({
-                        ...scores,
-                        total: (<FontAwesomeIcon icon={icon({name: 'circle-exclamation'})} style={{width: `20px`, height: `20px`}} />)
-                    })
+                setScores({
+                    ...scores,
+                    total: (<FontAwesomeIcon icon={icon({name: 'circle-exclamation'})} style={{width: `20px`, height: `20px`}} />)
                 })
+            })
         }
     }, [ opts ]);
     
