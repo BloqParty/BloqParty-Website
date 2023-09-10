@@ -30,17 +30,12 @@ function Login({ cookies }) {
             height: `100vh`,
             width: `100vw`,
         }}>
-            <Heading 
+            <Heading
+                loading={state.loading}
                 image={state.avatar}
-                style={state.loading ? {
-                    alignItems: `center`,
-                    justifyContent: `center`,
-                } : {}}
                 title={
                     state.exists ? 
-                        `speecil smells` : 
-                    state.loading ?
-                        <Spinner /> :
+                        `speecil smells` :
                     <>
                         <FontAwesomeIcon icon={icon({name: 'circle-exclamation'})} style={{marginRight: `8px`, width: `20px`, height: `20px`}} />
                         <span>Something went wrong.</span>
@@ -49,7 +44,6 @@ function Login({ cookies }) {
                 description={
                     state.exists ? 
                         "Download the BeatSaber mod files here!" : 
-                    state.loading ? null :
                     state.error ? `Error: ${state.error}` :
                         `It doesn't look like you're logged in! Log back in through the button below, and try again.`
                 } 
