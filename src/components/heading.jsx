@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import DetailBlock from './detailblock';
 import Splitter from './splitter';
+import Spinner from './spinner';
+
+import { motion, circOut, AnimatePresence } from 'framer-motion';
+import { out } from '../../util/easings';
 
 const commonStyle = {
     boxSizing: `border-box`,
@@ -78,63 +82,81 @@ export default class Heading extends Component {
                     backgroundRepeat: `no-repeat`,
                 } : {
                     backgroundColor: `rgba(0, 0, 0, 0.4)`,
-                })
-            }}>
-                <div id="heading" style={{
-                    ...commonStyle,
-                    display: `flex`,
-                    flexDirection: `column`,
-                    alignItems: `start`,
+                }),
+                ...(this.props.loading ? {
+                    alignItems: `center`,
                     justifyContent: `center`,
-                    padding: `30px 20px`,
-                    textAlign: `left`,
-                    flexWrap: `revert`,
-                    ...(this.props.bgimage ? {
-                        backdropFilter: this.props.image ? `blur(10px) grayscale(40%) brightness(0.6)` : null
-                    } : {}),
-                    ...this.props.style || {},
-                }}>
-                    { image ? (
-                        <div style={{
-                            display: `flex`,
-                            flexDirection: `row`,
-                            alignItems: `center`,
-                            justifyContent: `center`,
-                            flexWrap: `revert`,
-                        }}>
-                            {image}
-                            {text}
-                        </div>
-                    ) : (
-                        {text}
-                    )}
-
-                    <div id="tags" style={{marginLeft: `-4px`}}>
-                        { tags && diffTags ? (
-                            <div style={{
-                                display: `flex`,
-                                flexDirection: `row`,
-                                alignItems: `center`,
-                                justifyContent: `center`,
-                                marginTop: `20px`,
-                            }}>
-                                {tags}
-                                <Splitter height="20px"/>
-                                {diffTags}
-                            </div>
-                        ) : tags || diffTags ? (
-                            <div style={{
-                                display: `flex`,
-                                flexDirection: `row`,
-                                alignItems: `center`,
-                                justifyContent: `center`,
-                                marginTop: `20px`,
-                            }}>
-                                {tags || diffTags}
-                            </div>
+                } : {})
+            }}>
+                {this.props.loading ? (
+                    <div style={{
+                        display: `flex`,
+                        flexDirection: `row`,
+                        alignItems: `center`,
+                        justifyContent: `center`,
+                    }}>
+                        <Spinner style={{ margin: `50px`, marginRight: `15px` }} size="2em" />
+                        { typeof this.props.loading == `string` ? (
+                            <h2>{this.props.loading}</h2>
                         ) : null }
                     </div>
-                </div>
+                ) : (
+                    <div id="heading" style={{
+                        ...commonStyle,
+                        display: `flex`,
+                        flexDirection: `column`,
+                        alignItems: `start`,
+                        justifyContent: `center`,
+                        padding: `30px 20px`,
+                        textAlign: `left`,
+                        flexWrap: `revert`,
+                        ...(this.props.bgimage ? {
+                            backdropFilter: this.props.image ? `blur(10px) grayscale(40%) brightness(0.6)` : null
+                        } : {}),
+                        ...this.props.style || {},
+                    }}>
+                        { image ? (
+                            <div style={{
+                                display: `flex`,
+                                flexDirection: `row`,
+                                alignItems: `center`,
+                                justifyContent: `center`,
+                                flexWrap: `revert`,
+                            }}>
+                                {image}
+                                {text}
+                            </div>
+                        ) : (
+                            {text}
+                        )}
+    
+                        <div id="tags" style={{marginLeft: `-4px`}}>
+                            { tags && diffTags ? (
+                                <div style={{
+                                    display: `flex`,
+                                    flexDirection: `row`,
+                                    alignItems: `center`,
+                                    justifyContent: `center`,
+                                    marginTop: `20px`,
+                                }}>
+                                    {tags}
+                                    <Splitter height="20px"/>
+                                    {diffTags}
+                                </div>
+                            ) : tags || diffTags ? (
+                                <div style={{
+                                    display: `flex`,
+                                    flexDirection: `row`,
+                                    alignItems: `center`,
+                                    justifyContent: `center`,
+                                    marginTop: `20px`,
+                                }}>
+                                    {tags || diffTags}
+                                </div>
+                            ) : null }
+                        </div>
+                    </div>
+                )}
             </div>
         );
     }
