@@ -69,6 +69,8 @@ const authMiddleware = require('passport');
 
         server.use((req, res, next) => {
             console.debug(`[${req.method.toUpperCase()}] ${req.url}`);
+            console.debug(`[${req.method.toUpperCase()}] Query: ${JSON.stringify(req.query || {}, null, 4)}`);
+            console.debug(`[${req.method.toUpperCase()}] Params: ${JSON.stringify(req.params || {}, null, 4)}`);
             next();
         });
     
@@ -103,7 +105,7 @@ const authMiddleware = require('passport');
     
                 for(const path of endpoint.endpoints) {
                     server[endpoint.method](path, ...endpoint.middleware, (req, res) => {
-                        return app.render(req, res, `/${endpoint.name}`, req.query);
+                        return app.render(req, res, `/${endpoint.name}`, { ...(req.query || {}), ...(req.params || {}) });
                     });
     
                     console.debug(`| Set up react endpoint with ${endpoint.middleware.length} middlepoint(s): "${path}" -> ${endpoint.name}`);
