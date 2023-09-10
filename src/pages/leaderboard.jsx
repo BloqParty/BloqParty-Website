@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { icon } from '@fortawesome/fontawesome-svg-core/import.macro'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useParams, useRouter } from 'next/navigation'
 
 import JSONbig from 'json-bigint';
 
@@ -15,21 +15,24 @@ import Wallpaper from '../scripts/wallpaper';
 import enums from '../../util/enum';
 import time from '../../util/time';
 
-export default function LeaderboardList() {
-    const params = useSearchParams();
-
+export default function LeaderboardList({ query }) {
     const perPage = 10;
 
     const [opts, setOpts] = useState({
         unset: true,
         ran: false,
         sort: `top`,
-        id: `76561198345634943` // not sure what to do with this
+        id: `76561198345634943`, // not sure what to do with this
+        char: query.char,
+        diff: query.diff,
     });
+
+    const totalLoadingSteps = 2;
 
     const [state, setState] = useState({
         title: `Loading...`,
         description: `Loading map info...`,
+        loading: `[1/${totalLoadingSteps}] Fetching map from BeatSaver...`,
         mapData: {},
         mapVersion: {},
         mapOverview: {},
@@ -44,7 +47,10 @@ export default function LeaderboardList() {
         total: (<Spinner />),
         offset: 0,
         mapHash: null,
+        char: null,
+        diff: null,
         entries: [],
+        loading: true,
         error: null,
     });
 
@@ -53,10 +59,19 @@ export default function LeaderboardList() {
     const getOverview = ({mapHash, newState=state}) => new Promise(async (res, rej) => {
         console.log(`getting overview for ${mapHash}`, newState.mapOverview)
 
-        if(newState.mapOverview?._mapHash == mapHash/* && newState.mapOverview?._fetched + 60000 > Date.now()*/) return res({
-            overview: newState.mapOverview,
-            newState: newState
-        });
+        if(newState.mapOverview?._mapHash == mapHash/* && newState.mapOverview?._fetched + 60000 > Date.now()*/) {
+            return res({
+                overview: newState.mapOverview,
+                newState: newState
+            });
+        } else {
+            newState = {
+                ...newState,
+                loading: `[2/${totalLoadingSteps}] Fetching leaderboard details...`
+            };
+
+            setState(newState);
+        }
 
         fetch(`https://dev.thebedroom.party/leaderboard/${mapHash}/overview`)
             .then(res => res.text())
@@ -84,7 +99,7 @@ export default function LeaderboardList() {
             .catch(rej)
     });
 
-    const getScores = (mapHash, newState=state, page = 1) => {
+    const getScores = (mapHash, newState=state, newOpts=opts, page = 1) => {
         setScores({
             ...scores,
             page: 1,
@@ -92,24 +107,36 @@ export default function LeaderboardList() {
             total: (<Spinner />),
             offset: 0,
             mapHash: mapHash,
+            char: null,
+            diff: null,
             entries: [],
+            loading: true,
             error: null,
         });
 
         getOverview({mapHash, newState: newState || state}).then(({overview, newState}) => {
+            newState = {
+                ...newState,
+                loading: false,
+            };
+
             const matchedDiffs = newState.mapVersion.diffs.filter(({ characteristic, difficulty }) => overview[characteristic]?.includes(enums.diff[difficulty].toString()));
     
-            const highest = matchedDiffs.slice(-1)[0];
-    
-            const newOpts = {
-                ...opts,
+            newOpts = {
+                ...newOpts,
                 ran: true,
             };
 
-            if(!overview[opts.char]?.includes(opts.diff)) Object.assign(newOpts, {
-                char: highest.characteristic,
-                diff: Object.entries(enums.diff).find(o => o[1] == highest.difficulty)[0],
-            });
+            if(!newState.mapVersion.diffs.find(o => o.characteristic == newOpts.char && o.difficulty == enums.diff[newOpts.diff])) {
+                const highest = matchedDiffs.slice(-1)[0];
+
+                console.log(`could not find selected char ${newOpts.char} and diff ${enums.diff[newOpts.diff]} / ${newOpts.diff}; falling back to highest available on LB`, highest);
+
+                Object.assign(newOpts, {
+                    char: highest.characteristic,
+                    diff: Object.entries(enums.diff).find(o => o[1] == highest.difficulty)[0],
+                });
+            }
     
             setOpts(newOpts);
             
@@ -129,18 +156,21 @@ export default function LeaderboardList() {
     
                     setScores({
                         ...scores,
-                        page: page,
+                        page: page || 1,
                         totalPages: data.scoreCount ? Math.ceil(data.scoreCount / perPage) : 1,
-                        total: data.scoreCount,
+                        total: Number(data.scoreCount) || 0,
                         offset: (page - 1) * perPage,
                         mapHash: mapHash,
-                        entries: data.scores,
+                        char: newOpts.char,
+                        diff: newOpts.diff,
+                        entries: data.scores || [],
+                        loading: false,
                         error: null
                     });
 
                     let newNewState = {
                         ...newState,
-                        diffTags: /*matchedDiffs*/newState.mapVersion.diffs.map(({ characteristic, difficulty }) => ({
+                        diffTags: newState.mapVersion.diffs.map(({ characteristic, difficulty }) => ({
                             icon: icon({name: 'trophy'}),
                             value: `${characteristic} / ${difficulty}`,
                             title: `${characteristic} / ${difficulty}`,
@@ -154,10 +184,13 @@ export default function LeaderboardList() {
                                         ...newOpts,
                                         char: characteristic,
                                         diff: enums.diff[difficulty],
-                                    }
+                                    };
+
+                                    console.log(`selected opts`, newNewOpts)
 
                                     setOpts(newNewOpts);
-                                    getScores(mapHash, newNewState, 1);
+
+                                    getScores(mapHash, newNewState, newNewOpts, 1);
                                 }
                             }),
                         }))
@@ -192,7 +225,7 @@ export default function LeaderboardList() {
     let ran = false;
 
     useEffect(() => {
-        if(!params.has(`map`)) return console.log(`no map`);
+        if(!query.id) return console.log(`no map`);
         if(opts.ran) return console.log(`opts already ran`);
 
         console.log(`running opts and setting ran to true`);
@@ -205,7 +238,7 @@ export default function LeaderboardList() {
 
         console.log(`wallpaper`, wallpaper);
 
-        let mapHash = `${params.get(`map`)}`.toUpperCase();
+        let mapHash = `${query.id}`.toUpperCase();
     
         if(mapHash) {
             console.log(`loading map ${mapHash}`)
@@ -261,7 +294,7 @@ export default function LeaderboardList() {
 
                 setState({ ...state, ...newState});
 
-                getScores(mapHash, newState, 1);
+                getScores(mapHash, newState, undefined, 1);
             }).catch(err => {
                 console.error(err);
 
@@ -277,34 +310,40 @@ export default function LeaderboardList() {
                 })
             })
         }
-    }, [ opts ]);
-    
-    useEffect(() => {
-        if(ran) return;
-
-        ran = params.has(`map`);
-
-        if(!ran) return;
-    
-        if(opts.unset) {
-            console.log(`setting opts`);
-            setOpts({
-                ...opts,
-                unset: false,
-                char: params.get(`char`),
-                diff: params.get(`diff`),
-            });
-        };
-    }, [params.get(`map`)])
+    }, []);
 
     return (
         <div>
-            <Heading mapper={state.mapper} image={state.image} artist={state.artist} title={state.title} description={state.description} tags={state.tags} diffTags={state.diffTags} />
-            <Leaderboard error={scores.error} mapHash={scores.mapHash} total={scores.total} entries={(scores.entries || []).map((o, i) => ({...o, key: `${o.id.toString() || i}`, id:o.id.toString() }))} offset={scores.offset} page={{
-                current: scores.page,
-                total: scores.totalPages,
-                set: (hash, num) => getScores(hash, undefined, num)
-            }} />
+            <Heading loading={state.loading} mapper={state.mapper} image={state.image} artist={state.artist} title={state.title} description={state.description} tags={state.tags} diffTags={state.diffTags} />
+            <Leaderboard 
+                loading={scores.loading} 
+                error={scores.error} 
+                mapHash={scores.mapHash} 
+                total={scores.total} 
+                entries={
+                    ([
+                        ...(scores.entries || []), 
+                        ...(Array.from(Array(perPage - (scores.entries || []).length).keys())).map((_, i) => ({ empty: true, id: i.toString() }))
+                    ]).map((o, i) => ({
+                        ...o, 
+                        key: `${scores.char}-${scores.diff}-${(o.position || i).toString() || i}`, 
+                        id: `${typeof o.id == `object` ? `(i64 lol)` : o.id}` 
+                    }))
+                } 
+                offset={scores.offset} page={{
+                    current: scores.page,
+                    total: scores.totalPages,
+                    set: (hash, num) => getScores(hash, undefined, undefined, num)
+                }} 
+            />
         </div>
     )
+}
+
+export function getServerSideProps({ params, query }) {
+    return {
+        props: {
+            query
+        }
+    }
 }
