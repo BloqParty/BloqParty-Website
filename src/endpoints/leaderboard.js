@@ -1,4 +1,4 @@
 module.exports = {
     method: `get`,
-    endpoint: [`/leaderboard`],
+    endpoint: [`/leaderboard/:id`],
 }
