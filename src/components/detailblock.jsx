@@ -11,12 +11,12 @@ export default class DetailBlock extends Component {
 
         if(colorInput && typeof colorInput === `string`) {
             if(colorInput.startsWith(`#`)) {
-                const { r, g, b } = colorInput.replace(/#/g, ``).split(/(?=(?:..)*$)/).reduce((acc, cur, i) => {
-                    acc[i === 0 ? `r` : i === 1 ? `g` : `b`] = cur;
+                const { r, g, b, a } = colorInput.replace(/#/g, ``).split(/(?=(?:..)*$)/).reduce((acc, cur, i) => {
+                    acc[i === 0 ? `r` : i === 1 ? `g` : i === 2 ? `b` : `a`] = cur;
                     return acc;
                 }, {});
 
-                color = `rgba(${parseInt(r, 16)}, ${parseInt(g, 16)}, ${parseInt(b, 16)}, 0.75)`;
+                color = `rgba(${parseInt(r, 16)}, ${parseInt(g, 16)}, ${parseInt(b, 16)}, ${parseInt(a?.length ? a : `bf`, 16)/255})`; // bf = 191; close to 0.75 which was previous value
             } else color = colorInput;
         };
 
