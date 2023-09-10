@@ -6,6 +6,8 @@ import DetailBlock from '../detailblock';
 import Spinner from '../spinner';
 import Dropdown from '../dropdown';
 
+import getUser from '../../scripts/api/getUser';
+
 import { Context } from '../../pages/_app';
 
 function User({ cookies, navbar }) {
@@ -29,36 +31,34 @@ function User({ cookies, navbar }) {
                 <DetailBlock href="/login" value="Login" icon={icon({name: 'user'})} /> 
             ]);
         } else {
-            fetch(`https://api.thebedroom.party/user/${id}`)
-                .then(res => res.json())
-                .then((user) => {
-                    setState({
-                        loading: false,
-                        exists: true,
-                        user: {
-                            key: key,
-                            name: user.username,
-                            id: user.game_id,
-                            avatarURL: user.avatar,
-                        }
-                    });
-                    navbar.set([
-                        <DetailBlock color="#c24c44" href="/logout" value={`Log out`} icon={icon({name: 'arrow-right-from-bracket'})} />,
-                        <DetailBlock href="/download" value={`Download`} icon={icon({name: 'download'})} />,
-                        <DetailBlock value={user.username} icon={icon({name: 'user'})} />,
-                    ]);
-                })
-                .catch(e => {
-                    setState({
-                        loading: false,
-                        exists: false,
-                        error: `${e}`
-                    });
-                    navbar.set([
-                        ...navbar.current,
-                        <DetailBlock href="/login" value={`${e}`} color="#c24c44" icon={icon({name: 'exclamation-circle'})} />
-                    ]);
+            getUser(id).then((user) => {
+                setState({
+                    loading: false,
+                    exists: true,
+                    user: {
+                        key: key,
+                        name: user.username,
+                        id: user.game_id,
+                        avatarURL: user.avatar,
+                    }
                 });
+                navbar.set([
+                    <DetailBlock href="/logout" value={`Log out`} icon={icon({name: 'arrow-right-from-bracket'})} color="#c24c44" />,
+                    <DetailBlock href="/download" value={`Download`} icon={icon({name: 'download'})} />,
+                    <DetailBlock href={`/user/${user.game_id}`} value={user.username} icon={icon({name: 'user'})} />,
+                ]);
+            })
+            .catch(e => {
+                setState({
+                    loading: false,
+                    exists: false,
+                    error: `${e}`
+                });
+                navbar.set([
+                    ...navbar.current,
+                    <DetailBlock href="/login" value={`${e}`} color="#c24c44" icon={icon({name: 'exclamation-circle'})} />
+                ]);
+            });
         }
     }, []);
 
