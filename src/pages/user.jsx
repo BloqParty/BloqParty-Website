@@ -224,37 +224,10 @@ function Login({ query }) {
                     <Heading 
                         loading={userState.loading}
                         image={userState.user.avatar}
-                        imageOnClick={state.user?.id === userState.user.game_id ? () => {
-                            console.log(`avi click`);
-
-                            const input = document.createElement(`input`);
-                            input.type = `file`;
-                            input.accept = `image/png`;
-
-                            input.addEventListener(`change`, () => {
-                                const file = input.files[0];
-                                const reader = new FileReader();
-
-                                reader.addEventListener(`load`, () => {
-                                    setModifications({
-                                        ...modifications,
-                                        avatar: {
-                                            scale: 1,
-                                            rotate: 0,
-                                            file: reader.result,
-                                        }
-                                    });
-                                });
-
-                                reader.readAsDataURL(file);
-                            });
-
-                            input.click();
-                        } : null}
-                        style={importantMessage ? {
+                        style={importantMessage && {
                             justifyContent: `center`,
                             alignItems: `center`,
-                        } : {}}
+                        }}
                         title={
                             importantMessage || userState.user.username ? 
                                 importantMessage || userState.user.username : 
@@ -272,9 +245,51 @@ function Login({ query }) {
                         tags={
                             importantMessage ? [] :
                             userState.exists ? [
-                                // add tags for user here
+
                             ] : []
                         } 
+                        diffTags={
+                            state.user?.id === userState.user.game_id ? [
+                                {
+                                    value: `Set new Avatar`,
+                                    key: `set-avatar`,
+                                    onClick: () => {
+                                        console.log(`set avatar`);
+
+                                        const input = document.createElement(`input`);
+                                        input.type = `file`;
+                                        input.accept = `image/png`;
+            
+                                        input.addEventListener(`change`, () => {
+                                            const file = input.files[0];
+                                            const reader = new FileReader();
+            
+                                            reader.addEventListener(`load`, () => {
+                                                setModifications({
+                                                    ...modifications,
+                                                    avatar: {
+                                                        scale: 1,
+                                                        rotate: 0,
+                                                        file: reader.result,
+                                                    }
+                                                });
+                                            });
+            
+                                            reader.readAsDataURL(file);
+                                        });
+            
+                                        input.click();
+                                    }
+                                },
+                                {
+                                    value: `Edit Profile`,
+                                    key: `edit-profile`,
+                                    onClick: () => {
+                                        console.log(`edit profile`);
+                                    }
+                                },
+                            ] : null
+                        }
                     />
                 )
             }
