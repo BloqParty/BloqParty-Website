@@ -54,6 +54,7 @@ const authMiddleware = require('passport');
 
         server.set('trust proxy', 1)
 
+        server.use(express.json());
         server.use(cookiesMiddleware());
         server.use(sessionMiddleware({
             secret: config.api.sessionSecret,

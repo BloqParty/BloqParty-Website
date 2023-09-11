@@ -1,18 +1,22 @@
-import React, { Component, useState, useEffect } from 'react';
+import React, { Component, useState, useEffect, useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { icon } from '@fortawesome/fontawesome-svg-core/import.macro';
 import { withCookies, Cookies } from 'react-cookie';
-import { useSearchParams } from 'next/navigation';
+import AvatarEditor from 'react-avatar-editor';
 
 import Heading from '../components/heading';
 import Spinner from '../components/spinner';
+
+import { Context } from './_app';
 
 import Wallpaper from '../scripts/wallpaper';
 
 import getUser from '../scripts/api/getUser';
 
 function Login({ query }) {
-    const [ state, setState ] = useState({
+    const { state, setState } = useContext(Context.User);
+
+    const [ userState, setUserState ] = useState({
         loading: true,
         exists: false,
         user: {
@@ -21,15 +25,21 @@ function Login({ query }) {
         scoreboard: null
     });
 
+    let avatarEditor;
+
+    const [ modifications, setModifications ] = useState({
+        avatar: null
+    });
+
     let wallpaper = null;
 
     useEffect(() => {
         wallpaper = new Wallpaper();
 
-        console.log(`user loading`, state.user.game_id);
+        console.log(`user loading`, userState.user.game_id);
 
-        getUser(state.user.game_id).then(user => {
-            setState({
+        getUser(userState.user.game_id).then(user => {
+            setUserState({
                 loading: false,
                 exists: true,
                 user
@@ -37,7 +47,7 @@ function Login({ query }) {
 
             wallpaper.set({ url: user.avatar });
         }).catch(e => {
-            setState({
+            setUserState({
                 loading: false,
                 exists: false,
                 message: `User does not exist!`
@@ -45,38 +55,229 @@ function Login({ query }) {
         })
     }, []);
 
-    const importantMessage = (!state.loading && state.message)
+    const importantMessage = (!userState.loading && userState.message);
 
     return (
         <div>
-            <Heading 
-                loading={state.loading}
-                image={state.user.avatar}
-                style={importantMessage ? {
-                    justifyContent: `center`,
-                    alignItems: `center`,
-                } : {}}
-                title={
-                    importantMessage || state.user.username ? 
-                        importantMessage || state.user.username : 
-                    <>
-                        <FontAwesomeIcon icon={icon({name: 'circle-exclamation'})} style={{marginRight: `8px`, width: `20px`, height: `20px`}} />
-                        <span>Something went wrong.</span>
-                    </>
-                }
-                description={
-                    importantMessage ? null :
-                    state.exists ? 
-                        "plays beat saber or something" : 
-                    state.error ? `Error: ${state.error}` : null
-                } 
-                tags={
-                    importantMessage ? [] :
-                    state.exists ? [
-                        // add tags for user here
-                    ] : []
-                } 
-            />
+            {
+                modifications.avatar?.file ? (
+                    <Heading 
+                        style={{
+                            justifyContent: `center`,
+                            alignItems: `center`,
+                            textAlign: `center`,
+                        }}
+                        title={modifications.avatar.error || `Edit Avatar`}
+                        description={
+                            <AvatarEditor
+                                ref={ref => avatarEditor = ref}
+                                image={modifications.avatar.file}
+                                width={250}
+                                height={250}
+                                border={10}
+                                borderRadius={10 * (250 / 100)}
+                                color={[255, 255, 255, 0.6]} // RGBA
+                                scale={modifications.avatar.scale}
+                                rotate={modifications.avatar.rotate}
+                            />
+                        } 
+                        tags={[
+                            {
+                                element: (
+                                    <div style={{
+                                        display: `flex`,
+                                        flexDirection: `row`,
+                                        alignItems: `center`,
+                                        justifyContent: `center`,
+                                    }}>
+                                        <p style={{ marginRight: `8px` }}>Scale</p>
+                                        <input style={{ width: `100px` }} type="range" min="1" max="100" value={(modifications.avatar.scale - 1)*25} onInput={e => {
+                                            setModifications({
+                                                ...modifications, 
+                                                avatar: { 
+                                                    ...modifications.avatar,
+                                                    scale: (e.target.value/25) + 1
+                                                }
+                                            })
+                                        }} />
+                                    </div>
+                                )
+                            },
+                            {
+                                element: (
+                                    <div style={{
+                                        display: `flex`,
+                                        flexDirection: `row`,
+                                        alignItems: `center`,
+                                        justifyContent: `center`,
+                                        margin: `0px 8px`
+                                    }}>
+                                        <p style={{ marginRight: `8px` }}>Rotate</p>
+                                        <input style={{ width: `100px` }} type="range" min="-145" max="145" value={modifications.avatar.rotate} onInput={e => {
+                                            setModifications({
+                                                ...modifications, 
+                                                avatar: { 
+                                                    ...modifications.avatar,
+                                                    rotate: e.target.value
+                                                }
+                                            })
+                                        }} />
+                                    </div>
+                                )
+                            },
+                        ]} 
+                        diffTags={[
+                            {
+                                value: `Cancel`,
+                                key: `cancel`,
+                                onClick: () => {
+                                    console.log(`cancel`);
+                                    setModifications({
+                                        ...modifications,
+                                        avatar: null
+                                    });
+                                }
+                            },
+                            {
+                                value: `Save`,
+                                key: `save`,
+                                onClick: () => {
+                                    setModifications({
+                                        ...modifications,
+                                        avatar: {
+                                            ...modifications.avatar,
+                                            error: null
+                                        }
+                                    });
+
+                                    console.log(`save`);
+
+                                    // get canvas
+
+                                    const canvas = avatarEditor;
+
+                                    if(canvas) {
+                                        // scale canvas down to 150px by 150px
+                                        const scaledCanvas = document.createElement(`canvas`);
+                                        scaledCanvas.width = 150;
+                                        scaledCanvas.height = 150;
+                                        scaledCanvas.getContext(`2d`).drawImage(canvas.getImageScaledToCanvas(), 0, 0, 150, 150);
+
+                                        // convert canvas to png with base64 encoding
+                                        const data = scaledCanvas.toDataURL(`image/png`, 1).split(';base64,')[1];
+
+                                        // upload to server
+                                        fetch(`/internal/avatar/upload`, {
+                                            method: `POST`,
+                                            headers: {
+                                                'Content-Type': `application/json`
+                                            },
+                                            body: JSON.stringify({
+                                                avatar: data
+                                            })
+                                        }).then(async res => {
+                                            try {
+                                                const json = await res.json();
+
+                                                if(json.error) {
+                                                    console.log(`error: ${json.error}`);
+                                                    setModifications({
+                                                        ...modifications,
+                                                        avatar: {
+                                                            ...modifications.avatar,
+                                                            error: `${json.error}`
+                                                        }
+                                                    });
+                                                } else {
+                                                    console.log(`no error`);
+                                                    setModifications({
+                                                        ...modifications,
+                                                        avatar: null
+                                                    });
+                                                };
+
+                                                return;
+                                            } catch(e) {
+                                                console.error(e);
+                                            }
+
+                                            if(res.status == 200) {
+                                                console.log(`avatar updated`);
+                                                setModifications({
+                                                    ...modifications,
+                                                    avatar: null
+                                                });
+                                            } else {
+                                                console.log(`avatar not updated`);
+                                            }
+                                        }).catch(e => {
+                                            console.log(`avatar not updated`);
+                                        })
+                                    } else {
+                                        console.log(`canvas not found`);
+                                    }
+                                }
+                            },
+                        ]}
+                    />
+                ) : (
+                    <Heading 
+                        loading={userState.loading}
+                        image={userState.user.avatar}
+                        imageOnClick={state.user?.id === userState.user.game_id ? () => {
+                            console.log(`avi click`);
+
+                            const input = document.createElement(`input`);
+                            input.type = `file`;
+                            input.accept = `image/png`;
+
+                            input.addEventListener(`change`, () => {
+                                const file = input.files[0];
+                                const reader = new FileReader();
+
+                                reader.addEventListener(`load`, () => {
+                                    setModifications({
+                                        ...modifications,
+                                        avatar: {
+                                            scale: 1,
+                                            rotate: 0,
+                                            file: reader.result,
+                                        }
+                                    });
+                                });
+
+                                reader.readAsDataURL(file);
+                            });
+
+                            input.click();
+                        } : null}
+                        style={importantMessage ? {
+                            justifyContent: `center`,
+                            alignItems: `center`,
+                        } : {}}
+                        title={
+                            importantMessage || userState.user.username ? 
+                                importantMessage || userState.user.username : 
+                            <>
+                                <FontAwesomeIcon icon={icon({name: 'circle-exclamation'})} style={{marginRight: `8px`, width: `20px`, height: `20px`}} />
+                                <span>Something went wrong.</span>
+                            </>
+                        }
+                        description={
+                            importantMessage ? null :
+                            userState.exists ? 
+                                "plays beat saber or something" : 
+                            userState.error ? `Error: ${userState.error}` : null
+                        } 
+                        tags={
+                            importantMessage ? [] :
+                            userState.exists ? [
+                                // add tags for user here
+                            ] : []
+                        } 
+                    />
+                )
+            }
         </div>
     )
 }

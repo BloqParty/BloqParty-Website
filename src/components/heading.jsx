@@ -20,13 +20,17 @@ const block = {
 export default class Heading extends Component {
     image() {
         return (
-            <>
+            <a onClick={this.props.imageOnClick} style={
+                this.props.imageOnClick ? {
+                    cursor: `pointer`,
+                } : {}
+            }>
                 { this.props.image ? <img src={this.props.image} style={{
                     width: `100px`,
                     borderRadius: `10px`,
                     marginRight: `20px`,
                 }} /> : null }
-            </>
+            </a>
         )
     }
 
@@ -47,13 +51,13 @@ export default class Heading extends Component {
         return props && Array.isArray(props) && props.length ? (
             <>
                 {
-                    props.map(({icon, value, title, color, key, onClick, href, style}) => (
+                    props.map(({element, icon, value, title, color, key, onClick, href, style}) => (
                         typeof onClick == `function` || href == `string` ? (
                             <a onClick={onClick} href={href} key={key} style={{cursor: `pointer`}}>
-                                <DetailBlock icon={icon} href={href} value={value} title={title} color={color} style={{...block, ...(style || {})}} />
+                                { element || <DetailBlock icon={icon} href={href} value={value} title={title} color={color} style={{...block, ...(style || {})}} /> }
                             </a>
                         ) : (
-                            <DetailBlock icon={icon} href={href} value={value} title={title} color={color} key={key} style={{...block, ...(style || {})}} />
+                            element || <DetailBlock icon={icon} href={href} value={value} title={title} color={color} key={key} style={{...block, ...(style || {})}} />
                         )
                     ))
                 }
@@ -66,8 +70,6 @@ export default class Heading extends Component {
         const image = this.image();
         const tags = this.tags(this.props.tags);
         const diffTags = this.tags(this.props.diffTags);
-
-        console.log(`tags`, tags, this.props.tags)
 
         return (
             <div id="headingbg" style={{

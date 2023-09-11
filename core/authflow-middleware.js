@@ -17,7 +17,7 @@ module.exports = (req, res, next) => {
                 maxAge: 3.156e+10, // 1 year lol
                 httpOnly: false
             });
-            res.redirect(`/`);
+            res.redirect(key?.id ? `/user/${key.id}` : `/`);
         }
     
         next();
