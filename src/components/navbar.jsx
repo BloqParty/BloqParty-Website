@@ -43,13 +43,14 @@ export default function Navbar() {
                 show: () => {
                     const showing = theseEntries.map((o, i2) => {
                         return (
-                            <div key={Date.now() + Number(i2)} style={{
+                            <div key={`navbar-${Date.now() + Number(i2)}`} style={{
                                 margin: `10px 10px`,
                             }}>
                                 {o}
                             </div>
                         )
                     });
+                    console.log(`nav showing`, showing);
                     setState({ ...state, navbarShowing: showing });
                     setNavbarEntries(showing);
                 },
@@ -115,7 +116,7 @@ export default function Navbar() {
                         navbarEntries.map((o, i) => (
                             <motion.div
                                 key={`${Date.now}-${i}`}
-                                transition={{ duration: 0.5 + ((navbarEntries.length - (Number(i) + 1)) * (1/navbarEntries.length)), ease: easings.out.expo, delay: (navbarEntries.length - (Number(i) + 1)) * 0.03 }}
+                                transition={{ duration: 0.5 + ((navbarEntries.length - (Number(i) + 1)) * (0.3/navbarEntries.length)), ease: easings.out.expo, delay: (navbarEntries.length - (Number(i) + 1)) * 0.03 }}
                                 initial={{ opacity: 0, marginTop: `-24px`, marginBottom: `-24px`, x: -200 }}
                                 animate={{ opacity: 1, marginTop: `0px`, marginBottom: `0px`, x: 0 }}
                                 exit={{ opacity: 0, marginTop: `-24px`, marginBottom: `-24px`, x: 0, scale: 0.6 }}
