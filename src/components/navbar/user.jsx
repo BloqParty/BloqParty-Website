@@ -6,7 +6,7 @@ import DetailBlock from '../detailblock';
 import Spinner from '../spinner';
 import Dropdown from '../dropdown';
 
-import getUser from '../../scripts/api/getUser';
+import login from '../../scripts/api/login';
 
 import { Context } from '../../pages/_app';
 
@@ -31,7 +31,8 @@ function User({ cookies, navbar }) {
                 <DetailBlock href="/login" value="Login" icon={icon({name: 'user'})} /> 
             ]);
         } else {
-            getUser(id).then((user) => {
+            login().then((user) => {
+                console.log(`user logged in as`, user)
                 setState({
                     loading: false,
                     exists: true,
