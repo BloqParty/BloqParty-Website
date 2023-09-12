@@ -25,7 +25,6 @@ export default class Wallpaper {
         console.log(`Starting parallax...`);
         this.fg.addEventListener(`mousemove`, e => {
             if(this.parallaxDone && this.visible) {
-                console.log(`Parallaxing...`);
                 this.parallaxDone = false;
                 requestAnimationFrame(() => {
                     if(this.currentAnimeMovement) {
@@ -50,11 +49,7 @@ export default class Wallpaper {
                         }
                     });
                 })
-            } else if(!this.parallaxDone) {
-                console.log(`Parallax already in progress, skipping...`);
-            } else {
-                console.log(`Parallax not visible, skipping...`);
-            }
+            };
         });
     }
 
