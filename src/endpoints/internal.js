@@ -11,7 +11,7 @@ module.exports = [
 
             console.debug(`Attempting login for ${id}`);
 
-            superagent.post(`http://localhost:9999/user/login`).set(`Authorization`, key).send({
+            superagent.post(`${api.bpApiLocation}/user/login`).set(`Authorization`, key).send({
                 id,
                 session: false
             }).then(r => {
