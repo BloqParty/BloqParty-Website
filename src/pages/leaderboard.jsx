@@ -153,8 +153,8 @@ export default function LeaderboardList({ apiLocation, query }) {
 
                     console.log(`LB`, data);
                     console.log(`thisVersion`, thisVersion);
-    
-                    setScores({
+
+                    const newScores = {
                         ...scores,
                         page: page || 1,
                         totalPages: data.scoreCount ? Math.ceil(data.scoreCount / perPage) : 1,
@@ -166,7 +166,29 @@ export default function LeaderboardList({ apiLocation, query }) {
                         entries: data.scores || [],
                         loading: false,
                         error: null
+                    };
+
+                    newScores.entries.push(...(Array.from(Array(perPage - (newScores.entries || []).length).keys())));
+
+                    newScores.entries = newScores.entries.map((o, i) => {
+                        if(typeof o != `object`) {
+                            o = {
+                                empty: true,
+                                position: newScores.entries.length + ((perPage * page) + Number(i) + 1)
+                            }
+                        }
+
+                        const newObj = Object.assign({
+                            key: `${newScores.char}-${newScores.diff}-${o.position}`, 
+                            id: `${typeof o.id == `object` ? `(i64 lol)` : o.id}` 
+                        }, o);
+
+                        return newObj;
                     });
+
+                    console.log(`new scores:`, newScores.entries)
+    
+                    setScores(newScores);
 
                     let newNewState = {
                         ...newState,
@@ -194,7 +216,7 @@ export default function LeaderboardList({ apiLocation, query }) {
                                 }
                             }),
                         }))
-                    }
+                    };
 
                     setState(newNewState);
                 })
@@ -320,16 +342,7 @@ export default function LeaderboardList({ apiLocation, query }) {
                 error={scores.error} 
                 mapHash={scores.mapHash} 
                 total={scores.total} 
-                entries={
-                    ([
-                        ...(scores.entries || []), 
-                        ...(Array.from(Array(perPage - (scores.entries || []).length).keys())).map((_, i) => ({ empty: true, id: i.toString() }))
-                    ]).map((o, i) => ({
-                        ...o, 
-                        key: `${scores.char}-${scores.diff}-${(o.position || i).toString() || i}`, 
-                        id: `${typeof o.id == `object` ? `(i64 lol)` : o.id}` 
-                    }))
-                } 
+                entries={scores.entries} 
                 offset={scores.offset} page={{
                     current: scores.page,
                     total: scores.totalPages,
