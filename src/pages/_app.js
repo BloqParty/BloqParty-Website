@@ -1,9 +1,11 @@
 import React, { Component, useState, createContext } from 'react';
+import { Helmet } from 'react-helmet';
 import { CookiesProvider } from 'react-cookie';
 import { AnimatePresence, motion, useAnimation } from 'framer-motion';
 
-import '../styles/global/global.css'
+import '../styles/global.css'
 import '../styles/overlays.css'
+import '../styles/leaderboards.css'
 import '@fontsource/alata/index.css'
 
 import '@fortawesome/fontawesome-svg-core/styles.css'
@@ -75,14 +77,22 @@ export default function MyApp({ Component, pageProps }) {
     );
 
     return (
-        Object.values(Context).reduce((a, B) => {
-            const [ state, setState ] = useState({ loading: true });
+        <>
+            <Helmet>
+                <title>Bedroom Party Leaderboard</title>
+            </Helmet>
 
-            return (
-                <B.Provider value={{ state, setState }}>
-                    { a || page }
-                </B.Provider>
-            )
-        }, null)
+            {
+                Object.values(Context).reduce((a, B) => {
+                    const [ state, setState ] = useState({ loading: true });
+
+                    return (
+                        <B.Provider value={{ state, setState }}>
+                            { a || page }
+                        </B.Provider>
+                    )
+                }, null)
+            }
+        </>
     );
 }
