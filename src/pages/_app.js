@@ -1,5 +1,4 @@
 import React, { Component, useState, createContext } from 'react';
-import { Helmet } from 'react-helmet';
 import { CookiesProvider } from 'react-cookie';
 import { AnimatePresence, motion, useAnimation } from 'framer-motion';
 
@@ -16,6 +15,7 @@ import Footing from '../components/footing';
 import { out } from '../../util/easings';
 
 import { Context } from '../util/context';
+import SEO from '../components/SEO';
 
 export default function MyApp({ Component, pageProps, path }) {
     const page = (
@@ -105,24 +105,29 @@ export default function MyApp({ Component, pageProps, path }) {
     );
 
     return (
-        <>
-            <Helmet>
-                <title>Bedroom Party Leaderboard</title>
-            </Helmet>
+        <div>
+            <SEO />
 
             {
                 Object.entries(Context).reduce((a, [key, B]) => {
                     if(B && B.Provider) {
                         const [ state, setState ] = useState(B._currentValue || { loading: true });
+
+                        const keys = [
+                            `${key[0].toLowerCase()}${key.slice(1)}`,
+                            `set${key[0].toUpperCase()}${key.slice(1)}`
+                        ];
+
+                        console.debug(`Context: ${keys.join(` / `)}`);
     
                         return (
-                            <B.Provider value={{ [`${key[0].toLowerCase()}${key.slice(1)}`]: state, [`set${key}`]: setState }}>
+                            <B.Provider value={{ [keys[0]]: state, [keys[1]]: setState }}>
                                 { a || page }
                             </B.Provider>
                         )
                     } else return a;
                 }, null)
             }
-        </>
+        </div>
     );
 }

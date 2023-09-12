@@ -42,7 +42,6 @@
     "react-avatar-editor": "^13.0.0",
     "react-cookie": "^6.1.1",
     "react-dom": "^18.2.0",
-    "react-helmet": "^6.1.0",
     "react-portal": "^4.2.2",
     "sass": "^1.66.1",
     "superagent": "^8.1.2",

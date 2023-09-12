@@ -13,17 +13,8 @@ import Wallpaper from '../scripts/wallpaper';
 
 import userOverrides from '../styles/overrides/user'
 
-function Login({ query, bpApiLocation }) {
+function Login({ query, bpApiLocation, userState }) {
     const { user } = useContext(Context.User);
-
-    const [ userState, setUserState ] = useState({
-        loading: true,
-        exists: false,
-        user: {
-            game_id: query.id,
-        },
-        scoreboard: null
-    });
 
     let avatarEditor;
 
@@ -33,41 +24,30 @@ function Login({ query, bpApiLocation }) {
 
     let wallpaper = null;
 
-    const styleOverrides = userOverrides[userState.user?.game_id] || undefined;
+    const styleOverrides = userOverrides[userState.user?.game_id] || {};
 
     useEffect(() => {
         wallpaper = new Wallpaper();
 
         console.log(`user loading ${bpApiLocation}`, userState.user.game_id);
 
-        fetch(bpApiLocation + `/user/${userState.user.game_id}`).then(r => r.json()).then(user => {
-            setUserState({
-                loading: false,
-                exists: true,
-                user
-            });
-
+        if(userState.exists) {
             if(styleOverrides.rain) styleOverrides.rain(`.tg`)
-
-            wallpaper.set({ url: user.avatar });
-        }).catch(e => {
-            console.error(e);
-
-            setUserState({
-                loading: false,
-                exists: false,
-                user: {
-                    game_id: query.id,
-                    username: `Not found`,
-                },
-            })
-        })
+    
+            wallpaper.set({ url: userState.user.avatar });
+        }
     }, []);
 
     const importantMessage = (!userState.loading && userState.message);
 
     return (
         <div>
+            <SEO
+                title={`${userState.user?.username || `Unknown Player`} - Bedroom Party Leaderboard`}
+                url={`https://thebedroom.party/user/${userState.user?.game_id}`}
+                image={userState.user?.avatar}
+            />
+
             {
                 modifications.avatar?.file ? (
                     <div style={{
@@ -90,21 +70,42 @@ function Login({ query, bpApiLocation }) {
                                     style={{
                                         position: `relative`,
                                         marginTop: `20px`,
+                                        borderRadius: `${10 * (250 / 100)}px`,
+                                        backgroundColor: `rgb(50, 50, 50)`,
+                                        boxShadow: `0 0px 20px rgb(50, 50, 50)`,
                                     }}
+                                    backgroundColor='rgb(50, 50, 50)'
                                     ref={ref => avatarEditor = ref}
                                     image={modifications.avatar.file}
                                     width={250}
                                     height={250}
-                                    border={10}
-                                    borderRadius={10 * (250 / 100)}
+                                    border={0}
                                     color={[255, 255, 255, 0.6]} // RGBA
-                                    scale={modifications.avatar.scale}
+                                    scale={((modifications.avatar.scale-1)/50)+1}
                                     rotate={modifications.avatar.rotate}
                                 />
                             } 
                             tags={[
                                 {
-                                    element: (
+                                    value: `Reset`,
+                                    icon: icon({ name: 'undo' }),
+                                    key: `reset`,
+                                    onClick: () => {
+                                        console.log(`reset`);
+                                        setModifications({
+                                            ...modifications,
+                                            avatar: {
+                                                ...modifications.avatar,
+                                                scale: 1,
+                                                rotate: 0,
+                                            }
+                                        });
+                                    }
+                                },
+                                {
+                                    key: `scale`,
+                                    icon: icon({ name: 'expand' }),
+                                    value: (
                                         <div style={{
                                             display: `flex`,
                                             flexDirection: `row`,
@@ -112,29 +113,30 @@ function Login({ query, bpApiLocation }) {
                                             justifyContent: `center`,
                                         }}>
                                             <p style={{ marginRight: `8px` }}>Scale</p>
-                                            <input style={{ width: `100px` }} type="range" min="1" max="100" value={(modifications.avatar.scale - 1)*25} onInput={e => {
+                                            <input style={{ width: `80px` }} type="range" min="1" max="100" value={modifications.avatar.scale} onInput={e => {
                                                 setModifications({
                                                     ...modifications, 
                                                     avatar: { 
                                                         ...modifications.avatar,
-                                                        scale: (e.target.value/25) + 1
+                                                        scale: e.target.value
                                                     }
                                                 })
                                             }} />
                                         </div>
-                                    )
+                                    ),
                                 },
                                 {
-                                    element: (
+                                    key: `rotate`,
+                                    icon: icon({ name: 'redo' }),
+                                    value: (
                                         <div style={{
                                             display: `flex`,
                                             flexDirection: `row`,
                                             alignItems: `center`,
                                             justifyContent: `center`,
-                                            margin: `0px 8px`
                                         }}>
                                             <p style={{ marginRight: `8px` }}>Rotate</p>
-                                            <input style={{ width: `100px` }} type="range" min="-145" max="145" value={modifications.avatar.rotate} onInput={e => {
+                                            <input style={{ width: `80px` }} type="range" min="-180" max="180" value={modifications.avatar.rotate} onInput={e => {
                                                 setModifications({
                                                     ...modifications, 
                                                     avatar: { 
@@ -144,13 +146,15 @@ function Login({ query, bpApiLocation }) {
                                                 })
                                             }} />
                                         </div>
-                                    )
+                                    ),
                                 },
                             ]} 
                             diffTags={[
                                 {
                                     value: `Cancel`,
                                     key: `cancel`,
+                                    icon: icon({ name: 'times' }),
+                                    color: "#db515f",
                                     onClick: () => {
                                         console.log(`cancel`);
                                         setModifications({
@@ -162,6 +166,8 @@ function Login({ query, bpApiLocation }) {
                                 {
                                     value: `Save`,
                                     key: `save`,
+                                    icon: icon({ name: 'check' }),
+                                    color: "linear-gradient(135deg, rgb(112,143,255) 0%, rgb(198,128,237) 100%)",
                                     onClick: () => {
                                         setModifications({
                                             ...modifications,
@@ -342,5 +348,40 @@ function Login({ query, bpApiLocation }) {
 
 export default withCookies(Login);
 
-import getServerSideProps from '../util/getServerSideProps';
-export { getServerSideProps }
+import getProps from '../util/getServerSideProps';
+import SEO from '../components/SEO';
+
+export async function getServerSideProps(o) {
+    const { props } = getProps(o);
+
+    try {
+        const u = await fetch(props.bpApiLocation + `/user/${props.query.id}`).then(r => r.json());
+
+        console.log(`user`, u);
+
+        return {
+            props: {
+                ...props,
+                userState: {
+                    loading: false,
+                    exists: true,
+                    user: u,
+                }
+            }
+        }
+    } catch(e) {
+        return {
+            props: {
+                ...props,
+                userState: {
+                    loading: false,
+                    exists: false,
+                    user: {
+                        game_id: props.query.id,
+                        username: `Not found`,
+                    },
+                }
+            }
+        }
+    }
+}
