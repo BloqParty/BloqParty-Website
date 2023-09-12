@@ -43,6 +43,20 @@ export default function MyApp({ Component, pageProps, path }) {
             />
 
             <div
+                className="mg" 
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: `100vh`,
+                    width: `100vw`,
+                    position: `fixed`,
+                    top: 0,
+                }} 
+            />
+
+            <div
                 className="fg"
                 style={{
                     display: 'flex',

@@ -11,8 +11,9 @@ const fgStyles = [
 ];
 
 export default class Wallpaper {
-    constructor(bg=document.querySelector(`.bg`), fg=document.querySelector(`.fg`)) {
+    constructor(bg=document.querySelector(`.bg`), mg=document.querySelector(`.mg`), fg=document.querySelector(`.fg`)) {
         this.bg = bg
+        this.mg = mg
         this.fg = fg
 
         this.startParallax()
@@ -78,7 +79,7 @@ export default class Wallpaper {
             easing: `easeOutExpo`,
             complete: () => {
                 this.bg.style.backgroundImage = ``;
-                for(const [k,v] of Object.entries(fgStyles[0])) this.fg.style[k] = v;
+                for(const [k,v] of Object.entries(fgStyles[0])) this.mg.style[k] = v;
                 res();
             }
         });
@@ -109,7 +110,7 @@ export default class Wallpaper {
                         easing: `easeOutExpo`,
                         begin: () => {
                             this.bg.style.backgroundImage = `url("${url}")`;
-                            for(const [k,v] of Object.entries(fgStyles[1])) this.fg.style[k] = v;
+                            for(const [k,v] of Object.entries(fgStyles[1])) this.mg.style[k] = v;
                         }
                     });
                 }

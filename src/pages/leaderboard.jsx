@@ -256,7 +256,7 @@ export default function LeaderboardList({ bpApiLocation, query }) {
         
         console.log(`newOpts`, opts);
 
-        wallpaper = new Wallpaper(document.querySelector(`.bg`), document.querySelector(`.fg`));
+        wallpaper = new Wallpaper();
 
         console.log(`wallpaper`, wallpaper);
 

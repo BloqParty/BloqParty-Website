@@ -19,7 +19,7 @@ function LinkAccounts({ cookies }) {
     let wallpaper = null;
 
     useEffect(() => {
-        if(!wallpaper) wallpaper = new Wallpaper(document.querySelector(`.bg`), document.querySelector(`.fg`));
+        if(!wallpaper) wallpaper = new Wallpaper();
 
         fetch(`/login/currentsession`)
             .then(res => res.json())
