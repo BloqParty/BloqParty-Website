@@ -33,6 +33,8 @@ function Login({ query, bpApiLocation }) {
 
     let wallpaper = null;
 
+    const styleOverrides = userOverrides[userState.user?.game_id] || undefined;
+
     useEffect(() => {
         wallpaper = new Wallpaper();
 
@@ -43,10 +45,14 @@ function Login({ query, bpApiLocation }) {
                 loading: false,
                 exists: true,
                 user
-            })
+            });
+
+            if(styleOverrides.rain) styleOverrides.rain(`.fg`)
 
             wallpaper.set({ url: user.avatar });
         }).catch(e => {
+            console.error(e);
+
             setUserState({
                 loading: false,
                 exists: false,
@@ -59,8 +65,6 @@ function Login({ query, bpApiLocation }) {
     }, []);
 
     const importantMessage = (!userState.loading && userState.message);
-
-    const styleOverrides = userOverrides[userState.user?.game_id] || {};
 
     return (
         <div>
@@ -259,7 +263,7 @@ function Login({ query, bpApiLocation }) {
                         loading={userState.loading}
                         image={userState.user.avatar}
                         style={{
-                            ...styleOverrides,
+                            ...(styleOverrides && styleOverrides.heading),
                             ...(importantMessage && {
                                 justifyContent: `center`,
                                 alignItems: `center`,
