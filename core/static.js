@@ -23,7 +23,12 @@ let staticVars = {
     organization: repo.split(`/`).slice(0, -1).join(`/`),
     repository: repo,
     buildDate: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()} UTC${offset < 0 ? `+` : `-`}${Math.abs(offset)}`,
-    authors: [`Nuggo`, `Speecil`, `Syl`]
+    authors: [
+        `Nuggo`, 
+        `Speecil`,
+        `Marmott`,
+        `Syl`
+    ]
 };
 
 fs.writeFileSync(`./static.json`, JSON.stringify(staticVars, null, 4));
