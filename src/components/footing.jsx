@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { motion, useAnimation } from 'framer-motion';
+import { out } from '../../util/easings';
 
 import Splitter from './splitter';
 
@@ -18,15 +20,22 @@ export default class Footing extends Component {
     
     render() {
         return (
-            <div className="footing" id="footing" style={{
-                ...row,
-                width: `100vw`,
-                minHeight: `${this.height}px`,
-                padding: `0px 20px`,
-                //backgroundColor: `rgba(8, 8, 8, 0.5)`,
-                //boxShadow: `0 3px 10px rgb(0 0 0 / 0.2)`,
-                //backdropFilter: `blur(10px)`,
-            }}>
+            <motion.div 
+                className="footing"
+                id="footing"
+                transition={{ duration: 0.7, delay: 0.2, ease: `linear` }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                style={{
+                    ...row,
+                    width: `100vw`,
+                    minHeight: `${this.height}px`,
+                    padding: `0px 20px`,
+                    //backgroundColor: `rgba(8, 8, 8, 0.5)`,
+                    //boxShadow: `0 3px 10px rgb(0 0 0 / 0.2)`,
+                    //backdropFilter: `blur(10px)`,
+                }}
+            >
                 {vars.map((v, i) => {
                     const a = [];
 
@@ -43,7 +52,7 @@ export default class Footing extends Component {
 
                     return a;
                 }).reduce((a,b) => a.concat(b), [])}
-            </div>
+            </motion.div>
         );
     }
 }
