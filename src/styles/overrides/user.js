@@ -1,6 +1,9 @@
 import anime from 'animejs';
 
 const overrides = {
+    fish: {
+        rain: '/static/user/fish.webp'
+    },
     THEGREATDOWNUNDER: {
         heading: {
             transform: 'rotate(180deg)',
@@ -132,5 +135,6 @@ for(const [ name, o ] of Object.entries(overrides)) {
 
 export default {
     '76561199077754911': overrides.THEGREATDOWNUNDER,
-    '76561198345634943': overrides.THEGREATDOWNUNDER
+    '76561198345634943': overrides.THEGREATDOWNUNDER,
+    '76561198155076904': overrides.fish
 }
