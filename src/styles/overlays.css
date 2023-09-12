@@ -26,13 +26,51 @@
         flex-direction: column !important;
     }
 
+    .navbar #inner-nav {
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    #nav-left, #nav-right {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-grow: 1 !important;
+        width: 100% !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+    }
+
+    #nav-left > h1, #nav-right > h1,
+    #nav-left > h2, #nav-right > h2,
+    #nav-left > h3, #nav-right > h3,
+    #nav-left > h4, #nav-right > h4,
+    #nav-left > h5, #nav-right > h5,
+    #nav-left > h6, #nav-right > h6 {
+        display: none !important;
+    }
+
+    #nav-left *, #nav-right * {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    #nav-left > *, #nav-right > * {
+        width: 100% !important;
+        height: calc(100% + 14px) !important;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
     .navbar {
-        min-height: 100px !important;
-        padding-top: 15px;
+        padding: 7px 0px;
     }
 
     .navbarEntries {
-        flex-direction: column !important;
+        flex-direction: column-reverse !important;
     }
 
     .footing {

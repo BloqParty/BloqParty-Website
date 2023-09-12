@@ -64,37 +64,49 @@ function User({ cookies, navbar }) {
     }, []);
 
     return (
-        state.error ? 
-            <DetailBlock href="/login" value={state.error} color="#c24c44" icon={icon({name: 'exclamation-circle'})} />
-        : state.loading ? 
-            <Spinner />
-        : (
-            !state.exists ? 
-                <DetailBlock href="/login" value="Login" icon={icon({name: 'user'})} /> 
-            : (
-                <a style={{cursor: `pointer`}} onClick={() => {
-                    if(navbar.showing) {
-                        console.log(`navbar is showing; hide`, navbar.showing, navbar.current);
-                        navbar.hide();
-                    } else {
-                        console.log(`navbar is hidden; show`, navbar.showing, navbar.current);
-                        navbar.show();
-                    }
-                }}>
-                    <img src={state.user.avatarURL} style={{
-                        backgroundSize: `cover`,
-                        backgroundPosition: `center`,
-                        backgroundRepeat: `no-repeat`,
-                        backgroundColor: `rgba(0, 0, 0, 0.5)`,
-                        boxShadow: `0 3px 10px rgb(0 0 0 / 0.2)`,
-                        borderRadius: `100%`,
-                        marginRight: `6px`,
-                        width: `30px`,
-                        height: `30px`,
-                    }} />
-                </a>
-            )
-        )
+        <a style={{cursor: `pointer`}} onClick={() => {
+            if(navbar.showing) {
+                console.log(`navbar is showing; hide`, navbar.showing, navbar.current);
+                navbar.hide();
+            } else {
+                console.log(`navbar is hidden; show`, navbar.showing, navbar.current);
+                navbar.show();
+            }
+        }}>
+            {
+                state.error ? 
+                    <DetailBlock href="/login" value={state.error} color="#c24c44" icon={icon({name: 'exclamation-circle'})} />
+                : state.loading ?
+                    <Spinner />
+                : (
+                    !state.exists ? 
+                        <DetailBlock href="/login" value="Login" icon={icon({name: 'user'})} /> 
+                    : (
+                        <a style={{cursor: `pointer`}} onClick={() => {
+                            if(navbar.showing) {
+                                console.log(`navbar is showing; hide`, navbar.showing, navbar.current);
+                                navbar.hide();
+                            } else {
+                                console.log(`navbar is hidden; show`, navbar.showing, navbar.current);
+                                navbar.show();
+                            }
+                        }}>
+                            <img src={state.user.avatarURL} style={{
+                                backgroundSize: `cover`,
+                                backgroundPosition: `center`,
+                                backgroundRepeat: `no-repeat`,
+                                backgroundColor: `rgba(0, 0, 0, 0.5)`,
+                                boxShadow: `0 3px 10px rgb(0 0 0 / 0.2)`,
+                                borderRadius: `100%`,
+                                marginRight: `6px`,
+                                width: `30px`,
+                                height: `30px`,
+                            }} />
+                        </a>
+                    )
+                )
+            }
+        </a>
     )
 }
 

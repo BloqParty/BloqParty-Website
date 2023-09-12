@@ -79,24 +79,32 @@ export default function Navbar() {
             backdropFilter: `blur(10px)`,
             top: `0px`,
         }}>
-            <div className="navbar" style={{
+            <div className="navbar" id="inner-nav" style={{
                 ...row,
                 width: `100%`,
                 minHeight: `${height}px`,
             }}>
-                <div style={{
+                <div id="nav-left" style={{
                     ...row,
                     justifyContent: `left`,
                     height: `40px`
                 }}>
+                    <a href="/">
+                        <img src="https://cdn.discordapp.com/attachments/1146470526710194217/1150992012598841456/New_Project_29.png" style={{
+                            borderStyle: `none`,
+                            width: `${Math.round(height * 0.60)}px`,
+                            height: `${Math.round(height * 0.60)}px`,
+                            marginRight: `20px`,
+                        }} />
+                    </a>
                     <h3 style={{
                         fontFamily: `Alata`,
                         fontWeight: `normal`,
                         margin: `0px`,
-                    }}>Bedroom Party</h3>
+                    }}>bedorom partyh</h3>
                 </div>
 
-                <div style={{
+                <div id="nav-right" style={{
                     ...row,
                     flexGrow: 1,
                     justifyContent: `right`,

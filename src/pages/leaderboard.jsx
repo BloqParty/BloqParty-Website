@@ -15,7 +15,7 @@ import Wallpaper from '../scripts/wallpaper';
 import enums from '../../util/enum';
 import time from '../../util/time';
 
-export default function LeaderboardList({ apiLocation, query }) {
+export default function LeaderboardList({ bpApiLocation, query }) {
     const perPage = 10;
 
     const [opts, setOpts] = useState({
@@ -73,7 +73,7 @@ export default function LeaderboardList({ apiLocation, query }) {
             setState(newState);
         }
 
-        fetch(apiLocation + `/leaderboard/${mapHash}/overview`)
+        fetch(bpApiLocation + `/leaderboard/${mapHash}/overview`)
             .then(res => res.text())
             .then(res => Promise.resolve(JSONbig.parse(res)))
             .then(data => {
@@ -140,7 +140,7 @@ export default function LeaderboardList({ apiLocation, query }) {
     
             setOpts(newOpts);
             
-            const link = apiLocation + `/leaderboard/${mapHash}?limit=${perPage}&sort=${newOpts.sort}&page=${page-1}&char=${newOpts.char}&diff=${newOpts.diff}&id=${newOpts.id}`;
+            const link = bpApiLocation + `/leaderboard/${mapHash}?limit=${perPage}&sort=${newOpts.sort}&page=${page-1}&char=${newOpts.char}&diff=${newOpts.diff}&id=${newOpts.id}`;
             console.log(`fetching ${link}`);
 
             fetch(link)
@@ -178,10 +178,10 @@ export default function LeaderboardList({ apiLocation, query }) {
                             }
                         }
 
-                        const newObj = Object.assign({
-                            key: `${newScores.char}-${newScores.diff}-${o.position}`, 
+                        const newObj = Object.assign(o, { 
+                            key: `${newScores.char}-${newScores.diff}-${o.position}`,
                             id: `${typeof o.id == `object` ? `(i64 lol)` : o.id}` 
-                        }, o);
+                        });
 
                         return newObj;
                     });

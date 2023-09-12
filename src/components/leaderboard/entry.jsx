@@ -33,7 +33,7 @@ export const EntryStyle = {
 
 export class EntryNoStyle extends Component {
     render() {
-        const { entry, apiLocation } = this.props;
+        const { entry, bpApiLocation } = this.props;
 
         console.log(entry);
 
@@ -49,7 +49,7 @@ export class EntryNoStyle extends Component {
                         marginRight: `20px`,
                     }}>{entry.position}</p>
 
-                    <img src={apiLocation + `/user/${entry.id}/avatar`} style={{
+                    <img src={entry.avatar} style={{
                         backgroundSize: `cover`,
                         backgroundPosition: `center`,
                         backgroundRepeat: `no-repeat`,
@@ -72,8 +72,8 @@ export class EntryNoStyle extends Component {
                                     fontSize: `1.3em`,
                                     fontStyle: `italic`,
                                     opacity: 0.7,
-                                }}>{entry.id}</p>
-                                <DetailBlock width="40px" color="#333" icon={icon({name: 'circle-info'})} title="There is no username on this account; the score ID is shown instead." value="ID" />
+                                }}></p>
+                                <DetailBlock width="40px" color="#00000088" icon={icon({name: 'circle-info'})} title={`${entry.id}\n\nThere is no username on this account; the score ID is shown instead.`} value="ID" />
                             </>
                         ) : (
                             <>
@@ -82,7 +82,7 @@ export class EntryNoStyle extends Component {
                                     fontStyle: `italic`,
                                     opacity: 0.4,
                                 }}>{`--`}</p>
-                                <DetailBlock width="28px" color="#333" icon={icon({name: 'circle-info'})} title="There is no username or score ID to show." value="ID" />
+                                <DetailBlock width="28px" color="#00000088" icon={icon({name: 'circle-info'})} title="There is no username or score ID to show." value="ID" />
                             </>
                         )
                     }

@@ -11,7 +11,7 @@ import { Context } from './_app';
 
 import Wallpaper from '../scripts/wallpaper';
 
-function Login({ query, apiLocation }) {
+function Login({ query, bpApiLocation }) {
     const { state, setState } = useContext(Context.User);
 
     const [ userState, setUserState ] = useState({
@@ -34,9 +34,9 @@ function Login({ query, apiLocation }) {
     useEffect(() => {
         wallpaper = new Wallpaper();
 
-        console.log(`user loading`, userState.user.game_id);
+        console.log(`user loading ${bpApiLocation}`, userState.user.game_id);
 
-        fetch(apiLocation + `/user/${userState.user.game_id}`).then(r => r.json()).then(user => {
+        fetch(bpApiLocation + `/user/${userState.user.game_id}`).then(r => r.json()).then(user => {
             setUserState({
                 loading: false,
                 exists: true,
