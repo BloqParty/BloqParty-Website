@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { icon } from '@fortawesome/fontawesome-svg-core/import.macro'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import SEO from '../components/SEO';
 
 import { useSearchParams, useParams, useRouter } from 'next/navigation'
 
@@ -15,7 +16,9 @@ import Wallpaper from '../scripts/wallpaper';
 import enums from '../../util/enum';
 import time from '../../util/time';
 
-export default function LeaderboardList({ bpApiLocation, query }) {
+export default function LeaderboardList({ bpApiLocation, query, mapDetails }) {
+    const mapHash = `${query.id}`.toUpperCase();
+
     const perPage = 10;
 
     const [opts, setOpts] = useState({
@@ -29,16 +32,47 @@ export default function LeaderboardList({ bpApiLocation, query }) {
 
     const totalLoadingSteps = 2;
 
-    const [state, setState] = useState({
-        title: `Loading...`,
-        description: `Loading map info...`,
-        loading: `[1/${totalLoadingSteps}] Fetching map from BeatSaver...`,
-        mapData: {},
-        mapVersion: {},
+    const thisVersion = mapDetails?.versions.find(o => o.hash.toLowerCase() == mapHash.toLowerCase()) || {};
+
+    console.log(`thisVersion`, thisVersion);
+
+    const [state, setState] = useState(thisVersion ? {
+        title: mapDetails.name,
+        description: `Uploaded ${time(Date.now() - new Date(thisVersion.createdAt || mapDetails.uploaded).getTime()).string} ago`,
+        mapData: mapDetails,
+        mapVersion: thisVersion,
+        image: thisVersion.coverURL || `https://cdn.beatsaver.com/${mapHash.toLowerCase()}.jpg`,
+        artist: mapDetails.metadata.songAuthorName,
+        mapper: mapDetails.metadata.levelAuthorName,
         mapOverview: {},
         difficultyMap: {},
-        tags: [],
-        diffTags: [],
+        tags: [
+            {
+                icon: icon({name: 'angle-up'}),
+                value: mapDetails.stats.upvotes,
+                title: `${mapDetails.stats.upvotes} Upvotes`,
+                key: `upvotes`,
+                color: `#5ac452`
+            },
+            {
+                icon: icon({name: 'angle-down'}),
+                value: mapDetails.stats.downvotes,
+                title: `${mapDetails.stats.downvotes} Downvotes`,
+                key: `downvotes`,
+                color: `#c45262`
+            }
+        ],
+        diffTags: thisVersion.diffs.map(({ characteristic, difficulty }) => ({
+            icon: icon({name: 'trophy'}),
+            value: `${characteristic} / ${difficulty}`,
+            title: `${characteristic} / ${difficulty}`,
+            key: `${characteristic}-${difficulty}`,
+            color: `rgba(0, 0, 0, 0.2)`,
+        })),
+        loading: `Fetching leaderboard details...`,
+    } : {
+        title: `Map not found`,
+        description: `${`The map you are looking for could not be found.`}`,
     });
 
     const [scores, setScores] = useState({
@@ -120,14 +154,14 @@ export default function LeaderboardList({ bpApiLocation, query }) {
                 loading: false,
             };
 
-            const matchedDiffs = newState.mapVersion.diffs.filter(({ characteristic, difficulty }) => overview[characteristic]?.includes(enums.diff[difficulty].toString()));
+            const matchedDiffs = thisVersion.diffs.filter(({ characteristic, difficulty }) => overview[characteristic]?.includes(enums.diff[difficulty].toString()));
     
             newOpts = {
                 ...newOpts,
                 ran: true,
             };
 
-            if(!newState.mapVersion.diffs.find(o => o.characteristic == newOpts.char && o.difficulty == enums.diff[newOpts.diff])) {
+            if(!thisVersion.diffs.find(o => o.characteristic == newOpts.char && o.difficulty == enums.diff[newOpts.diff])) {
                 const highest = matchedDiffs.slice(-1)[0];
 
                 console.log(`could not find selected char ${newOpts.char} and diff ${enums.diff[newOpts.diff]} / ${newOpts.diff}; falling back to highest available on LB`, highest);
@@ -192,7 +226,7 @@ export default function LeaderboardList({ bpApiLocation, query }) {
 
                     let newNewState = {
                         ...newState,
-                        diffTags: newState.mapVersion.diffs.map(({ characteristic, difficulty }) => ({
+                        diffTags: thisVersion.diffs.map(({ characteristic, difficulty }) => ({
                             icon: icon({name: 'trophy'}),
                             value: `${characteristic} / ${difficulty}`,
                             title: `${characteristic} / ${difficulty}`,
@@ -260,84 +294,27 @@ export default function LeaderboardList({ bpApiLocation, query }) {
 
         console.log(`wallpaper`, wallpaper);
 
-        let mapHash = `${query.id}`.toUpperCase();
-    
-        if(mapHash) {
-            console.log(`loading map ${mapHash}`)
+        if(mapHash && !state.error) {
+            console.log(`MAP (${mapHash})`, mapDetails);
 
-            new Promise(async res => {
-                if(!state.mapDetails) {
-                    fetch(`https://api.beatsaver.com/maps/hash/${mapHash}`)
-                        .then(res => res.text())
-                        .then(res => Promise.resolve(JSONbig.parse(res)))
-                        .then(res);
-                } else res(Object.assign({}, state.mapDetails, {
-                    _cached: true
-                }))
-            }).then(data => {
-                console.log(`MAP (cached: ${data._cached})`, data);
+            wallpaper.set({
+                url: thisVersion.coverURL || `https://cdn.beatsaver.com/${mapHash.toLowerCase()}.jpg`
+            });
 
-                const thisVersion = data.versions.find(o => o.hash.toLowerCase() == mapHash.toLowerCase()) || {};
-
-                if(!thisVersion) throw new Error(`Map version from hash not found`)
-
-                wallpaper.set({
-                    url: thisVersion.coverURL || `https://cdn.beatsaver.com/${mapHash.toLowerCase()}.jpg`
-                });
-
-                const newState = {
-                    title: data.name,
-                    description: `Uploaded ${time(Date.now() - new Date(thisVersion.createdAt || data.uploaded).getTime()).string} ago`,
-                    mapDetails: data,
-                    mapVersion: thisVersion,
-                    image: thisVersion.coverURL || `https://cdn.beatsaver.com/${mapHash.toLowerCase()}.jpg`,
-                    artist: data.metadata.songAuthorName,
-                    mapper: data.metadata.levelAuthorName,
-                    tags: [
-                        {
-                            icon: icon({name: 'angle-up'}),
-                            value: data.stats.upvotes,
-                            title: `${data.stats.upvotes} Upvotes`,
-                            key: `upvotes`,
-                            color: `#5ac452`
-                        },
-                        {
-                            icon: icon({name: 'angle-down'}),
-                            value: data.stats.downvotes,
-                            title: `${data.stats.downvotes} Downvotes`,
-                            key: `downvotes`,
-                            color: `#c45262`
-                        }
-                    ],
-                    diffTags: [],
-                };
-
-                console.log(`newState`, newState);
-
-                setState({ ...state, ...newState});
-
-                getScores(mapHash, newState, undefined, 1);
-            }).catch(err => {
-                console.error(err);
-
-                setState({
-                    ...state,
-                    title: `Map not found`,
-                    description: `${err.message || `The map you are looking for could not be found.`}`,
-                })
-
-                setScores({
-                    ...scores,
-                    total: (<FontAwesomeIcon icon={icon({name: 'circle-exclamation'})} style={{width: `20px`, height: `20px`}} />)
-                })
-            })
+            getScores(mapHash, undefined, undefined, 1);
         }
     }, []);
 
     return (
         <div>
+            <SEO
+                title={`${(state.title && `[MAP] ${state.title}`) || `Unknown Map`} - Bedroom Party Leaderboard`}
+                url={`https://thebedroom.party/leaderboard/${mapHash}`}
+                image={state.image}
+            />
+
             <Heading loading={state.loading} mapper={state.mapper} image={state.image} artist={state.artist} title={state.title} description={state.description} tags={state.tags} diffTags={state.diffTags} />
-            <Leaderboard 
+            <Leaderboard
                 loading={scores.loading} 
                 error={scores.error} 
                 mapHash={scores.mapHash} 
@@ -353,5 +330,26 @@ export default function LeaderboardList({ bpApiLocation, query }) {
     )
 }
 
-import getServerSideProps from '../util/getServerSideProps';
-export { getServerSideProps }
+import getProps from '../util/getServerSideProps';
+
+export async function getServerSideProps(o) {
+    const { props } = getProps(o);
+
+    try {
+        const mapDetails = await fetch(`https://api.beatsaver.com/maps/hash/${`${props.query.id}`.toLowerCase()}`).then(res => res.json());
+
+        return {
+            props: {
+                ...props,
+                mapDetails,
+            }
+        }
+    } catch(e) {
+        return {
+            props: {
+                ...props,
+                mapDetails: null,
+            }
+        }
+    }
+}
