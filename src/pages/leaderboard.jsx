@@ -155,15 +155,15 @@ export default function LeaderboardList({ bpApiLocation, query, mapDetails }) {
             };
 
             const matchedDiffs = thisVersion.diffs.filter(({ characteristic, difficulty }) => overview[characteristic]?.includes(enums.diff[difficulty].toString()));
+
+            const highest = matchedDiffs.slice(-1)[0] || thisVersion.diffs.slice(-1)[0];
     
             newOpts = {
                 ...newOpts,
                 ran: true,
             };
 
-            if(!thisVersion.diffs.find(o => o.characteristic == newOpts.char && o.difficulty == enums.diff[newOpts.diff])) {
-                const highest = matchedDiffs.slice(-1)[0];
-
+            if(!thisVersion.diffs.find(o => o.characteristic == newOpts.char && o.difficulty == enums.diff[newOpts.diff]) && highest) {
                 console.log(`could not find selected char ${newOpts.char} and diff ${enums.diff[newOpts.diff]} / ${newOpts.diff}; falling back to highest available on LB`, highest);
 
                 Object.assign(newOpts, {
