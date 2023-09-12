@@ -7,12 +7,12 @@ import AvatarEditor from 'react-avatar-editor';
 import Heading from '../components/heading';
 import Spinner from '../components/spinner';
 
-import { Context } from './_app';
+import { Context } from '../util/context';
 
 import Wallpaper from '../scripts/wallpaper';
 
 function Login({ query, bpApiLocation }) {
-    const { state, setState } = useContext(Context.User);
+    const { user } = useContext(Context.User);
 
     const [ userState, setUserState ] = useState({
         loading: true,
@@ -279,7 +279,7 @@ function Login({ query, bpApiLocation }) {
                             ] : []
                         } 
                         diffTags={
-                            state.user?.id === userState.user.game_id ? [
+                            user.user?.id === userState.user.game_id ? [
                                 {
                                     value: `Set new Avatar`,
                                     key: `set-avatar`,

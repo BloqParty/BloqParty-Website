@@ -8,18 +8,18 @@ import Spinner from '../components/spinner';
 
 import Wallpaper from '../scripts/wallpaper'
 
-import { Context } from './_app';
+import { Context } from '../util/context';
 
 function Login({ cookies }) {
-    const { state, setState } = useContext(Context.User);
+    const { user, setUser } = useContext(Context.User);
 
     console.log(`ctx`, Context);
 
     let wallpaper = null;
 
     useEffect(() => {
-        console.log(`user loading`, state.loading);
-    }, [state.loading])
+        console.log(`user loading`, user.loading);
+    }, [user.loading])
 
     return (
         <div style={{
@@ -31,10 +31,10 @@ function Login({ cookies }) {
             width: `100vw`,
         }}>
             <Heading
-                loading={state.loading}
-                image={state.avatar}
+                loading={user.loading}
+                image={user.avatar}
                 title={
-                    state.exists ? 
+                    user.exists ? 
                         `speecil smells` :
                     <>
                         <FontAwesomeIcon icon={icon({name: 'circle-exclamation'})} style={{marginRight: `8px`, width: `20px`, height: `20px`}} />
@@ -42,13 +42,13 @@ function Login({ cookies }) {
                     </>
                 }
                 description={
-                    state.exists ? 
+                    user.exists ? 
                         "Download the BeatSaber mod files here!" : 
-                    state.error ? `Error: ${state.error}` :
+                    user.error ? `Error: ${user.error}` :
                         `It doesn't look like you're logged in! Log back in through the button below, and try again.`
                 } 
                 tags={
-                    state.exists ? [
+                    user.exists ? [
                         {
                             icon: icon({name: 'ghost'}),
                             value: `Get scary file contents`,
@@ -56,14 +56,14 @@ function Login({ cookies }) {
                             onClick: () => {
                                 const a = document.createElement('a');
 
-                                a.href = `data:text/plain;charset=utf-8,${btoa(`${state.user.key},${state.user.id}`)}`;
+                                a.href = `data:text/plain;charset=utf-8,${btoa(`${user.user.key},${user.user.id}`)}`;
                                 a.download = `DO_NOT_SHARE.SCARY`;
                                 a.click();
 
-                                //alert(`scary file contents oOooOOOOOoooOOoOO\n\nwhenever we're more confident in shit working, this will be automated.\n\n${btoa(`${state.user.key},${state.user.id}`)}\n\nfor now, place this text in "{BS INSTALL LOCATION}/UserData/BPLB/scary/DO_NOT_SHARE.SCARY"`)
+                                //alert(`scary file contents oOooOOOOOoooOOoOO\n\nwhenever we're more confident in shit working, this will be automated.\n\n${btoa(`${user.user.key},${user.user.id}`)}\n\nfor now, place this text in "{BS INSTALL LOCATION}/UserData/BPLB/scary/DO_NOT_SHARE.SCARY"`)
                             }
                         }
-                    ] : !state.loading ? [
+                    ] : !user.loading ? [
                         {
                             icon: icon({name: 'user'}),
                             value: `Back to Login`,

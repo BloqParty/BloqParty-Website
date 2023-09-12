@@ -8,22 +8,22 @@ import Dropdown from '../dropdown';
 
 import login from '../../scripts/api/login';
 
-import { Context } from '../../pages/_app';
+import { Context } from '../../util/context';
 
 function User({ cookies, navbar }) {
-    const { state, setState } = useContext(Context.User);
+    const { user, setUser } = useContext(Context.User);
 
     console.log(`navbar`, navbar.current, navbar.showing);
 
     useEffect(() => {
-        if(state.user) return;
+        if(!user.loading) return;
 
         const { id, key } = (cookies.get('auth') || {});
 
         console.log(`id`, id);
 
         if(!id || !key) {
-            setState({
+            setUser({
                 loading: false,
                 exists: false
             });
@@ -33,7 +33,7 @@ function User({ cookies, navbar }) {
         } else {
             login().then((user) => {
                 console.log(`user logged in as`, user)
-                setState({
+                setUser({
                     loading: false,
                     exists: true,
                     user: {
@@ -50,10 +50,10 @@ function User({ cookies, navbar }) {
                 ]);
             })
             .catch(e => {
-                setState({
+                setUser({
                     loading: false,
                     exists: false,
-                    error: `${e}`
+                    error: `Error logging in`
                 });
                 navbar.set([
                     ...navbar.current,
@@ -74,12 +74,12 @@ function User({ cookies, navbar }) {
             }
         }}>
             {
-                state.error ? 
-                    <DetailBlock href="/login" value={state.error} color="#c24c44" icon={icon({name: 'exclamation-circle'})} />
-                : state.loading ?
+                user.error ? 
+                    <DetailBlock href="/login" value={user.error} color="#c24c44" icon={icon({name: 'exclamation-circle'})} />
+                : user.loading ?
                     <Spinner />
                 : (
-                    !state.exists ? 
+                    !user.exists ? 
                         <DetailBlock href="/login" value="Login" icon={icon({name: 'user'})} /> 
                     : (
                         <a style={{cursor: `pointer`}} onClick={() => {
@@ -91,7 +91,7 @@ function User({ cookies, navbar }) {
                                 navbar.show();
                             }
                         }}>
-                            <img src={state.user.avatarURL} style={{
+                            <img src={user.user.avatarURL} style={{
                                 backgroundSize: `cover`,
                                 backgroundPosition: `center`,
                                 backgroundRepeat: `no-repeat`,

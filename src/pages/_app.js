@@ -15,11 +15,9 @@ import Footing from '../components/footing';
 
 import { out } from '../../util/easings';
 
-export const Context = {
-    User: createContext({ loading: true })
-}
+import { Context } from '../util/context';
 
-export default function MyApp({ Component, pageProps }) {
+export default function MyApp({ Component, pageProps, path }) {
     const page = (
         <CookiesProvider defaultSetOptions={{
             path: `/`,
@@ -60,7 +58,8 @@ export default function MyApp({ Component, pageProps }) {
                 }}
             >
                 <AnimatePresence>
-                    <motion.div 
+                    <motion.div
+                        key={ path }
                         transition={{ duration: 0.7, ease: out.expo, staggerChildren: 0.1 }}
                         initial={{ y: `10vh`, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
@@ -83,14 +82,16 @@ export default function MyApp({ Component, pageProps }) {
             </Helmet>
 
             {
-                Object.values(Context).reduce((a, B) => {
-                    const [ state, setState ] = useState({ loading: true });
-
-                    return (
-                        <B.Provider value={{ state, setState }}>
-                            { a || page }
-                        </B.Provider>
-                    )
+                Object.entries(Context).reduce((a, [key, B]) => {
+                    if(B && B.Provider) {
+                        const [ state, setState ] = useState(B._currentValue || { loading: true });
+    
+                        return (
+                            <B.Provider value={{ [`${key[0].toLowerCase()}${key.slice(1)}`]: state, [`set${key}`]: setState }}>
+                                { a || page }
+                            </B.Provider>
+                        )
+                    } else return a;
                 }, null)
             }
         </>
