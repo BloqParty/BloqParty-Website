@@ -11,9 +11,7 @@ import { Context } from './_app';
 
 import Wallpaper from '../scripts/wallpaper';
 
-import getUser from '../scripts/api/getUser';
-
-function Login({ query }) {
+function Login({ query, apiLocation }) {
     const { state, setState } = useContext(Context.User);
 
     const [ userState, setUserState ] = useState({
@@ -38,7 +36,7 @@ function Login({ query }) {
 
         console.log(`user loading`, userState.user.game_id);
 
-        getUser(userState.user.game_id).then(user => {
+        fetch(apiLocation + `/user/${userState.user.game_id}`).then(r => r.json()).then(user => {
             setUserState({
                 loading: false,
                 exists: true,
@@ -333,10 +331,5 @@ function Login({ query }) {
 
 export default withCookies(Login);
 
-export function getServerSideProps({ params, query }) {
-    return {
-        props: {
-            query
-        }
-    }
-}
+import getServerSideProps from '../util/getServerSideProps';
+export { getServerSideProps }

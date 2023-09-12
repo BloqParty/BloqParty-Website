@@ -15,7 +15,7 @@ import Wallpaper from '../scripts/wallpaper';
 import enums from '../../util/enum';
 import time from '../../util/time';
 
-export default function LeaderboardList({ query }) {
+export default function LeaderboardList({ apiLocation, query }) {
     const perPage = 10;
 
     const [opts, setOpts] = useState({
@@ -73,7 +73,7 @@ export default function LeaderboardList({ query }) {
             setState(newState);
         }
 
-        fetch(`https://dev.thebedroom.party/leaderboard/${mapHash}/overview`)
+        fetch(apiLocation + `/leaderboard/${mapHash}/overview`)
             .then(res => res.text())
             .then(res => Promise.resolve(JSONbig.parse(res)))
             .then(data => {
@@ -140,7 +140,7 @@ export default function LeaderboardList({ query }) {
     
             setOpts(newOpts);
             
-            const link = `https://dev.thebedroom.party/leaderboard/${mapHash}?limit=${perPage}&sort=${newOpts.sort}&page=${page-1}&char=${newOpts.char}&diff=${newOpts.diff}&id=${newOpts.id}`;
+            const link = apiLocation + `/leaderboard/${mapHash}?limit=${perPage}&sort=${newOpts.sort}&page=${page-1}&char=${newOpts.char}&diff=${newOpts.diff}&id=${newOpts.id}`;
             console.log(`fetching ${link}`);
 
             fetch(link)
@@ -340,10 +340,5 @@ export default function LeaderboardList({ query }) {
     )
 }
 
-export function getServerSideProps({ params, query }) {
-    return {
-        props: {
-            query
-        }
-    }
-}
+import getServerSideProps from '../util/getServerSideProps';
+export { getServerSideProps }

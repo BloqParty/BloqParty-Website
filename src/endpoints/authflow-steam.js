@@ -41,11 +41,11 @@ module.exports = [
 
             console.debug(`Steam login return:`, req.user, currentSession);
 
-            superagent.get(`https://api.thebedroom.party/user/${req.user.id}`).then(({ text }) => {
+            superagent.get(api.bpApiLocation + `/user/${req.user.id}`).then(({ text }) => {
                 const body = JSON.parse(text);
                 console.debug(`User exists:`, body);
 
-                superagent.post(`https://api.thebedroom.party/user/${body.game_id}/apikey`).set(`Authorization`, api.bpApi).then(({ text }) => {
+                superagent.post(api.bpApiLocation + `/user/${body.game_id}/apikey`).set(`Authorization`, api.bpApi).then(({ text }) => {
                     res.finishLogin({
                         id: body.game_id,
                         key: JSON.parse(text).apiKey

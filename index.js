@@ -106,7 +106,11 @@ const authMiddleware = require('passport');
     
                 for(const path of endpoint.endpoints) {
                     server[endpoint.method](path, ...endpoint.middleware, (req, res) => {
-                        return app.render(req, res, `/${endpoint.name}`, { ...(req.query || {}), ...(req.params || {}) });
+                        return app.render(req, res, `/${endpoint.name}`, {
+                            ...(req.query || {}),
+                            ...(req.params || {}),
+                            bpApiLocation: config.api.bpApiLocation,
+                        });
                     });
     
                     console.debug(`| Set up react endpoint with ${endpoint.middleware.length} middlepoint(s): "${path}" -> ${endpoint.name}`);

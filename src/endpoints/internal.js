@@ -11,7 +11,7 @@ module.exports = [
 
             console.debug(`Attempting login for ${id}`);
 
-            superagent.post(`https://dev.thebedroom.party/user/login`).set(`Authorization`, key).send({
+            superagent.post(`http://localhost:9999/user/login`).set(`Authorization`, key).send({
                 id,
                 session: false
             }).then(r => {
@@ -37,7 +37,7 @@ module.exports = [
                 console.debug(`No avatar provided`);
                 res.send({ error: `No avatar provided` });
             } else {
-                superagent.post(`https://dev.thebedroom.party/user/${id}/avatar/upload`).set(`Authorization`, api.bpApi).send({
+                superagent.post(`${api.bpApiLocation}/user/${id}/avatar/upload`).set(`Authorization`, api.bpApi).send({
                     avatar: req.body.avatar,
                 }).then(r => {
                     console.debug(`Avatar uploaded:`, r.text);

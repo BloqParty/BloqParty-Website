@@ -50,7 +50,7 @@ module.exports = [
     
                         if(inBedroomParty) {
                             console.debug(`User in Bedroom Party.`, req.cookies);
-                            superagent.post(`https://api.thebedroom.party/user/create`).set(`Authorization`, api.bpApi).send({
+                            superagent.post(api.bpApiLocation + `/user/create`).set(`Authorization`, api.bpApi).send({
                                 username: steam.steamName,
                                 discordID: id,
                                 gameID: steam.steamID,

@@ -94,3 +94,6 @@ function LinkAccounts({ cookies }) {
 }
 
 export default withCookies(LinkAccounts);
+
+import getServerSideProps from '../util/getServerSideProps';
+export { getServerSideProps }

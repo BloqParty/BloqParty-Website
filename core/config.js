@@ -14,6 +14,7 @@ const defaults = {
     api: {
         bpPrivateApi: null,
         bpApi: null,
+        bpApiLocation: `https://api.thebedroom.party`,
         sessionSecret: crypto.randomBytes(32).toString(`hex`),
         steam: null,
         discordClientID: null,

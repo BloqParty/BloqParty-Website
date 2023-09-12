@@ -33,7 +33,7 @@ export const EntryStyle = {
 
 export class EntryNoStyle extends Component {
     render() {
-        const { entry } = this.props;
+        const { entry, apiLocation } = this.props;
 
         console.log(entry);
 
@@ -49,7 +49,7 @@ export class EntryNoStyle extends Component {
                         marginRight: `20px`,
                     }}>{entry.position}</p>
 
-                    <img src={`https://api.thebedroom.party/user/${entry.id}/avatar`} style={{
+                    <img src={apiLocation + `/user/${entry.id}/avatar`} style={{
                         backgroundSize: `cover`,
                         backgroundPosition: `center`,
                         backgroundRepeat: `no-repeat`,
@@ -124,3 +124,6 @@ export class Entry extends Component {
         )
     }
 }
+
+import getServerSideProps from '../../util/getServerSideProps';
+export { getServerSideProps }
