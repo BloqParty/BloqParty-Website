@@ -14,6 +14,52 @@ export default class Wallpaper {
     constructor(bg=document.querySelector(`.bg`), fg=document.querySelector(`.fg`)) {
         this.bg = bg
         this.fg = fg
+
+        this.startParallax()
+    }
+
+    parallaxDone = true;
+    currentAnimeMovement = null;
+
+    startParallax() {
+        console.log(`Starting parallax...`);
+        this.fg.addEventListener(`mousemove`, e => {
+            if(this.parallaxDone && this.visible) {
+                console.log(`Parallaxing...`);
+                this.parallaxDone = false;
+                requestAnimationFrame(() => {
+                    if(this.currentAnimeMovement) {
+                        this.currentAnimeMovement.pause();
+                        delete this.currentAnimeMovement;
+                        this.currentAnimeMovement = null;
+                    }
+
+                    const { clientX, clientY } = e
+                    const moveX = clientX - window.innerWidth / 2
+                    const moveY = clientY - window.innerHeight / 2
+                    const offsetFactor = 35
+
+                    this.currentAnimeMovement = anime({
+                        targets: this.bg,
+                        left: moveX / offsetFactor,
+                        top: moveY / offsetFactor,
+                        duration: 500,
+                        easing: `easeOutExpo`,
+                        begin: () => {
+                            this.parallaxDone = true;
+                        }
+                    });
+                })
+            } else if(!this.parallaxDone) {
+                console.log(`Parallax already in progress, skipping...`);
+            } else {
+                console.log(`Parallax not visible, skipping...`);
+            }
+        });
+    }
+
+    get visible() {
+        return this.bg.getAttribute(`current`) == this.current && this.bg.style.backgroundImage != ``;
     }
 
     set current(url) {
@@ -49,22 +95,32 @@ export default class Wallpaper {
         if(this.current === url) {
             return res();
         } else {
-            this.current = url;
+            let waits = [];
             
-            if(this.bg.style.backgroundImage) await this.hide({ duration: 500, remove: false });
-    
-            anime.remove(this.bg);
-            anime({
-                targets: this.bg,
-                opacity: [0, 1],
-                duration,
-                //scale: [1, 1.15],
-                easing: `easeOutExpo`,
-                begin: () => {
-                    this.bg.style.backgroundImage = `url("${url}")`;
-                    for(const [k,v] of Object.entries(fgStyles[1])) this.fg.style[k] = v;
+            if(this.bg.style.backgroundImage) waits.push(this.hide({ duration: 500, remove: false }));
+
+            this.current = url;
+
+            const img = new Image();
+
+            img.addEventListener(`load`, () => {
+                if(this.current == url) {
+                    anime.remove(this.bg);
+                    anime({
+                        targets: this.bg,
+                        opacity: [0, 1],
+                        duration,
+                        scale: [1, 1.15],
+                        easing: `easeOutExpo`,
+                        begin: () => {
+                            this.bg.style.backgroundImage = `url("${url}")`;
+                            for(const [k,v] of Object.entries(fgStyles[1])) this.fg.style[k] = v;
+                        }
+                    });
                 }
             });
+
+            img.src = url;
         }
     })
 };

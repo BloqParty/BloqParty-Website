@@ -1,6 +1,6 @@
 import React, { Component, useState, createContext } from 'react';
 import { CookiesProvider } from 'react-cookie';
-import { motion, useAnimation } from 'framer-motion';
+import { AnimatePresence, motion, useAnimation } from 'framer-motion';
 
 import '../styles/global/global.css'
 import '../styles/overlays.css'
@@ -11,51 +11,20 @@ import '@fortawesome/fontawesome-svg-core/styles.css'
 import Navbar from '../components/navbar';
 import Footing from '../components/footing';
 
-function handleMouse(anim) {
-    let done = true;
-
-    return {
-        move: (e) => {
-            if(done) {
-                done = false;
-
-                requestAnimationFrame(() => {
-                    const { clientX, clientY } = e
-                    const moveX = clientX - window.innerWidth / 2
-                    const moveY = clientY - window.innerHeight / 2
-                    const offsetFactor = 35
-        
-                    anim.start({
-                        scale: 1.15,
-                        x: moveX / offsetFactor,
-                        y: moveY / offsetFactor
-                    });
-
-                    done = true;
-                });
-            }
-        }
-    }
-}
+import { out } from '../../util/easings';
 
 export const Context = {
     User: createContext({ loading: true })
 }
 
 export default function MyApp({ Component, pageProps }) {
-    const bgAnim = useAnimation();
-
-    const handle = handleMouse(bgAnim);
-
     const page = (
         <CookiesProvider defaultSetOptions={{
             path: `/`,
             sameSite: `strict`,
             expires: new Date(Date.now() * 1.98e+7), // 5.5 hours; supposed to expire at 6 hours so let's keep it safe or something?
         }}>
-            <motion.div
-                animate={bgAnim}
-
+            <div
                 className="bg" 
                 style={{
                     display: 'flex',
@@ -73,8 +42,7 @@ export default function MyApp({ Component, pageProps }) {
                 }} 
             />
 
-            <div 
-                onMouseMove={handle.move}
+            <div
                 className="fg"
                 style={{
                     display: 'flex',
@@ -89,7 +57,16 @@ export default function MyApp({ Component, pageProps }) {
                     overflowX: `hidden`,
                 }}
             >
-                <Component { ...pageProps } />
+                <AnimatePresence>
+                    <motion.div 
+                        transition={{ duration: 0.7, ease: out.expo, staggerChildren: 0.1 }}
+                        initial={{ y: `10vh`, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        exit={{ y: `-10vh`, opacity: 0 }}
+                    >
+                        <Component { ...pageProps } />
+                    </motion.div>
+                </AnimatePresence>
                 <Footing />
             </div>
 

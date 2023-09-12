@@ -27,7 +27,7 @@ function Login({ cookies }) {
             flexDirection: `column`,
             alignItems: `center`,
             justifyContent: `center`,
-            height: `100vh`,
+            flexGrow: 1,
             width: `100vw`,
         }}>
             <Heading
