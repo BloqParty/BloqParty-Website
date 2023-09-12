@@ -85,6 +85,21 @@ export default function MyApp({ Component, pageProps, path }) {
                 <Footing />
             </div>
 
+            <div
+                className="tg" 
+                style={{
+                    pointerEvents: `none`,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: `100vh`,
+                    width: `100vw`,
+                    position: `fixed`,
+                    top: 0,
+                }} 
+            />
+
             <Navbar />
         </CookiesProvider>
     );

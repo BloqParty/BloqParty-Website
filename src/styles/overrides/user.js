@@ -37,6 +37,7 @@ for(const [ name, o ] of Object.entries(overrides)) {
 
                     const opacity = 0.5
 
+                    i.style.pointerEvents = `auto`;
                     i.style.transform = `scale(1)`
                     i.style.left = `${Math.random() * 100}%`;
         
@@ -77,6 +78,8 @@ for(const [ name, o ] of Object.entries(overrides)) {
 
                         if(diff.x && diff.y) {
                             i.onmousemove = null;
+
+                            i.style.pointerEvents = `none`;
     
                             e2.preventDefault();
     

@@ -47,7 +47,7 @@ function Login({ query, bpApiLocation }) {
                 user
             });
 
-            if(styleOverrides.rain) styleOverrides.rain(`.fg`)
+            if(styleOverrides.rain) styleOverrides.rain(`.tg`)
 
             wallpaper.set({ url: user.avatar });
         }).catch(e => {
