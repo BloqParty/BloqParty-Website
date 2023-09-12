@@ -70,8 +70,8 @@ const authMiddleware = require('passport');
 
         server.use((req, res, next) => {
             console.debug(`[${req.method.toUpperCase()}] ${req.url}`);
-            console.debug(`[${req.method.toUpperCase()}] Query: ${JSON.stringify(req.query || {}, null, 4)}`);
-            console.debug(`[${req.method.toUpperCase()}] Params: ${JSON.stringify(req.params || {}, null, 4)}`);
+            //console.debug(`[${req.method.toUpperCase()}] Query: ${JSON.stringify(req.query || {}, null, 4)}`);
+            //console.debug(`[${req.method.toUpperCase()}] Params: ${JSON.stringify(req.params || {}, null, 4)}`);
             next();
         });
     
@@ -110,6 +110,7 @@ const authMiddleware = require('passport');
                             ...(req.query || {}),
                             ...(req.params || {}),
                             bpApiLocation: config.api.bpApiLocation,
+                            path: req.path,
                         });
                     });
     
