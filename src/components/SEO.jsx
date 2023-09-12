@@ -5,7 +5,8 @@ export default function SEO({
     title = "Bedroom Party Leaderboard",
     description = "one of the leaderboards ever",
     url = "https://thebedroom.party",
-    image = "https://thebedroom.party/static/suspicious.jpg"
+    image = "https://thebedroom.party/static/suspicious.jpg",
+    color = "#A5CFE3"
 }) {
     return (
         <Head>
@@ -21,7 +22,7 @@ export default function SEO({
             <meta name="twitter:description" content={description} />
             <meta name="twitter:url" content={url} />
             <meta name="twitter:image" content={image} />
-            <meta name="theme-color" content="#A5CFE3" />
+            <meta name="theme-color" content={color} />
         </Head>
     )
 }

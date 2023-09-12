@@ -2,7 +2,13 @@ import anime from 'animejs';
 
 const overrides = {
     fish: {
-        rain: '/static/user/fish.webp'
+        rain: '/static/user/fish.webp',
+        embed: {
+            title: '🐟',
+            description: '🐟',
+            color: '#55acee', // twemoji fish color
+            image: '/static/user/fish.webp'
+        }
     },
     THEGREATDOWNUNDER: {
         heading: {

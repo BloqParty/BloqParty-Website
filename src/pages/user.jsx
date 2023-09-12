@@ -43,9 +43,11 @@ function Login({ query, bpApiLocation, userState }) {
     return (
         <div>
             <SEO
-                title={`${userState.user?.username || `Unknown Player`} - Bedroom Party Leaderboard`}
+                title={styleOverrides.embed?.title || `${userState.user?.username || `Unknown Player`} - Bedroom Party Leaderboard`}
+                description={styleOverrides.embed?.description}
+                image={styleOverrides.embed?.image || userState.user?.avatar}
+                color={styleOverrides.embed?.color}
                 url={`https://thebedroom.party/user/${userState.user?.game_id}`}
-                image={userState.user?.avatar}
             />
 
             {
