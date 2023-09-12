@@ -14,8 +14,21 @@ module.exports = [
             superagent.post(`${api.bpApiLocation}/user/login`).set(`Authorization`, key).send({
                 id,
                 session: false
-            }).then(r => {
+            }).then(async r => {
                 const user = JSON.parse(r.text);
+
+                if(!user.username) await new Promise(async resolve => {
+                    console.debug(`Fetching user data for ${id}`);
+                    superagent.get(`${api.bpApiLocation}/user/${id}`).then(r => {
+                        console.debug(`User data fetched:`, r.text);
+                        Object.assign(user, JSON.parse(r.text));
+                        resolve();
+                    }).catch(e => {
+                        console.error(`Error fetching user data [2]:`, e);
+                        res.send({ error: `Error fetching user data [2]: ${e?.error || e}` });
+                    })
+                });
+
                 console.debug(`Login successful:`, user);
                 res.send(user);
             }).catch(e => {
