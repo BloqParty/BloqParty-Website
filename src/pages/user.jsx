@@ -11,6 +11,8 @@ import { Context } from '../util/context';
 
 import Wallpaper from '../scripts/wallpaper';
 
+import userOverrides from '../styles/overrides/user'
+
 function Login({ query, bpApiLocation }) {
     const { user } = useContext(Context.User);
 
@@ -57,6 +59,8 @@ function Login({ query, bpApiLocation }) {
     }, []);
 
     const importantMessage = (!userState.loading && userState.message);
+
+    const styleOverrides = userOverrides[userState.user?.game_id] || {};
 
     return (
         <div>
@@ -254,9 +258,12 @@ function Login({ query, bpApiLocation }) {
                     <Heading 
                         loading={userState.loading}
                         image={userState.user.avatar}
-                        style={importantMessage && {
-                            justifyContent: `center`,
-                            alignItems: `center`,
+                        style={{
+                            ...styleOverrides,
+                            ...(importantMessage && {
+                                justifyContent: `center`,
+                                alignItems: `center`,
+                            })
                         }}
                         title={
                             importantMessage || userState.user.username ? 

@@ -1,0 +1,8 @@
+const THEGREATDOWNUNDER = {
+    transform: 'rotate(180deg)',
+}
+
+export default {
+    '76561199077754911': THEGREATDOWNUNDER,
+    '76561198345634943': THEGREATDOWNUNDER
+}
