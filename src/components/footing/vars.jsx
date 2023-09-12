@@ -4,6 +4,15 @@ import { icon } from '@fortawesome/fontawesome-svg-core/import.macro'
 
 import staticVars from '../../../static.json';
 
+const authors = [
+    "Nuggo",
+    "Speecil",
+    "Marmott",
+    "Syl"
+];
+
+if(Math.random() > 0.75) authors.splice(2, 1, `🐟`);
+
 const strStyle = {
     display: `flex`,
     flexDirection: `row`,
@@ -31,5 +40,5 @@ export default [
             <DetailBlock value={staticVars.version.value} title={staticVars.version.full} href={staticVars.version.href} color="#6f34b3" style={blockStyle}/>
         </div>
     ),
-    `made with an unhealthy amount of headbanging by ${staticVars.authors.slice(0, -1).join(`, `)} and ${staticVars.authors.slice(-1)[0]}`,
+    `made with an unhealthy amount of headbanging by ${authors.slice(0, -1).join(`, `)} and ${authors.slice(-1)[0]}`,
 ]
