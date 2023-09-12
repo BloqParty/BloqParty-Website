@@ -106,8 +106,6 @@ export default function MyApp({ Component, pageProps, path }) {
 
     return (
         <div>
-            <SEO />
-
             {
                 Object.entries(Context).reduce((a, [key, B]) => {
                     if(B && B.Provider) {
