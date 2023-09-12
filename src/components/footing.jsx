@@ -42,7 +42,7 @@ export default class Footing extends Component {
                     if(i > 0) a.push(<Splitter key={`footing-split-${i}`} height="20px" />);
 
                     a.push(
-                        <h5 key={`footing-txt-${i}`} style={{
+                        <h5 suppressHydrationWarning={true} key={`footing-txt-${i}`} style={{
                             fontFamily: `Alata`,
                             fontWeight: `normal`,
                             color: `rgba(255, 255, 255, 0.5)`,
