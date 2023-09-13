@@ -330,10 +330,8 @@ export default function LeaderboardList({ bpApiLocation, query, mapDetails }) {
     )
 }
 
-import getProps from '../util/getServerSideProps';
-
-export async function getServerSideProps(o) {
-    const { props } = getProps(o);
+export async function getServerSideProps(req) {
+    const props = Object.assign({}, req.query, { query: req.query });
 
     try {
         const mapDetails = await fetch(`https://api.beatsaver.com/maps/hash/${`${props.query.id}`.toLowerCase()}`).then(res => res.json());

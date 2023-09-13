@@ -18,6 +18,10 @@ import { Context } from '../util/context';
 import SEO from '../components/SEO';
 
 export default function MyApp({ Component, pageProps, path }) {
+    console.log(`MyApp`, typeof Context);
+
+    Context.Props = pageProps;
+
     const page = (
         <CookiesProvider defaultSetOptions={{
             path: `/`,
@@ -129,3 +133,6 @@ export default function MyApp({ Component, pageProps, path }) {
         </div>
     );
 }
+
+import getServerSideProps from '../util/getServerSideProps';
+export { getServerSideProps }

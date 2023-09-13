@@ -14,27 +14,36 @@ import Wallpaper from '../scripts/wallpaper';
 import userOverrides from '../styles/overrides/user'
 
 function Login({ query, bpApiLocation, userState }) {
-    const { user } = useContext(Context.User);
+    const { user, setUser } = useContext(Context.User);
 
     let avatarEditor;
 
-    const [ modifications, setModifications ] = useState({
-        avatar: null
+    const initialMods = {
+        avatar: null,
+    }
+
+    const [ state, setState ] = useState({
+        wallpaper: null,
     });
 
-    let wallpaper = null;
+    const [ modifications, setModifications ] = useState(initialMods);
 
     const styleOverrides = userOverrides[userState.user?.game_id] || {};
 
     useEffect(() => {
-        wallpaper = new Wallpaper();
+        const newState = {
+            ...state,
+            wallpaper: new Wallpaper(),
+        };
+
+        setState(newState)
 
         console.log(`user loading ${bpApiLocation}`, userState.user.game_id);
 
         if(userState.exists) {
             if(styleOverrides.rain) styleOverrides.rain(`.tg`)
     
-            wallpaper.set({ url: userState.user.avatar });
+            newState.wallpaper.set({ url: userState.user.avatar });
         }
     }, []);
 
@@ -186,6 +195,8 @@ function Login({ query, bpApiLocation, userState }) {
                                         const canvas = avatarEditor;
 
                                         if(canvas) {
+                                            state.wallpaper.hide();
+
                                             setModifications({
                                                 ...modifications,
                                                 avatar: {
@@ -195,11 +206,11 @@ function Login({ query, bpApiLocation, userState }) {
                                                 }
                                             });
 
-                                            // scale canvas down to 150px by 150px
+                                            // scale canvas down to 185px by 185px
                                             const scaledCanvas = document.createElement(`canvas`);
-                                            scaledCanvas.width = 150;
-                                            scaledCanvas.height = 150;
-                                            scaledCanvas.getContext(`2d`).drawImage(canvas.getImageScaledToCanvas(), 0, 0, 150, 150);
+                                            scaledCanvas.width = 185;
+                                            scaledCanvas.height = 185;
+                                            scaledCanvas.getContext(`2d`).drawImage(canvas.getImage(), 0, 0, 185, 185);
 
                                             // convert canvas to png with base64 encoding
                                             const data = scaledCanvas.toDataURL(`image/png`, 1).split(';base64,')[1];
@@ -232,24 +243,52 @@ function Login({ query, bpApiLocation, userState }) {
                                                             ...modifications,
                                                             avatar: null
                                                         });
+
+                                                        userState.user.avatar = userState.user.avatar.split(`?`)[0] + `?${Date.now()}`;
+
+                                                        if(state.wallpaper) {
+                                                            console.log(`setting wallpaper`);
+                                                            state.wallpaper.set({ url: userState.user.avatar });
+                                                        } else console.log(`wallpaper not found`);
+
+                                                        const u = user.user;
+
+                                                        const newUser = {
+                                                            ...user,
+                                                            user: {
+                                                                ...u,
+                                                                avatarURL: userState.user.avatar
+                                                            }
+                                                        };
+
+                                                        console.log(`new user`, newUser);
+
+                                                        setUser(newUser);
                                                     };
 
                                                     return;
                                                 } catch(e) {
-                                                    console.error(e);
-                                                }
-
-                                                if(res.status == 200) {
-                                                    console.log(`avatar updated`);
+                                                    console.log(`avatar not updated`);
+                                                    console.log(`error: ${e}`);
+                                                    state.wallpaper.set({ url: userState.user.avatar });
                                                     setModifications({
                                                         ...modifications,
-                                                        avatar: null
+                                                        avatar: {
+                                                            ...modifications.avatar,
+                                                            error: `${e}`
+                                                        }
                                                     });
-                                                } else {
-                                                    console.log(`avatar not updated`);
-                                                }
+                                                };
                                             }).catch(e => {
                                                 console.log(`avatar not updated`);
+                                                console.log(`error: ${e}`);
+                                                setModifications({
+                                                    ...modifications,
+                                                    avatar: {
+                                                        ...modifications.avatar,
+                                                        error: `${e}`
+                                                    }
+                                                });
                                             })
                                         } else {
                                             console.log(`canvas not found`);
@@ -350,16 +389,22 @@ function Login({ query, bpApiLocation, userState }) {
 
 export default withCookies(Login);
 
-import getProps from '../util/getServerSideProps';
 import SEO from '../components/SEO';
 
-export async function getServerSideProps(o) {
-    const { props } = getProps(o);
+export async function getServerSideProps(req) {
+    const props = Object.assign({}, req.query, { query: req.query });
+
+    console.log(`props`, props);
 
     try {
         const u = await fetch(props.bpApiLocation + `/user/${props.query.id}`).then(r => r.json());
 
         console.log(`user`, u);
+
+        if(u.avatar) {
+            u.avatar = props.bpApiLocation + `/user` + u.avatar.split(`/user`).slice(1).join(`/user`);
+            console.log(`avatar`, u.avatar);
+        }
 
         return {
             props: {

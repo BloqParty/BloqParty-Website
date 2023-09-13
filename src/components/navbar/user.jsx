@@ -10,7 +10,9 @@ import login from '../../scripts/api/login';
 
 import { Context } from '../../util/context';
 
-function User({ cookies, navbar }) {
+function User({ navbar }) {
+    const { bpApiLocation } = Context.Props;
+
     const { user, setUser } = useContext(Context.User);
 
     console.log(`navbar`, navbar.current, navbar.showing);
@@ -18,49 +20,42 @@ function User({ cookies, navbar }) {
     useEffect(() => {
         if(!user.loading) return;
 
-        const { id, key } = (cookies.get('auth') || {});
+        login().then((user) => {
+            console.log(`user logged in as`, user)
+            console.log(`user.avatar`, user.avatar, bpApiLocation)
 
-        console.log(`id`, id);
+            if(user.avatar) {
+                user.avatar = bpApiLocation + `/user` + user.avatar.split(`/user`).slice(1).join(`/user`);
+                console.log(`avatar`, user.avatar);
+            }
 
-        if(!id || !key) {
             setUser({
                 loading: false,
-                exists: false
+                exists: true,
+                user: {
+                    key: user.key,
+                    name: user.username,
+                    id: user.game_id,
+                    avatarURL: user.avatar,
+                }
             });
             navbar.set([
-                <DetailBlock href="/login" value="Login" icon={icon({name: 'user'})} /> 
+                <DetailBlock href="/logout" value={`Log out`} icon={icon({name: 'arrow-right-from-bracket'})} color="#c24c44" />,
+                <DetailBlock href="/download" value={`Download`} icon={icon({name: 'download'})} />,
+                <DetailBlock href={`/user/${user.game_id}`} value={user.username} icon={icon({name: 'user'})} />,
             ]);
-        } else {
-            login().then((user) => {
-                console.log(`user logged in as`, user)
-                setUser({
-                    loading: false,
-                    exists: true,
-                    user: {
-                        key: key,
-                        name: user.username,
-                        id: user.game_id,
-                        avatarURL: user.avatar,
-                    }
-                });
-                navbar.set([
-                    <DetailBlock href="/logout" value={`Log out`} icon={icon({name: 'arrow-right-from-bracket'})} color="#c24c44" />,
-                    <DetailBlock href="/download" value={`Download`} icon={icon({name: 'download'})} />,
-                    <DetailBlock href={`/user/${user.game_id}`} value={user.username} icon={icon({name: 'user'})} />,
-                ]);
-            })
-            .catch(e => {
-                setUser({
-                    loading: false,
-                    exists: false,
-                    error: `Error logging in`
-                });
-                navbar.set([
-                    ...navbar.current,
-                    <DetailBlock href="/login" value={`${e}`} color="#c24c44" icon={icon({name: 'exclamation-circle'})} />
-                ]);
+        })
+        .catch(e => {
+            setUser({
+                loading: false,
+                exists: false,
+                error: `Error logging in`
             });
-        }
+            navbar.set([
+                ...navbar.current,
+                <DetailBlock href="/login" value={`${e}`} color="#c24c44" icon={icon({name: 'exclamation-circle'})} />
+            ]);
+        });
     }, []);
 
     return (
@@ -75,12 +70,12 @@ function User({ cookies, navbar }) {
         }}>
             {
                 user.error ? 
-                    <DetailBlock href="/login" value={user.error} color="#c24c44" icon={icon({name: 'exclamation-circle'})} />
+                    <DetailBlock value={user.error} color="#c24c44" icon={icon({name: 'exclamation-circle'})} />
                 : user.loading ?
                     <Spinner />
                 : (
                     !user.exists ? 
-                        <DetailBlock href="/login" value="Login" icon={icon({name: 'user'})} /> 
+                        <DetailBlock value="Not logged in" /> 
                     : (
                         <a style={{cursor: `pointer`}} onClick={() => {
                             if(navbar.showing) {
@@ -110,4 +105,4 @@ function User({ cookies, navbar }) {
     )
 }
 
-export default withCookies(User);
+export default User;

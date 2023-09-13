@@ -11,6 +11,3 @@ export default function Landing() {
         </>
     )
 }
-
-import getServerSideProps from '../util/getServerSideProps';
-export { getServerSideProps }

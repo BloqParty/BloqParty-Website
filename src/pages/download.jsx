@@ -78,6 +78,3 @@ function Login({ cookies }) {
 }
 
 export default withCookies(Login);
-
-import getServerSideProps from '../util/getServerSideProps';
-export { getServerSideProps }
