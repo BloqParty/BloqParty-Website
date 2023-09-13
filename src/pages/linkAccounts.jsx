@@ -94,3 +94,7 @@ function LinkAccounts({ cookies }) {
 }
 
 export default withCookies(LinkAccounts);
+
+export function getServerSideProps(req) {
+    return { props: Object.assign({}, req.query, { query: req.query }) }
+}

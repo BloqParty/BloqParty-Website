@@ -21,3 +21,7 @@ export default function Landing() {
         </>
     )
 }
+
+export function getServerSideProps(req) {
+    return { props: Object.assign({}, req.query, { query: req.query }) }
+}

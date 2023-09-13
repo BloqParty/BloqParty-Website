@@ -51,3 +51,7 @@ function Login({ cookies }) {
 }
 
 export default withCookies(Login);
+
+export function getServerSideProps(req) {
+    return { props: Object.assign({}, req.query, { query: req.query }) }
+}
