@@ -90,7 +90,7 @@ export default function Navbar() {
                     height: `40px`
                 }}>
                     <a href="/">
-                        <img src="https://cdn.discordapp.com/attachments/1146470526710194217/1150992012598841456/New_Project_29.png" style={{
+                        <img src="/static/icon.png" style={{
                             borderStyle: `none`,
                             width: `${Math.round(height * 0.60)}px`,
                             height: `${Math.round(height * 0.60)}px`,
