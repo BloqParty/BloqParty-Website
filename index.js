@@ -14,6 +14,7 @@ const next = require('next');
 const sessionMiddleware = require('express-session');
 const cookiesMiddleware = require('universal-cookie-express');
 const authMiddleware = require('passport');
+const logMiddleware = require(`./util/logMiddleware`);
 
 (() => new Promise(async res => {
     console.log(`Running in ${session.dev ? `development` : `production`} mode!`);
@@ -67,13 +68,6 @@ const authMiddleware = require('passport');
         }));
         server.use(authMiddleware.initialize());
         server.use(authMiddleware.session());
-
-        server.use((req, res, next) => {
-            console.debug(`[${req.method.toUpperCase()}] ${req.url}`);
-            //console.debug(`[${req.method.toUpperCase()}] Query: ${JSON.stringify(req.query || {}, null, 4)}`);
-            //console.debug(`[${req.method.toUpperCase()}] Params: ${JSON.stringify(req.params || {}, null, 4)}`);
-            next();
-        });
     
         const endpoints = fs.readdirSync(`./src/endpoints`).map(file => {
             const module = require(`./src/endpoints/${file}`);
@@ -105,7 +99,7 @@ const authMiddleware = require('passport');
                 console.debug(`Setting up react endpoint: ${endpoint.name} [ ${endpoint.endpoints.join(`, `)} ]`);
     
                 for(const path of endpoint.endpoints) {
-                    server[endpoint.method](path, ...endpoint.middleware, (req, res) => {
+                    server[endpoint.method](path, logMiddleware, ...endpoint.middleware, (req, res) => {
                         return app.render(req, res, `/${endpoint.name}`, {
                             ...(req.query || {}),
                             ...(req.params || {}),
@@ -120,7 +114,7 @@ const authMiddleware = require('passport');
                 console.debug(`Setting up regular endpoint: ${endpoint.name} [ ${endpoint.endpoints.join(`, `)} ]`);
     
                 for(const path of endpoint.endpoints) {
-                    server[endpoint.method](path, ...endpoint.middleware, (req, res) => {
+                    server[endpoint.method](path, logMiddleware, ...endpoint.middleware, (req, res) => {
                         return endpoint.handle({ app }, req, res);
                     });
     
