@@ -5,7 +5,7 @@ export default function SEO({
     title = "Bedroom Party Leaderboard",
     description = "one of the leaderboards ever",
     url = "https://thebedroom.party",
-    image = "https://thebedroom.party/static/suspicious.jpg",
+    image = "/static/banner.png",
     color = "#A5CFE3"
 }) {
     return (

@@ -11,18 +11,18 @@ import login from '../../scripts/api/login';
 import { Context } from '../../util/context';
 
 function User({ navbar }) {
-    const { bpApiLocation } = Context.Props;
-
     const { user, setUser } = useContext(Context.User);
 
     console.log(`navbar`, navbar.current, navbar.showing);
 
     useEffect(() => {
+        const { bpApiLocation } = Context.Props;
+
         if(!user.loading) return;
 
         login().then((user) => {
             console.log(`user logged in as`, user)
-            console.log(`user.avatar`, user.avatar, bpApiLocation)
+            console.log(`user.avatar`, user.avatar, Context.Props)
 
             if(user.avatar) {
                 user.avatar = bpApiLocation + `/user` + user.avatar.split(`/user`).slice(1).join(`/user`);

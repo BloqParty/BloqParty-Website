@@ -310,7 +310,7 @@ export default function LeaderboardList({ bpApiLocation, query, mapDetails }) {
             <SEO
                 title={`${(state.title && `[MAP] ${state.title}`) || `Unknown Map`} - Bedroom Party Leaderboard`}
                 url={`https://thebedroom.party/leaderboard/${mapHash}`}
-                image={state.image}
+                image={(mapHash && `/leaderboard/${mapHash}/embed`) || state.image}
             />
 
             <Heading loading={state.loading} mapper={state.mapper} image={state.image} artist={state.artist} title={state.title} description={state.description} tags={state.tags} diffTags={state.diffTags} />

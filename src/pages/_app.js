@@ -18,7 +18,7 @@ import { Context } from '../util/context';
 import SEO from '../components/SEO';
 
 export default function MyApp({ Component, pageProps, path }) {
-    console.log(`MyApp`, typeof Context);
+    console.log(`MyApp`, pageProps);
 
     Context.Props = pageProps;
 

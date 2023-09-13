@@ -9,6 +9,7 @@ import Spinner from '../components/spinner';
 import Wallpaper from '../scripts/wallpaper'
 
 import { Context } from '../util/context';
+import SEO from '../components/SEO';
 
 function Login({ cookies }) {
     const { user, setUser } = useContext(Context.User);
@@ -30,6 +31,7 @@ function Login({ cookies }) {
             flexGrow: 1,
             width: `100vw`,
         }}>
+            <SEO />
             <Heading
                 loading={user.loading}
                 image={user.avatar}
