@@ -69,7 +69,7 @@ const logMiddleware = require(`./util/logMiddleware`);
         server.use(authMiddleware.initialize());
         server.use(authMiddleware.session());
     
-        const endpoints = fs.readdirSync(`./src/endpoints`).map(file => {
+        const endpoints = fs.readdirSync(`./src/endpoints`).filter(f => fs.statSync(`./src/endpoints/${f}`).isFile()).map(file => {
             const module = require(`./src/endpoints/${file}`);
 
             const map = (o, s) => {
