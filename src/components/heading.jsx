@@ -121,12 +121,27 @@ export default class Heading extends Component {
     render() {
         const content = this.content();
 
+        const headingStyle = {
+            ...commonStyle,
+            display: `flex`,
+            flexDirection: `column`,
+            alignItems: `start`,
+            justifyContent: `center`,
+            textAlign: `left`,
+            flexWrap: `revert`,
+            paddingLeft: `20px`,
+            paddingRight: `20px`,
+            ...this.props.style || {},
+        }
+
         return (
             <div id="headingbg" style={{
                 marginBottom: `50px`,
                 boxShadow: `0 3px 10px rgb(0 0 0 / 0.5)`,
                 alignItems: `center`,
                 justifyContent: `center`,
+                paddingTop: `30px`,
+                paddingBottom: `30px`,
                 ...this.props.bgStyle || {},
                 ...commonStyle,
                 ...(this.props.bgimage ? {
@@ -139,18 +154,10 @@ export default class Heading extends Component {
                 }),
             }}>
                 <div id="heading" style={{
-                    ...commonStyle,
-                    display: `flex`,
-                    flexDirection: `column`,
-                    alignItems: `start`,
-                    justifyContent: `center`,
-                    padding: `30px 20px`,
-                    textAlign: `left`,
-                    flexWrap: `revert`,
                     ...(this.props.bgimage ? {
                         backdropFilter: this.props.image ? `blur(10px) grayscale(40%) brightness(0.6)` : null
                     } : {}),
-                    ...this.props.style || {},
+                    ...headingStyle
                 }}>
                     {this.props.loading ? (
                         <div
@@ -158,9 +165,6 @@ export default class Heading extends Component {
                                 width: `100%`,
                                 display: `flex`,
                                 position: `relative`,
-                                flexDirection: `column`,
-                                alignItems: `center`,
-                                justifyContent: `center`,
                             }}
                         >
                             <motion.div 
@@ -193,7 +197,8 @@ export default class Heading extends Component {
                                     position: `relative`,
                                     top: `0px`,
                                     left: `0px`,
-                                    pointerEvents: `none`
+                                    pointerEvents: `none`,
+                                    ...headingStyle,
                                 }}
                             >
                                 { content }

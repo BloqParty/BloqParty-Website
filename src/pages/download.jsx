@@ -33,7 +33,7 @@ function Login({ cookies }) {
         }}>
             <SEO />
             <Heading
-                loading={user.loading}
+                loading={user.loading && `Getting account data...`}
                 image={user.avatar}
                 title={
                     user.exists ? 
@@ -72,7 +72,13 @@ function Login({ cookies }) {
                             key: `login`,
                             href: `/login`,
                         }
-                    ] : []
+                    ] : [
+                        {
+                            icon: icon({name: 'user'}),
+                            value: `Back to Login`,
+                            key: `login`,
+                        }
+                    ]
                 } 
             />
         </div>
