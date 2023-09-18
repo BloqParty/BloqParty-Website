@@ -10,8 +10,6 @@ if(typeof window != `undefined`) {
     const scrollFunc = () => {
         const difference = lastScroll - fg.scrollTop;
 
-        console.log(`Scrolling...`, {difference, lastScroll, scrollTop: fg.scrollTop});
-
         if(Math.abs(difference) > threshold) {    
             if(difference < 0 && !elm.classList.contains(`navbar-solid`)) {
                 console.log(`Adding navbar-solid...`);
@@ -22,7 +20,7 @@ if(typeof window != `undefined`) {
                 elm.classList.remove(`navbar-solid`);
                 fg.classList.remove(`fg-scrolled`);
             }
-            
+
             lastScroll = fg.scrollTop;
         }
     };
