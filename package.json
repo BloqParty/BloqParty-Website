@@ -50,7 +50,7 @@
     "universal-cookie-express": "^6.1.1"
   },
   "devDependencies": {
-    "@types/node": "20.6.0",
+    "@types/node": "20.6.2",
     "@types/react": "18.2.21",
     "typescript": "5.2.2"
   }
