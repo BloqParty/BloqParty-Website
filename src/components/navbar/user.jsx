@@ -10,53 +10,66 @@ import login from '../../scripts/api/login';
 
 import { Context } from '../../util/context';
 
-function User({ navbar }) {
+function User({ navbar, cookies }) {
     const { user, setUser } = useContext(Context.User);
 
     console.log(`navbar`, navbar.current, navbar.showing);
 
     useEffect(() => {
-        const { bpApiLocation } = Context.Props;
+        console.log(`cookies`, cookies?.cookies?.auth)
 
-        if(!user.loading) return;
-
-        login().then((user) => {
-            console.log(`user logged in as`, user)
-            console.log(`user.avatar`, user.avatar, Context.Props)
-
-            if(user.avatar) {
-                user.avatar = bpApiLocation + `/user` + user.avatar.split(`/user`).slice(1).join(`/user`);
-                console.log(`avatar`, user.avatar);
-            }
-
-            setUser({
-                loading: false,
-                exists: true,
-                user: {
-                    key: user.key,
-                    name: user.username,
-                    id: user.game_id,
-                    avatarURL: user.avatar,
+        if(cookies?.cookies?.auth) {    
+            const { bpApiLocation } = Context.Props;
+    
+            if(!user.loading) return;
+    
+            login().then((user) => {
+                console.log(`user logged in as`, user)
+                console.log(`user.avatar`, user.avatar, Context.Props)
+    
+                if(user.avatar) {
+                    user.avatar = bpApiLocation + `/user` + user.avatar.split(`/user`).slice(1).join(`/user`);
+                    console.log(`avatar`, user.avatar);
                 }
+    
+                setUser({
+                    loading: false,
+                    exists: true,
+                    user: {
+                        key: user.key,
+                        name: user.username,
+                        id: user.game_id,
+                        avatarURL: user.avatar,
+                    }
+                });
+                navbar.set([
+                    <DetailBlock href="/logout" value={`Log out`} icon={icon({name: 'arrow-right-from-bracket'})} color="#c24c44" />,
+                    <DetailBlock href="/download" value={`Download`} icon={icon({name: 'download'})} />,
+                    <DetailBlock href={`/user/${user.game_id}`} value={user.username} icon={icon({name: 'user'})} />,
+                ]);
+            })
+            .catch(e => {
+                setUser({
+                    loading: false,
+                    exists: false,
+                    error: `Error logging in`
+                });
+                navbar.set([
+                    ...navbar.current,
+                    <DetailBlock href="/login" value={`${e}`} color="#c24c44" icon={icon({name: 'exclamation-circle'})} />
+                ]);
             });
-            navbar.set([
-                <DetailBlock href="/logout" value={`Log out`} icon={icon({name: 'arrow-right-from-bracket'})} color="#c24c44" />,
-                <DetailBlock href="/download" value={`Download`} icon={icon({name: 'download'})} />,
-                <DetailBlock href={`/user/${user.game_id}`} value={user.username} icon={icon({name: 'user'})} />,
-            ]);
-        })
-        .catch(e => {
+        } else {
             setUser({
                 loading: false,
-                exists: false,
-                error: `Error logging in`
+                exists: false
             });
             navbar.set([
                 ...navbar.current,
-                <DetailBlock href="/login" value={`${e}`} color="#c24c44" icon={icon({name: 'exclamation-circle'})} />
+                <DetailBlock href="/login" value={`Log in`} icon={icon({name: 'arrow-right-from-bracket'})} />,
             ]);
-        });
-    }, []);
+        }
+    }, [cookies.cookies.auth]);
 
     return (
         <a style={{cursor: `pointer`}} onClick={() => {
@@ -77,27 +90,17 @@ function User({ navbar }) {
                     !user.exists ? 
                         <DetailBlock value="Not logged in" /> 
                     : (
-                        <a style={{cursor: `pointer`}} onClick={() => {
-                            if(navbar.showing) {
-                                console.log(`navbar is showing; hide`, navbar.showing, navbar.current);
-                                navbar.hide();
-                            } else {
-                                console.log(`navbar is hidden; show`, navbar.showing, navbar.current);
-                                navbar.show();
-                            }
-                        }}>
-                            <img src={user.user.avatarURL} style={{
-                                backgroundSize: `cover`,
-                                backgroundPosition: `center`,
-                                backgroundRepeat: `no-repeat`,
-                                backgroundColor: `rgba(0, 0, 0, 0.5)`,
-                                boxShadow: `0 3px 10px rgb(0 0 0 / 0.2)`,
-                                borderRadius: `100%`,
-                                marginRight: `6px`,
-                                width: `30px`,
-                                height: `30px`,
-                            }} />
-                        </a>
+                        <img src={user.user.avatarURL} style={{
+                            backgroundSize: `cover`,
+                            backgroundPosition: `center`,
+                            backgroundRepeat: `no-repeat`,
+                            backgroundColor: `rgba(0, 0, 0, 0.5)`,
+                            boxShadow: `0 3px 10px rgb(0 0 0 / 0.2)`,
+                            borderRadius: `100%`,
+                            marginRight: `6px`,
+                            width: `30px`,
+                            height: `30px`,
+                        }} />
                     )
                 )
             }
@@ -105,4 +108,4 @@ function User({ navbar }) {
     )
 }
 
-export default User;
+export default withCookies(User);

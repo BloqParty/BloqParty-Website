@@ -7,7 +7,7 @@ module.exports = [
         method: `get`,
         endpoint: `/internal/ui/login`,
         handle: ({ app }, req, res) => {
-            const { id, key } = req.universalCookies.get(`auth`);
+            const { id, key } = req.universalCookies.get(`auth`) || {};
 
             if(id && key) {
                 console.debug(`Attempting login for ${id}`);
@@ -34,7 +34,7 @@ module.exports = [
                     res.send(user);
                 }).catch(e => {
                     console.error(`Error fetching user data:`, e);
-                    res.send({ error: `Error fetching user data: ${e?.error || e}` });
+                    res.status(500).send({ error: `Error fetching user data: ${e?.error || e}` });
                 });
             } else {
                 res.status(401).send({ error: `No auth provided` });
