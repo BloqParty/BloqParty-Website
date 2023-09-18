@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/BedroomParty/BedroomPartyWebsite#readme",
   "dependencies": {
-    "@babel/preset-env": "^7.22.15",
+    "@babel/preset-env": "^7.22.20",
     "@babel/preset-react": "^7.22.15",
     "@fontsource/alata": "^5.0.8",
     "@fortawesome/fontawesome-svg-core": "^6.4.2",
@@ -45,13 +45,13 @@
     "react-cookie": "^6.1.1",
     "react-dom": "^18.2.0",
     "react-portal": "^4.2.2",
-    "sass": "^1.66.1",
+    "sass": "^1.67.0",
     "superagent": "^8.1.2",
     "universal-cookie-express": "^6.1.1"
   },
   "devDependencies": {
-    "@types/node": "20.6.0",
-    "@types/react": "18.2.21",
+    "@types/node": "20.6.2",
+    "@types/react": "18.2.22",
     "typescript": "5.2.2"
   }
 }
