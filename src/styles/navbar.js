@@ -8,20 +8,32 @@ if(typeof window != `undefined`) {
     let lastScroll = 0;
 
     const scrollFunc = () => {
-        const difference = lastScroll - fg.scrollTop;
+        if(window.innerWidth <= 600) {
+            const difference = lastScroll - fg.scrollTop;
 
-        if(Math.abs(difference) > threshold) {    
-            if(difference < 0 && !elm.classList.contains(`navbar-solid`)) {
+            if(Math.abs(difference) > threshold) {    
+                if(difference < 0 && !elm.classList.contains(`navbar-solid`)) {
+                    console.log(`Adding navbar-solid...`);
+                    elm.classList.add(`navbar-solid`);
+                    fg.classList.add(`fg-scrolled`);
+                } else if(difference > 0 && elm.classList.contains(`navbar-solid`)) {
+                    console.log(`Removing navbar-solid...`);
+                    elm.classList.remove(`navbar-solid`);
+                    fg.classList.remove(`fg-scrolled`);
+                }
+    
+                lastScroll = fg.scrollTop;
+            }
+        } else {
+            if(fg.scrollTop > threshold && !elm.classList.contains(`navbar-solid`)) {
                 console.log(`Adding navbar-solid...`);
                 elm.classList.add(`navbar-solid`);
                 fg.classList.add(`fg-scrolled`);
-            } else if(difference > 0 && elm.classList.contains(`navbar-solid`)) {
+            } else if(fg.scrollTop <= threshold && elm.classList.contains(`navbar-solid`)) {
                 console.log(`Removing navbar-solid...`);
                 elm.classList.remove(`navbar-solid`);
                 fg.classList.remove(`fg-scrolled`);
             }
-
-            lastScroll = fg.scrollTop;
         }
     };
 
