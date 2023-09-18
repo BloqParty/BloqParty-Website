@@ -142,10 +142,10 @@
     }
     
     .navbar-root {
-        padding: 0px;
+        padding: 13px 20px;
         min-height: 100px;
     
-        transition-property: min-height;
+        transition-property: min-height, padding;
         transition-duration: 1s;
         transition-timing-function: cubic-bezier(0, 1.06, 0.06, 1.01);
     }
@@ -157,10 +157,10 @@
     }
     
     .navbar-solid {
-        padding: 0px;
+        padding: 0px 20px;
         min-height: 74px;
     
-        transition-property: min-height;
+        transition-property: min-height, padding;
         transition-duration: 1s;
         transition-timing-function: cubic-bezier(0, 1.06, 0.06, 1.01);
     }
