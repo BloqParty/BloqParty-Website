@@ -120,26 +120,27 @@ function Leaderboard(props) {
                     <AnimatePresence>
                         {
                             entries.map((entry, index) => (
-                                <motion.div
+                                <Entry
                                     key={entry.key || `${Number(index) + 1 + (offset || 0)}`}
                                     transition={{ duration: 0.2, ease: circOut, delay: index * 0.03 }}
                                     initial={{ opacity: 0, x: 300, }}
                                     animate={{ opacity: 1, x: 0, }}
                                     exit={{ opacity: 0, x: -300, }}
                                     style={{
-                                        ...EntryStyle,
                                         ...( !entry ? ({
                                             opacity: 0.4,
                                             pointerEvents: `none`,
                                         }) : ({}) )
                                     }}
+
+                                    entry={entry}
                                 >
                                     { entry && typeof entry == `object` && !entry.empty ? (
                                         <EntryNoStyle index={Number(index)} position={Number(index) + 1 + (offset || 0)} entry={entry} />
                                     ) : (
                                         <h5 style={{ opacity: 0.3 }}>-- no entry --</h5>
                                     ) }
-                                </motion.div>
+                                </Entry>
                             ))
                         }
                     </AnimatePresence>
