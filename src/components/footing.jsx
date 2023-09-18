@@ -46,7 +46,8 @@ export default class Footing extends Component {
                             fontFamily: `Alata`,
                             fontWeight: `normal`,
                             color: `rgba(255, 255, 255, 0.5)`,
-                            marginTop: `-3px`
+                            marginTop: `3px`, // previously -3px
+                            marginBottom: `6px`
                         }}>{v}</h5>
                     );
 

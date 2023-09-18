@@ -67,16 +67,17 @@ export default function Navbar() {
     })
 
     return (
-        <div className="navbar" id="navbar" style={{
+        <div className="navbar navbar-root" id="navbar" style={{
             ...row,
+            display: `flex`,
+            flexDirection: `row`,
+            alignItems: `center`,
+            justifyContent: `center`,
+            backdropFilter: `blur(10px)`,
             flexDirection: `column`,
             width: `100vw`,
-            padding: `0px 20px`,
             boxSizing: `border-box`,
             textAlign: `center`,
-            backgroundColor: `rgba(8, 8, 8, 0.5)`,
-            boxShadow: `0 3px 10px rgb(0 0 0 / 0.2)`,
-            backdropFilter: `blur(10px)`,
             top: `0px`,
         }}>
             <div className="navbar" id="inner-nav" style={{

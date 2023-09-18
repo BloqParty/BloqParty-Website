@@ -3,8 +3,10 @@ import { CookiesProvider } from 'react-cookie';
 import { AnimatePresence, motion, useAnimation } from 'framer-motion';
 
 import '../styles/global.css'
-import '../styles/overlays.css'
+import '../styles/sizes.css'
 import '../styles/leaderboards.css'
+import '../styles/elements.css'
+import '../styles/navbar'
 import '@fontsource/alata/index.css'
 
 import '@fortawesome/fontawesome-svg-core/styles.css'
@@ -42,7 +44,7 @@ export default function MyApp({ Component, pageProps, path, query, bpApiLocation
                     backgroundRepeat: `no-repeat`,
                     position: `fixed`,
                     opacity: 0.5,
-                    top: 0,
+                    top: 0
                 }} 
             />
 
@@ -56,8 +58,9 @@ export default function MyApp({ Component, pageProps, path, query, bpApiLocation
                     height: `100vh`,
                     width: `100vw`,
                     position: `fixed`,
+                    backgroundColor: `rgba(25, 25, 25, 0.6)`,
                     top: 0,
-                }} 
+                }}
             />
 
             <div
@@ -69,7 +72,6 @@ export default function MyApp({ Component, pageProps, path, query, bpApiLocation
                     justifyContent: 'space-between',
                     width: '100%',
                     position: `fixed`,
-                    backgroundColor: `rgba(25, 25, 25, 0.6)`,
                     top: 0,
                     overflowY: `auto`,
                     overflowX: `hidden`,

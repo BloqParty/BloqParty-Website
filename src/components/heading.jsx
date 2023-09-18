@@ -89,7 +89,7 @@ export default class Heading extends Component {
                     {text}
                 )}
 
-                <div id="tags" style={{marginLeft: `-4px`}}>
+                <div id="tags" className="heading-tags" style={{marginLeft: `-4px`}}>
                     { tags && diffTags ? (
                         <div style={{
                             display: `flex`,

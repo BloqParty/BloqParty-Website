@@ -115,7 +115,7 @@ function Leaderboard(props) {
                     boxSizing: `border-box`,
                     textAlign: `center`,
                     width: `100%`,
-                    overflowX: `scroll`,
+                    overflowX: `auto`,
                 }}>
                     <AnimatePresence>
                         {
