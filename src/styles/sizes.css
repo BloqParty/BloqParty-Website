@@ -88,7 +88,7 @@
     }
 
     #nav-left > *, #nav-right > * {
-        width: 100% !important;
+        /*width: 100% !important;*/
         height: calc(100% + 14px) !important;
         display: flex;
         flex-direction: column;
@@ -142,7 +142,7 @@
     }
     
     .navbar-root {
-        padding: 13px 20px;
+        padding: 13px 0px;
         min-height: 100px;
     
         transition-property: min-height, padding;
@@ -157,7 +157,7 @@
     }
     
     .navbar-solid {
-        padding: 0px 20px;
+        padding: 0px 0px;
         min-height: 74px;
     
         transition-property: min-height, padding;
