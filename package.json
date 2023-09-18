@@ -45,7 +45,7 @@
     "react-cookie": "^6.1.1",
     "react-dom": "^18.2.0",
     "react-portal": "^4.2.2",
-    "sass": "^1.66.1",
+    "sass": "^1.67.0",
     "superagent": "^8.1.2",
     "universal-cookie-express": "^6.1.1"
   },
