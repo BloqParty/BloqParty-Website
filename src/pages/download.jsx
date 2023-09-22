@@ -55,15 +55,7 @@ function Login({ cookies }) {
                             icon: icon({name: 'ghost'}),
                             value: `Get scary file contents`,
                             key: `scary`,
-                            onClick: () => {
-                                const a = document.createElement('a');
-
-                                a.href = `data:text/plain;charset=utf-8,${btoa(`${user.user.key},${user.user.id}`)}`;
-                                a.download = `DO_NOT_SHARE.SCARY`;
-                                a.click();
-
-                                //alert(`scary file contents oOooOOOOOoooOOoOO\n\nwhenever we're more confident in shit working, this will be automated.\n\n${btoa(`${user.user.key},${user.user.id}`)}\n\nfor now, place this text in "{BS INSTALL LOCATION}/UserData/BPLB/scary/DO_NOT_SHARE.SCARY"`)
-                            }
+                            href: `/download/scary`,
                         }
                     ] : !user.loading ? [
                         {
