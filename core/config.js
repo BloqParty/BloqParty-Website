@@ -20,6 +20,7 @@ const defaults = {
         discordClientID: null,
         discordClientSecret: null,
         discordGuildID: null,
+        githubAccessToken: null,
     }
 };
 
