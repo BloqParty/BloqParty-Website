@@ -1,6 +1,6 @@
 const superagent = require(`superagent`);
 const { api, web } = require(`../../core/config`);
-const authflowMiddleware = require('../../core/authflow-middleware');
+const authflowMiddleware = require('../../core/middleware/authflow');
 
 const JSONbig = require(`json-bigint`);
 

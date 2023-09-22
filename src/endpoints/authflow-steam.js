@@ -1,7 +1,7 @@
 const passport = require(`passport`)
 const SteamStrategy = require(`passport-steam`).Strategy;
 const sessions = require(`../../core/authflow`);
-const authflowMiddleware = require('../../core/authflow-middleware');
+const authflowMiddleware = require('../../core/middleware/authflow');
 
 const superagent = require(`superagent`);
 

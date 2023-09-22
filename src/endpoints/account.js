@@ -1,5 +1,5 @@
 const sessions = require(`../../core/authflow`);
-const sessionMiddleware = require(`../../core/authflow-middleware`);
+const sessionMiddleware = require(`../../core/middleware/authflow`);
 
 module.exports = [
     {
