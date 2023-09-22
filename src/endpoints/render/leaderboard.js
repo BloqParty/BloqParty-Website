@@ -3,6 +3,8 @@ const jimp = require('jimp-native');
 const jimpImport = require(`./util/import`);
 const cropPadding = require(`./util/cropPad`);
 
+const config = require(`../../../core/config`);
+
 module.exports = new Promise(async res => {
     const src = {
         files: {
@@ -37,7 +39,7 @@ module.exports = new Promise(async res => {
     
             const details = {
                 map: fetch(`https://api.beatsaver.com/maps/hash/${`${hash}`.toLowerCase()}`).then(res => res.json()),
-                scores: fetch(`https://dev.thebedroom.party/leaderboard/${`${hash}`.toUpperCase()}/scorecount`).then(res => new Promise(async resolve => {
+                scores: fetch(`${config.api.bpApiLocation}/leaderboard/${`${hash}`.toUpperCase()}/scorecount`).then(res => new Promise(async resolve => {
                     const def = { a: { b: 0 } }
 
                     res.json().then(body => {
