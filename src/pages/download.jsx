@@ -56,7 +56,13 @@ function Login({ cookies }) {
                             value: `Get scary file contents`,
                             key: `scary`,
                             href: `/download/scary`,
-                        }
+                        },
+                        {
+                            icon: icon({name: 'computer'}),
+                            value: `Download PC mod`,
+                            key: `pc`,
+                            href: `/download/pc`,
+                        },
                     ] : !user.loading ? [
                         {
                             icon: icon({name: 'user'}),
