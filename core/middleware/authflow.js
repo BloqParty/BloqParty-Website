@@ -1,4 +1,4 @@
-const sessions = require(`./authflow`);
+const sessions = require(`../authflow`);
 
 module.exports = (req, res, next) => {
     const currentSession = sessions.getSession(req.universalCookies.get(`login-session`));
