@@ -27,7 +27,7 @@ if(Object.values(params).every(Boolean)) {
             const newZip = new AdmZip();
 
             newZip.addFile(`Plugins/BedroomPartyLeaderboard.dll`, res.body);
-            newZip.addFile(`UserData/BPLB/DO_NOT_SHARE.SCARY`, Buffer.from(require(`./scary`)(user)));
+            newZip.addFile(`UserData/BPLB/scary/DO_NOT_SHARE.SCARY`, Buffer.from(require(`./scary`)(user)));
             
             const buffer = newZip.toBuffer();
 
