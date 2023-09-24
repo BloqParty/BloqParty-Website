@@ -1,6 +1,7 @@
 const superagent = require(`superagent`);
 const { api } = require(`../../core/config`);
 const login = require(`../../core/login`);
+const getRelease = require(`../../core/mod/getRelease`)
 
 module.exports = [
     {
@@ -40,6 +41,21 @@ module.exports = [
                     res.send({ error: `Error uploading avatar: ${e}` });
                 });
             }
+        }
+    },
+    {
+        name: `downloads`,
+        method: `get`,
+        endpoint: `/internal/downloads`,
+        handle: async ({ app }, req, res) => {
+            const promises = {
+                pc: getRelease(`BPLBBETA-PC`),
+                quest: getRelease(`BPLBBETA-Quest`),
+            };
+
+            const releases = await Promise.all(Object.values(promises));
+
+            res.send(Object.fromEntries(Object.entries(promises).map(([k, v], i) => [k, releases[i].tag_name])));
         }
     }
 ]
