@@ -3,7 +3,7 @@ const { Worker } = require(`worker_threads`);
 const getRelease = require(`../../../core/mod/getRelease`)
 
 module.exports = (req, res) => {
-    getRelease().then(release => {
+    getRelease(`BPLBBETA-PC`).then(release => {
         if(!release) return res.status(500).send(`No release found`);
 
         const worker = new Worker(`${__dirname}/util/pc.js`, {
