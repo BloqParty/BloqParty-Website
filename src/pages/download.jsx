@@ -14,13 +14,18 @@ import SEO from '../components/SEO';
 function Login({ cookies }) {
     const { user, setUser } = useContext(Context.User);
 
+    const [ state, setState ] = useState({});
+
     console.log(`ctx`, Context);
 
     let wallpaper = null;
 
     useEffect(() => {
-        console.log(`user loading`, user.loading);
-    }, [user.loading])
+        fetch(`/internal/downloads`)
+            .then(res => res.json())
+            .then(res => setState(res))
+            .catch(err => {})
+    }, [])
 
     return (
         <div style={{
@@ -43,9 +48,12 @@ function Login({ cookies }) {
                         <span>Something went wrong.</span>
                     </>
                 }
+                artist={
+                    user.exists && "Download the mod here!"
+                } 
                 description={
                     user.exists ? 
-                        "Download the BeatSaber mod files here!" : 
+                        <><strong>NOTE:</strong> The downloads listed here contain credentials for YOUR account. Don't share these with other people!</> : 
                     user.error ? `Error: ${user.error}` :
                         `It doesn't look like you're logged in! Log back in through the button below, and try again.`
                 } 
@@ -59,9 +67,15 @@ function Login({ cookies }) {
                         },
                         {
                             icon: icon({name: 'computer'}),
-                            value: `Download PC mod`,
+                            value: `PC ${state.pc || `download`}`,
                             key: `pc`,
                             href: `/download/pc`,
+                        },
+                        {
+                            icon: icon({name: 'vr-cardboard'}),
+                            value: `Quest ${state.quest || `download`}`,
+                            key: `quest`,
+                            href: `/download/quest`,
                         },
                     ] : !user.loading ? [
                         {
