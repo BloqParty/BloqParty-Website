@@ -4,6 +4,7 @@ import { icon } from '@fortawesome/fontawesome-svg-core/import.macro'
 import DetailBlock from '../detailblock';
 import thousands from '../../../util/thousands';
 import time from '../../../util/time';
+import enums from '../../../util/enum';
 
 const row = {
     display: `flex`,
@@ -53,16 +54,30 @@ export class EntryNoStyle extends Component {
                     flexDirection: `column`,
                     width: `100%`,
                 }}>
-                    { entry.name && (
-                        <div style={{
-                            ...row,
-                            width: `100%`
-                        }}>
+                    <div className="lb-detailheading">
+                        { (entry.map?.metadata?.songName) && (
                             <DetailBlock style={{
-                                marginTop: `8px`
+                                margin: `8px 4px 0px 0px`,
+                            }} icon={icon({name: 'music'})} value={(
+                                <div style={{...row, alignItems: `flex-end`}}>
+                                    {entry.map.metadata.songName}
+                                    {entry.map.metadata.songSubName && (
+                                        <p style={{marginLeft: `4px`, fontSize: `0.7em`, opacity: 0.75}}>{entry.map.metadata.songSubName}</p>
+                                    )}
+                                </div>
+                            )} href={entry.hash && `/leaderboard/${entry.hash}`} />
+                        ) || entry.name && (
+                            <DetailBlock style={{
+                                margin: `8px 4px 0px 0px`,
                             }} icon={icon({name: 'music'})} value={entry.name} href={entry.hash && `/leaderboard/${entry.hash}`} />
-                        </div>
-                    ) }
+                        ) }
+
+                        { (entry.char && entry.diff) && (
+                            <DetailBlock style={{
+                                margin: `8px 4px 0px 0px`,
+                            }} icon={icon({name: 'trophy'})} value={`${entry.char} / ${enums.diff[entry.diff]}`} href={entry.hash && `/leaderboard/${entry.hash}`} />
+                        ) }
+                    </div>
 
                     <div className="lb-row" style={{ width: `100%` }}>
                         <div className="lb-row lb-user" style={entry.empty ? { flexGrow: 1 } : null}>
@@ -135,7 +150,12 @@ export class EntryNoStyle extends Component {
                                     }
 
                                     <DetailBlock style={block} icon={icon({name: 'percent'})} title={`Accuracy: ${entry.accuracy}`} value={(parseFloat(entry.accuracy || 0.00)).toFixed(2)} />
-                                    <DetailBlock style={block} color={entry.modifiers.trim().length ? undefined : `#1a1a1a78`} icon={icon({name: 'gear'})} title={entry.modifiers.trim().length ? `Modifiers Used: ${entry.modifiers}` : `No Modifiers Used`} value={`[${entry.modifiers.trim().split(` `).filter(Boolean).length}]`} />
+
+                                    {
+                                        entry.modifiers.trim().split(` `).filter(Boolean).length && (
+                                            <DetailBlock style={block} icon={icon({name: 'gear'})} title={`Modifiers Used: ${entry.modifiers}`} value={`[${entry.modifiers.trim().split(` `).filter(Boolean).length}]`} />
+                                        ) || null
+                                    }
                                 </div>
                             </div>
                         ) }
