@@ -43,6 +43,7 @@ function Login({ query, bpApiLocation, userState }) {
         o.username = o.map?.metadata?.songName || o.name;
         o.name = null;
         o.map = null;
+        o.id = null;
         o.avatar = o.thumbnail;
         o.link = `/leaderboard/${o.hash}`;
 

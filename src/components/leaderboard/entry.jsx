@@ -80,7 +80,10 @@ export class EntryNoStyle extends Component {
                     </div>
 
                     <div className="lb-row" style={{ width: `100%` }}>
-                        <div className="lb-row lb-user" style={entry.empty ? { flexGrow: 1 } : null}>
+                        <div className="lb-row lb-user" style={{
+                            ...(entry.empty ? { flexGrow: 1 } : {}),
+                            ...(entry.id ? { cursor: `pointer` } : {}),
+                        }} onClick={entry.id && (() => window.location.href = `/user/${entry.id}`) || null}>
                             { entry.position && (
                                 <p className="lb-position">{entry.position}</p>
                             ) }
