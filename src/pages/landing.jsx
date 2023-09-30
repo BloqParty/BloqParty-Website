@@ -40,7 +40,7 @@ export default function Landing() {
                 error: false,
             });
 
-            const hashes = removeArrayDuplicates(data.map(o => o.hash).filter(Boolean)).map(s => s.toLowerCase());
+            /*const hashes = removeArrayDuplicates(data.map(o => o.hash).filter(Boolean)).map(s => s.toLowerCase());
 
             if(hashes.length) {
                 console.log(`getting beatsaver entries for [ ${hashes.join(`, `)} ]`);
@@ -71,7 +71,7 @@ export default function Landing() {
                 }).catch((e) => {
                     console.error(`couldn't get beatsaver entries for [ ${hashes.join(`, `)} ]`, `${e}`);
                 });
-            }
+            }*/
         }).catch((err) => {
             setRecent({
                 entries: [],
