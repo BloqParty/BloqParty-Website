@@ -75,7 +75,7 @@ export class EntryNoStyle extends Component {
                         { (entry.char && entry.diff) && (
                             <DetailBlock style={{
                                 margin: `8px 4px 0px 0px`,
-                            }} icon={icon({name: 'trophy'})} value={`${entry.char} / ${enums.diff[entry.diff]}`} href={entry.hash && `/leaderboard/${entry.hash}`} />
+                            }} icon={icon({name: 'trophy'})} value={`${entry.char} / ${enums.diff[entry.diff]}`} href={entry.hash && `/leaderboard/${entry.hash}?char=${entry.char}&diff=${entry.diff}`} />
                         ) }
                     </div>
 
