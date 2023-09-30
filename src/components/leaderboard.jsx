@@ -33,7 +33,7 @@ function navButton(props, direction) {
             icon: icon({name: 'chevron-circle-right'}),
         })
 
-        if(current < total) {
+        if(current < total || total == -1) {
             return <DetailBlock style={{ ...constants.style, ...constants.enabled }} value={`${current+1}`} iconR={constants.icon} onClick={() => {
                 console.log(`current`, current, `new`, `${current+1}`)
                 set(mapHash, current+1);
@@ -87,7 +87,7 @@ function Leaderboard(props) {
                     <Splitter style={{ flexGrow: 1, margin: `0px 16px` }} />
                     <AnimatePresence>
                     { 
-                        (page && page.current <= page.total && page.total != 0) ? (
+                        (page && (page.total == -1 || (page.current <= page.total && page.total != 0))) ? (
                             <motion.div 
                                 transition={{ duration: 0.2, ease: circOut }}
                                 initial={{ opacity: 0, margin: `0px -50px`, scaleX: 0, x: 50 }}
@@ -101,7 +101,7 @@ function Leaderboard(props) {
                                 }}
                             >
                                 { navButton(props, `prev`) }
-                                <h3 style={{paddingBottom: `4px`}}>page {page.current} / {page.total}</h3>
+                                <h3 style={{paddingBottom: `4px`}}>page {page.current}{page.total > 0 && ` / ${page.total}`}</h3>
                                 { navButton(props, `next`) }
                             </motion.div>
                         ) : null 

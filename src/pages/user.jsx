@@ -6,10 +6,12 @@ import AvatarEditor from 'react-avatar-editor';
 
 import Heading from '../components/heading';
 import Spinner from '../components/spinner';
+import Leaderboard from '../components/leaderboard';
 
 import { Context } from '../util/context';
 
 import Wallpaper from '../scripts/wallpaper';
+import { recentScores, recentBeatSaverLookup } from '../scripts/leaderboard/recent';
 
 import userOverrides from '../styles/overrides/user'
 
@@ -26,9 +28,73 @@ function Login({ query, bpApiLocation, userState }) {
         wallpaper: null,
     });
 
+    const [ recent, setRecent ] = useState({
+        entries: [],
+        page: 1,
+        loading: false,
+        error: false,
+    });
+
     const [ modifications, setModifications ] = useState(initialMods);
 
     const styleOverrides = userOverrides[userState.user?.game_id] || {};
+
+    const mapScores = data => data.slice().map(o => {
+        o.username = o.map?.metadata?.songName || o.name;
+        o.name = null;
+        o.map = null;
+        o.avatar = o.thumbnail;
+        o.link = `/leaderboard/${o.hash}`;
+
+        return o;
+    });
+
+    const getScores = (page = recent.page) => {
+        console.log(`fetching scores @ page ${page}`);
+
+        setRecent({
+            entries: [],
+            offset: page,
+            loading: `Getting recent scores...`,
+            error: false,
+        });
+
+        recentScores({
+            id: userState.user.game_id,
+            offset: page-1,
+        }).then((data) => {
+            if(Array.isArray(data) && data.length) data = data.map(o => Object.assign({}, o, o.hash ? {
+                thumbnail: `https://cdn.beatsaver.com/${o.hash.toLowerCase()}.jpg`,
+            } : {}));
+
+            console.log(`data`, data);
+
+            setRecent({
+                entries: mapScores(data),
+                offset: page,
+                loading: false,
+                error: null
+            });
+
+            console.log(`getting beatsaver data`)
+
+            recentBeatSaverLookup(data).then((updated) => {
+                setRecent({
+                    ...recent,
+                    offset: page,
+                    entries: mapScores(updated),
+                });
+            });
+        }).catch((err) => {
+            console.log(`error`, err);
+            setRecent({
+                entries: [],
+                offset: 0,
+                loading: false,
+                error: err,
+            })
+        });
+    }
 
     useEffect(() => {
         const newState = {
@@ -44,6 +110,8 @@ function Login({ query, bpApiLocation, userState }) {
             if(styleOverrides.rain) styleOverrides.rain(`.tg`)
     
             newState.wallpaper.set({ url: userState.user.avatar });
+
+            if(!recent.loading && !recent.entries.length) getScores();
         }
     }, []);
 
@@ -383,6 +451,19 @@ function Login({ query, bpApiLocation, userState }) {
                     />
                 )
             }
+
+            <Leaderboard
+                loading={recent.loading} 
+                error={recent.error}
+                entries={recent.entries}
+                heading="Recent Scores"
+                page={{
+                    current: recent.offset,
+                    //total: scores.totalPages, i forgor to implement in api
+                    total: -1,
+                    set: (nonexistenthashlol, num) => getScores(num)
+                }} 
+            />
         </div>
     )
 }

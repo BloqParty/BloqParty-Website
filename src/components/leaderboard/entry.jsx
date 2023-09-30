@@ -47,7 +47,7 @@ export class EntryNoStyle extends Component {
 
         console.log(entry);
 
-        return (
+        const entryData = (
             <div className="lb-rootns lb-row" style={this.props.style || {}}>
                 <div style={{
                     display: `flex`,
@@ -163,6 +163,15 @@ export class EntryNoStyle extends Component {
                 </div>
             </div>
         );
+
+        return entry.link && (
+            <div style={{
+                cursor: `pointer`,
+                width: `100%`,
+            }} onClick={() => window.location = entry.link}>
+                {entryData}
+            </div>
+        ) || entryData;
     }
 }
 
