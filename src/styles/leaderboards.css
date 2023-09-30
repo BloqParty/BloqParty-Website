@@ -9,10 +9,8 @@
     width: 100%;
     align-items: space-between;
     justify-content: center;
-    border-radius: 10px;
     background-color: rgba(0, 0, 0, 0.2);
     /*box-shadow: 0 3px 10px rgb(0 0 0 / 0.2)*/;
-    padding: 0px 20px;
     margin-bottom: 8px;
 }
 
