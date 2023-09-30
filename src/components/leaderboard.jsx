@@ -8,7 +8,9 @@ import Splitter from './splitter';
 import DetailBlock from './detailblock';
 
 function navButton(props, direction) {
-    const { page: { current, total, set }, mapHash } = props;
+    if(!props.page) return null;
+
+    const { page: { current, total, set } = {}, mapHash } = props;
 
     console.log(`page`, props.page)
 
@@ -81,11 +83,11 @@ function Leaderboard(props) {
                     marginBottom: `25px`,
                     justifyContent: `space-between`,
                 }}>
-                    <h3 style={{paddingBottom: `4px`}}>{typeof props.total == `number` ? `${props.total} score${props.total == 1 ? `` : `s`}` : props.total}</h3>
+                    <h3 style={{paddingBottom: `4px`}}>{props.heading || (typeof props.total == `number` ? `${props.total} score${props.total == 1 ? `` : `s`}` : props.total)}</h3>
                     <Splitter style={{ flexGrow: 1, margin: `0px 16px` }} />
                     <AnimatePresence>
                     { 
-                        (page.current <= page.total && page.total != 0) ? (
+                        (page && page.current <= page.total && page.total != 0) ? (
                             <motion.div 
                                 transition={{ duration: 0.2, ease: circOut }}
                                 initial={{ opacity: 0, margin: `0px -50px`, scaleX: 0, x: 50 }}

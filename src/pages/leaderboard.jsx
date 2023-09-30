@@ -16,7 +16,11 @@ import Wallpaper from '../scripts/wallpaper';
 import enums from '../../util/enum';
 import time from '../../util/time';
 
+import { notFound } from 'next/navigation';
+
 export default function LeaderboardList({ bpApiLocation, query, mapDetails }) {
+    if(!mapDetails || !mapDetails.versions) return notFound();
+
     const mapHash = `${query.id}`.toUpperCase();
 
     const perPage = 10;
