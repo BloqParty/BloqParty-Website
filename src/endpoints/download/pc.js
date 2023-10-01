@@ -18,7 +18,7 @@ module.exports = (req, res) => {
             if(data.zip) {
                 console.debug(`Sending zip`, data);
                 res.setHeader(`Content-Disposition`, `attachment; filename="BPLB-PC ${data.version}.zip"`);
-                res.setHeader(`Content-Type`, `application/zip`);
+                res.setHeader(`Content-Type`, `application/octet-stream`);
                 res.send(Buffer.from(data.zip));
             } else if(data.error) {
                 res.status(500).send(data.error);
