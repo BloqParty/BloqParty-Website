@@ -41,30 +41,28 @@ export const recentScores = ({
 
     fetch(`https://api.thebedroom.party/leaderboard/recent?limit=${limit}&page=${offset}${id ? `&id=${id}` : ''}`)
         .then(r => r.json())
-        .then(r => {
-            const lastValidPosition = r.slice(-1)[0]?.position || 0;
-            const rawEntriesLength = r.length;
-            
-            r.push(...(Array.from(Array(limit - (r || []).length).keys())));
+        .then((r) => {
+            console.log(`got recentscores [pre]`, r);
 
-            r = r.map((o, i) => {
-                if(typeof o != `object`) {
-                    o = {
-                        empty: true,
-                        position: lastValidPosition + i - offset - rawEntriesLength + 1,
-                    }
-                }
+            r.scores.push(...Array.from(Array(limit - (r.scores || []).length).keys()).map((o,i) => ({ empty: true, id: `${i}` })));
 
-                return Object.assign(o, { 
-                    key: `${o.id}-${o.hash}-${o.char}-${o.diff}`,
+            r.scores = r.scores.map((o, i) => {
+                Object.assign(o, o.scores || {})
+
+                Object.assign(o, { 
+                    key: `${i}-${o.id}-${o.hash}-${o.char}-${o.diff}`,
                     id: `${typeof o.id == `object` ? `(i64 lol)` : o.id}`
-                }, o.scores || {});
+                });
+
+                console.log(`got recentscores [pre] [1]`, o.key);
+
+                return o;
             });
 
-            console.log(`got recentscores`, r);
+            console.log(`got recentscores`, r.scores);
 
             if(lookup) {
-                recentBeatSaverLookup(r).then(res).catch(e => rej(`${e}`));
+                recentBeatSaverLookup(r.scores).then(n => res({ scores: n, scoreCount: r.scoreCount })).catch(e => rej(`${e}`));
             } else {
                 res(r);
             }

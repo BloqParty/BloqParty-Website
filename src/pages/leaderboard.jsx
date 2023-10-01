@@ -327,11 +327,12 @@ export default function LeaderboardList({ bpApiLocation, query, mapDetails }) {
                 mapHash={scores.mapHash} 
                 total={scores.total} 
                 entries={scores.entries} 
-                offset={scores.offset} page={{
+                offset={scores.offset} 
+                page={{
                     current: scores.page,
                     total: scores.totalPages,
                     set: (hash, num) => getScores(hash, undefined, undefined, num)
-                }} 
+                }}
             />
         </div>
     )

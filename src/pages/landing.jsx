@@ -13,44 +13,68 @@ import { Context } from '../util/context';
 export default function Landing() {
     const [ recent, setRecent ] = useState({
         entries: [],
-        offset: 0,
-        loading: `Getting recent scores...`,
+        page: 1,
+        totalPages: 0,
+        loading: false,
         error: false,
     });
 
-    useEffect(() => {
-        new Wallpaper().set({ url: `/static/banner.png` });
+    const getScores = (page = recent.page) => {
+        console.log(`fetching scores @ page ${page}`);
 
-        recentScores().then((data) => {
-            if(Array.isArray(data) && data.length) data = data.map(o => Object.assign({}, o, o.hash ? {
+        setRecent({
+            ...recent,
+            entries: [],
+            page: page,
+            totalPages: 0,
+            loading: `Getting recent scores...`,
+            error: false,
+        });
+
+        recentScores({
+            offset: page-1,
+        }).then((data) => {
+            if(Array.isArray(data.scores) && data.scores.length) data.scores = data.scores.map(o => Object.assign({}, o, o.hash ? {
                 thumbnail: `https://cdn.beatsaver.com/${o.hash.toLowerCase()}.jpg`,
-            } : o.id ? {
-                thumbnail: Context.props.bpApiLocation + `/user` + user.avatar.split(`/user`).slice(1).join(`/user`)
             } : {}));
 
-            setRecent({
-                entries: data,
-                offset: 0,
-                loading: false,
-                error: false,
-            });
+            console.log(`scores`, data.scores);
 
-            recentBeatSaverLookup(data).then((updated) => {
+            const newRecent = {
+                ...recent,
+                page: page,
+                entries: data.scores,
+                totalPages: Math.min(5, data.scoreCount ? Math.ceil(data.scoreCount / 10) : 1),
+                loading: false,
+                error: null
+            };
+
+            setRecent(newRecent);
+
+            console.log(`getting beatsaver data`, newRecent)
+
+            recentBeatSaverLookup(data.scores).then((updated) => {
                 setRecent({
+                    ...newRecent,
                     entries: updated,
-                    offset: 0,
-                    loading: false,
-                    error: false,
                 });
             });
         }).catch((err) => {
+            console.log(`error at user page`, err);
             setRecent({
                 entries: [],
-                offset: 0,
+                page: page,
+                totalPages: 0,
                 loading: false,
                 error: err,
             })
         });
+    }
+
+    useEffect(() => {
+        new Wallpaper().set({ url: `/static/banner.png` });
+
+        getScores();
     }, []);
 
     return (
@@ -61,7 +85,12 @@ export default function Landing() {
                 loading={recent.loading} 
                 error={recent.error}
                 entries={recent.entries}
-                heading="Recent Scores"
+                heading="Recent"
+                page={{
+                    current: recent.page,
+                    total: recent.totalPages,
+                    set: (nonexistenthashlol, num) => getScores(num)
+                }} 
             />
         </>
     )

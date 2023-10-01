@@ -28,12 +28,16 @@ function Login({ query, bpApiLocation, userState }) {
         wallpaper: null,
     });
 
-    const [ recent, setRecent ] = useState({
+    const defaultRecent = {
         entries: [],
+        total: null,
         page: 1,
+        totalPages: 0,
         loading: false,
         error: false,
-    });
+    }
+
+    const [ recent, setRecent ] = useState(defaultRecent);
 
     const [ modifications, setModifications ] = useState(initialMods);
 
@@ -53,44 +57,44 @@ function Login({ query, bpApiLocation, userState }) {
     const getScores = (page = recent.page) => {
         console.log(`fetching scores @ page ${page}`);
 
-        setRecent({
-            entries: [],
-            offset: page,
-            loading: `Getting recent scores...`,
-            error: false,
-        });
+        setRecent(defaultRecent);
 
         recentScores({
             id: userState.user.game_id,
             offset: page-1,
         }).then((data) => {
-            if(Array.isArray(data) && data.length) data = data.map(o => Object.assign({}, o, o.hash ? {
+            if(Array.isArray(data.scores) && data.scores.length) data.scores = data.scores.map(o => Object.assign({}, o, o.hash ? {
                 thumbnail: `https://cdn.beatsaver.com/${o.hash.toLowerCase()}.jpg`,
             } : {}));
 
-            console.log(`data`, data);
+            console.log(`scores`, data.scores);
 
-            setRecent({
-                entries: mapScores(data),
-                offset: page,
+            const newRecent = {
+                ...recent,
+                page: page,
+                entries: mapScores(data.scores),
+                total: data.scoreCount,
+                totalPages: data.scoreCount ? Math.ceil(data.scoreCount / 10) : -1,
                 loading: false,
                 error: null
-            });
+            };
 
-            console.log(`getting beatsaver data`)
+            setRecent(newRecent);
 
-            recentBeatSaverLookup(data).then((updated) => {
+            console.log(`getting beatsaver data`, newRecent)
+
+            recentBeatSaverLookup(data.scores).then((updated) => {
                 setRecent({
-                    ...recent,
-                    offset: page,
+                    ...newRecent,
                     entries: mapScores(updated),
                 });
             });
         }).catch((err) => {
-            console.log(`error`, err);
+            console.log(`error at user page`, err);
             setRecent({
                 entries: [],
-                offset: 0,
+                page: page,
+                totalPages: 0,
                 loading: false,
                 error: err,
             })
@@ -457,11 +461,10 @@ function Login({ query, bpApiLocation, userState }) {
                 loading={recent.loading} 
                 error={recent.error}
                 entries={recent.entries}
-                heading="Recent Scores"
+                total={recent.total}
                 page={{
-                    current: recent.offset,
-                    //total: scores.totalPages, i forgor to implement in api
-                    total: -1,
+                    current: recent.page,
+                    total: recent.totalPages,
                     set: (nonexistenthashlol, num) => getScores(num)
                 }} 
             />
