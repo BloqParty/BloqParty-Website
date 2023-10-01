@@ -206,25 +206,23 @@ export default function LeaderboardList({ bpApiLocation, query, mapDetails }) {
                         error: null
                     };
 
-                    const lastValidPosition = newScores.entries.slice(-1)[0]?.position || 0;
-                    const rawEntriesLength = newScores.entries.length;
-
-                    console.log(`lastValidPosition`, lastValidPosition);
-
                     newScores.entries.push(...(Array.from(Array(perPage - (newScores.entries || []).length).keys())));
 
                     newScores.entries = newScores.entries.map((o, i) => {
                         if(typeof o != `object`) {
                             o = {
                                 empty: true,
-                                position: lastValidPosition + i - newScores.offset - rawEntriesLength + 1,
                             }
                         }
 
-                        return Object.assign(o, { 
+                        Object.assign(o, { 
                             key: `${newScores.char}-${newScores.diff}-${o.position}`,
-                            id: `${typeof o.id == `object` ? `(i64 lol)` : o.id}` 
-                        });;
+                            id: `${typeof o.id == `object` ? `(i64 lol)` : o.id}`
+                        });
+
+                        return Object.assign(o, {
+                            link: o.id && o.id != `undefined` && `/user/${o.id}` || null,
+                        })
                     });
 
                     console.log(`new scores:`, newScores.entries)

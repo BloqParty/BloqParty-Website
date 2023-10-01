@@ -41,13 +41,54 @@ export const EntryStyle = {
     //boxShadow: `0 3px 10px rgb(0 0 0 / 0.2)`
 }
 
+export const expandedInfo = (entry) => {
+    const expanded = [];
+
+    if(typeof entry.fcAccuracy == `number`) expanded.push({
+        key: `fcacc`,
+        icon: icon({name: 'check'}),
+        title: `Full Combo Accuracy`,
+        value: `FC: ${entry.fcAccuracy.toFixed(2)}%`,
+    });
+
+    if(typeof entry.modifiers == `string`) expanded.push({
+        key: `modifiers`,
+        icon: icon({name: 'gear'}),
+        title: entry.modifiers.trim() && `Modifiers Used: ${entry.modifiers.trim()}` || `No Modifiers Used`,
+        value: `${entry.modifiers.trim().split(` `).filter(Boolean).length}`,
+    });
+
+    if(typeof entry.pauses == `number`) expanded.push({
+        key: `pauses`,
+        icon: icon({name: 'pause'}),
+        title: `${entry.pauses} pause${entry.pauses == 1 ? `` : `s`}`,
+        value: `${entry.pauses}`,
+    });
+
+    if(typeof entry.avgHandAccLeft == `number` && typeof entry.avgHandAccRight == `number`) expanded.push({
+        key: `handacc`,
+        title: `Hand Accuracy\n\nLeft: ${entry.avgHandAccLeft}%\nRight: ${entry.avgHandAccRight}%`,
+        icon: icon({name: 'hand'}),
+        value: `${entry.avgHandAccLeft.toFixed(2)}% | ${entry.avgHandAccRight.toFixed(2)}%`,
+    });
+
+    if(typeof entry.avgHandTDLeft == `number` && typeof entry.avgHandTDRight == `number`) expanded.push({
+        key: `td`,
+        title: `Time Dependency\n\nLeft: ${entry.avgHandTDLeft}\nRight: ${entry.avgHandTDRight}`,
+        icon: icon({name: 'clock', style: 'regular'}),
+        value: `${entry.avgHandTDLeft.toFixed(4)}% | ${entry.avgHandTDRight.toFixed(4)}%`,
+    });
+
+    return expanded;
+}
+
 export class EntryNoStyle extends Component {
     render() {
         const { entry } = this.props;
 
         console.log(entry);
 
-        const entryData = (
+        return (
             <div className="lb-rootns lb-row" style={this.props.style || {}}>
                 <div style={{
                     display: `flex`,
@@ -57,7 +98,7 @@ export class EntryNoStyle extends Component {
                     <div className="lb-detailheading">
                         { (entry.map?.metadata?.songName) && (
                             <DetailBlock style={{
-                                margin: `8px 4px 0px 0px`,
+                                margin: `4px`,
                             }} icon={icon({name: 'music'})} value={(
                                 <div style={{...row, alignItems: `flex-end`}}>
                                     {entry.map.metadata.songName}
@@ -68,76 +109,77 @@ export class EntryNoStyle extends Component {
                             )} href={entry.hash && `/leaderboard/${entry.hash}`} />
                         ) || entry.name && (
                             <DetailBlock style={{
-                                margin: `8px 4px 0px 0px`,
+                                margin: `4px`,
                             }} icon={icon({name: 'music'})} value={entry.name} href={entry.hash && `/leaderboard/${entry.hash}`} />
                         ) }
 
                         { (entry.char && entry.diff) && (
                             <DetailBlock style={{
-                                margin: `8px 4px 0px 0px`,
+                                margin: `4px`,
                             }} icon={icon({name: 'trophy'})} value={`${entry.char} / ${enums.diff[entry.diff]}`} href={entry.hash && `/leaderboard/${entry.hash}?char=${entry.char}&diff=${entry.diff}`} />
                         ) }
                     </div>
 
                     <div className="lb-row" style={{ width: `100%` }}>
-                        <div className="lb-row lb-user" style={{
-                            ...(entry.empty ? { flexGrow: 1 } : {}),
-                            ...(entry.id ? { cursor: `pointer` } : {}),
-                        }} onClick={entry.id && (() => window.location.href = `/user/${entry.id}`) || null}>
-                            { entry.position && (
-                                <p className="lb-position">{entry.position}</p>
-                            ) }
+                        <a href={entry.link}>
+                            <div className="lb-row lb-user" style={{
+                                ...(entry.empty ? { flexGrow: 1 } : {}),
+                            }}>
+                                { entry.position && (
+                                    <p className="lb-position">{entry.position}</p>
+                                ) }
 
-                            { !entry.empty && (
-                                <>
-                                    <img src={entry.avatar} style={{
-                                        backgroundSize: `cover`,
-                                        backgroundPosition: `center`,
-                                        backgroundRepeat: `no-repeat`,
-                                        backgroundColor: `rgba(0, 0, 0, 0.5)`,
-                                        boxShadow: `0 3px 10px rgb(0 0 0 / 0.2)`,
-                                        borderRadius: `100%`,
-                                        marginRight: `20px`,
-                                        width: `47px`,
-                                        height: `47px`,
-                                    }} />
+                                { !entry.empty && (
+                                    <>
+                                        <img src={entry.avatar} style={{
+                                            backgroundSize: `cover`,
+                                            backgroundPosition: `center`,
+                                            backgroundRepeat: `no-repeat`,
+                                            backgroundColor: `rgba(0, 0, 0, 0.5)`,
+                                            boxShadow: `0 3px 10px rgb(0 0 0 / 0.2)`,
+                                            borderRadius: `100%`,
+                                            marginRight: `20px`,
+                                            width: `47px`,
+                                            height: `47px`,
+                                        }} />
 
-                                    <div style={column}>
-                                        {
-                                            entry.username ? (
-                                                <p className="lb-username" style={{
-                                                    fontSize: `1.2em`,
-                                                }}>{entry.username}</p>
-                                            ) : entry.id ? (
-                                                <div className="lb-row lb-username">
-                                                    <p style={{
-                                                        fontSize: `1.3em`,
-                                                        fontStyle: `italic`,
-                                                        opacity: 0.7,
-                                                    }}></p>
-                                                    <DetailBlock width="40px" color="#00000088" icon={icon({name: 'circle-info'})} title={`${entry.id}\n\nThere is no username on this account; the score ID is shown instead.`} value="ID" />
-                                                </div>
-                                            ) : (
-                                                <div className="lb-row lb-username">
-                                                    <p style={{
-                                                        fontSize: `1.1em`,
-                                                        fontStyle: `italic`,
-                                                        opacity: 0.4,
-                                                    }}>{`--`}</p>
-                                                    <DetailBlock width="28px" color="#00000088" icon={icon({name: 'circle-info'})} title="There is no username or score ID to show." value="ID" />
-                                                </div>
-                                            )
-                                        }
+                                        <div style={column}>
+                                            {
+                                                entry.username ? (
+                                                    <p className="lb-username" style={{
+                                                        fontSize: `1.2em`,
+                                                    }}>{entry.username}</p>
+                                                ) : entry.id ? (
+                                                    <div className="lb-row lb-username">
+                                                        <p style={{
+                                                            fontSize: `1.3em`,
+                                                            fontStyle: `italic`,
+                                                            opacity: 0.7,
+                                                        }}></p>
+                                                        <DetailBlock width="40px" color="#00000088" icon={icon({name: 'circle-info'})} title={`${entry.id}\n\nThere is no username on this account; the score ID is shown instead.`} value="ID" />
+                                                    </div>
+                                                ) : (
+                                                    <div className="lb-row lb-username">
+                                                        <p style={{
+                                                            fontSize: `1.1em`,
+                                                            fontStyle: `italic`,
+                                                            opacity: 0.4,
+                                                        }}>{`--`}</p>
+                                                        <DetailBlock width="28px" color="#00000088" icon={icon({name: 'circle-info'})} title="There is no username or score ID to show." value="ID" />
+                                                    </div>
+                                                )
+                                            }
 
-                                        { entry.timeSet && (
-                                            <h6 style={{ opacity: 0.5 }}>{time(Date.now() - (entry.timeSet*1000), true).string} ago</h6>
-                                        ) }
-                                    </div>
-                                </>
-                            ) || (
-                                <h5 style={{ marginLeft: `20px`, opacity: 0.5, pointerEvents: `none`, userSelect: `none` }}>-- no entry --</h5>
-                            ) }
-                        </div>
+                                            { entry.timeSet && (
+                                                <h6 style={{ opacity: 0.5 }}>{time(Date.now() - (entry.timeSet*1000), true).string} ago</h6>
+                                            ) }
+                                        </div>
+                                    </>
+                                ) || (
+                                    <h5 style={{ marginLeft: `20px`, opacity: 0.5, pointerEvents: `none`, userSelect: `none` }}>-- no entry --</h5>
+                                ) }
+                            </div>
+                        </a>
 
                         { !entry.empty && (
                             <div className="lb-row lb-details">
@@ -153,28 +195,40 @@ export class EntryNoStyle extends Component {
                                     }
 
                                     <DetailBlock style={block} icon={icon({name: 'percent'})} title={`Accuracy: ${entry.accuracy}`} value={(parseFloat(entry.accuracy || 0.00)).toFixed(2)} />
-
-                                    {
-                                        entry.modifiers.trim().split(` `).filter(Boolean).length && (
-                                            <DetailBlock style={block} icon={icon({name: 'gear'})} title={`Modifiers Used: ${entry.modifiers}`} value={`[${entry.modifiers.trim().split(` `).filter(Boolean).length}]`} />
-                                        ) || null
-                                    }
                                 </div>
+
+                                <a style={{
+                                    transform: `rotate(${entry.expanded ? 180 : 0}deg)`,
+                                    margin: `4px`,
+                                }} href="#" onClick={() => {
+                                    if(entry.expanded) {
+                                        entry.expanded = false;
+                                        this.forceUpdate();
+                                    } else {
+                                        entry.expanded = true
+                                        this.forceUpdate();
+                                    }
+                                }}>
+                                    <FontAwesomeIcon icon={icon({name: 'chevron-down'})} />
+                                </a>
                             </div>
                         ) }
                     </div>
+
+                    {
+                        entry.expanded && (
+                            <div className="lb-detailfooting">
+                                {
+                                    expandedInfo(entry).map(o => <DetailBlock style={{
+                                        margin: `4px`,
+                                    }} {...o} />)
+                                }
+                            </div>
+                        ) || null
+                    }
                 </div>
             </div>
-        );
-
-        return entry.link && (
-            <div style={{
-                cursor: `pointer`,
-                width: `100%`,
-            }} onClick={() => window.location = entry.link}>
-                {entryData}
-            </div>
-        ) || entryData;
+        )
     }
 }
 
@@ -231,4 +285,5 @@ export class Entry extends Component {
 }
 
 import getServerSideProps from '../../util/getServerSideProps';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 export { getServerSideProps }

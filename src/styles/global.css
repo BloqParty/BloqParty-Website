@@ -11,6 +11,11 @@ div {
     justify-content: center;
 }
 
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
 * {
     font-family: Alata, Helvetica, sans-serif;
     font-weight: normal;

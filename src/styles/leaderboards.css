@@ -28,6 +28,16 @@
 }
 
 .lb-detailheading {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%
+}
+
+.lb-detailfooting {
+    margin-bottom: 8px;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -120,11 +130,11 @@
         flex-direction: row-reverse;
     }
 
-    .lb-detailheading {
+    .lb-detailheading, .lb-detailfooting {
         flex-direction: column;
     }
 
-    .lb-detailheading * {
+    .lb-detailheading *, .lb-detailfooting * {
         flex-direction: column;
         flex-grow: 1;
     }

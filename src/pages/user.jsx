@@ -49,7 +49,7 @@ function Login({ query, bpApiLocation, userState }) {
         o.map = null;
         o.id = null;
         o.avatar = o.thumbnail;
-        o.link = `/leaderboard/${o.hash}`;
+        o.link = o.hash && `/leaderboard/${o.hash}` || null;
 
         return o;
     });
