@@ -21,6 +21,13 @@ const defaults = {
         discordClientSecret: null,
         discordGuildID: null,
         githubAccessToken: null,
+    },
+
+    authflow: {
+        allowExisting: false,
+        lock: {
+            testers: false
+        }
     }
 };
 
