@@ -36,6 +36,8 @@ export default function Landing() {
         }).then((data) => {
             if(Array.isArray(data.scores) && data.scores.length) data.scores = data.scores.map(o => Object.assign({}, o, o.hash ? {
                 thumbnail: `https://cdn.beatsaver.com/${o.hash.toLowerCase()}.jpg`,
+            } : {}, o.id ? {
+                link: `/user/${o.id}`
             } : {}));
 
             console.log(`scores`, data.scores);
