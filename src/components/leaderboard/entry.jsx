@@ -44,18 +44,35 @@ export const EntryStyle = {
 export const expandedInfo = (entry) => {
     const expanded = [];
 
+    if(typeof entry.modifiedScore == `number`) expanded.push({
+        key: `modscore`,
+        icon: icon({name: 'gamepad'}),
+        color: `#34eb9e`,
+        title: `Modified Score`,
+        value: `${thousands(entry.modifiedScore)}`,
+    });
+
+    if(typeof entry.multipliedScore == `number` && entry.multipliedScore != entry.modifiedScore) expanded.push({
+        key: `multscore`,
+        icon: icon({name: 'gamepad'}),
+        color: `#73afc9`,
+        title: `Multiplied Score`,
+        value: `${thousands(entry.multipliedScore)}`,
+    });
+
     if(typeof entry.fcAccuracy == `number`) expanded.push({
         key: `fcacc`,
         icon: icon({name: 'check'}),
+        color: `#557482`,
         title: `Full Combo Accuracy`,
         value: `FC: ${entry.fcAccuracy.toFixed(2)}%`,
     });
 
-    if(typeof entry.modifiers == `string`) expanded.push({
+    if(typeof entry.modifiers == `string` && entry.modifiers.trim()) expanded.push({
         key: `modifiers`,
         icon: icon({name: 'gear'}),
         title: entry.modifiers.trim() && `Modifiers Used: ${entry.modifiers.trim()}` || `No Modifiers Used`,
-        value: `${entry.modifiers.trim().split(` `).filter(Boolean).length}`,
+        value: `${entry.modifiers.trim()}`,
     });
 
     if(typeof entry.pauses == `number`) expanded.push({
@@ -67,16 +84,16 @@ export const expandedInfo = (entry) => {
 
     if(typeof entry.leftHandAccuracy == `number` && typeof entry.rightHandAccuracy == `number`) expanded.push({
         key: `handacc`,
-        title: `Hand Accuracy\n\nLeft: ${entry.avgHandAccLeft}%\nRight: ${entry.rightHandAccuracy}%`,
+        title: `Hand Accuracy\n\nLeft: ${entry.leftHandAccuracy}%\nRight: ${entry.rightHandAccuracy}%`,
         icon: icon({name: 'hand'}),
-        value: `${entry.avgHandAccLeft.toFixed(2)}% | ${entry.rightHandAccuracy.toFixed(2)}%`,
+        value: `${entry.leftHandAccuracy.toFixed(2)}% | ${entry.rightHandAccuracy.toFixed(2)}%`,
     });
 
     if(typeof entry.leftHandTimeDependency == `number` && typeof entry.rightHandTimeDependency == `number`) expanded.push({
         key: `td`,
-        title: `Time Dependency\n\nLeft: ${entry.leftHandTimeDependency}\nRight: ${entry.avgHandTDRight}`,
+        title: `Time Dependency\n\nLeft: ${entry.leftHandTimeDependency}\nRight: ${entry.rightHandTimeDependency}`,
         icon: icon({name: 'clock', style: 'regular'}),
-        value: `${entry.leftHandTimeDependency.toFixed(4)}% | ${entry.avgHandTDRight.toFixed(4)}%`,
+        value: `${entry.leftHandTimeDependency.toFixed(4)} | ${entry.rightHandTimeDependency.toFixed(4)}`,
     });
 
     return expanded;
@@ -183,7 +200,7 @@ export class EntryNoStyle extends Component {
 
                         { !entry.empty && (
                             <div className="lb-row lb-details">
-                                <h4 style={{marginRight: `12px`}} title={`Without multipliers: ${thousands(entry.multipliedScore)}`}>{thousands(entry.modifiedScore)}</h4>
+                                <h4 style={{marginRight: `12px`}}>{Number(entry.accuracy).toFixed(2)}%</h4>
 
                                 <div className="lb-row lb-detailblocks">
                                     {
@@ -193,14 +210,13 @@ export class EntryNoStyle extends Component {
                                             <DetailBlock style={block} color="#db515f" icon={icon({name: 'x'})} title={`${entry.misses || 0} miss / ${entry.badCuts || 0} bad cut`} value={((entry.misses || 0) + (entry.badCuts || 0)) || 0} />
                                         )
                                     }
-
-                                    <DetailBlock style={block} icon={icon({name: 'percent'})} title={`Accuracy: ${entry.accuracy}`} value={(parseFloat(entry.accuracy || 0.00)).toFixed(2)} />
                                 </div>
 
                                 <a style={{
                                     transform: `rotate(${entry.expanded ? 180 : 0}deg)`,
                                     margin: `4px`,
-                                }} href="#" onClick={() => {
+                                    cursor: `pointer`
+                                }} onClick={() => {
                                     if(entry.expanded) {
                                         entry.expanded = false;
                                         this.forceUpdate();

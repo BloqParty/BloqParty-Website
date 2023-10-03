@@ -28,6 +28,7 @@
 }
 
 .lb-detailheading {
+    flex-wrap: wrap;
     margin-top: 8px;
     display: flex;
     flex-direction: row;
@@ -37,6 +38,7 @@
 }
 
 .lb-detailfooting {
+    flex-wrap: wrap;
     margin-bottom: 8px;
     display: flex;
     flex-direction: row;
@@ -75,15 +77,7 @@
 
 /* window size */
 
-@media only screen and (max-width: 800px) and (min-width: 651px) {
-    .lb-details {
-        flex-direction: column;
-        justify-content: center;
-        align-items: flex-end;
-    }
-}
-
-@media only screen and (max-width: 650px) and (min-width: 551px) {
+@media only screen and (max-width: 650px) and (min-width: 601px) {
     .lb-detailblocks {
         flex-wrap: wrap;
     }
@@ -95,7 +89,7 @@
     }
 }
 
-@media only screen and (max-width: 550px) {
+@media only screen and (max-width: 600px) {
     .lb-detailblocks {
         flex-wrap: wrap;
     }
