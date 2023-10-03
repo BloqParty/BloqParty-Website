@@ -65,18 +65,18 @@ export const expandedInfo = (entry) => {
         value: `${entry.pauses}`,
     });
 
-    if(typeof entry.avgHandAccLeft == `number` && typeof entry.avgHandAccRight == `number`) expanded.push({
+    if(typeof entry.leftHandAccuracy == `number` && typeof entry.rightHandAccuracy == `number`) expanded.push({
         key: `handacc`,
-        title: `Hand Accuracy\n\nLeft: ${entry.avgHandAccLeft}%\nRight: ${entry.avgHandAccRight}%`,
+        title: `Hand Accuracy\n\nLeft: ${entry.avgHandAccLeft}%\nRight: ${entry.rightHandAccuracy}%`,
         icon: icon({name: 'hand'}),
-        value: `${entry.avgHandAccLeft.toFixed(2)}% | ${entry.avgHandAccRight.toFixed(2)}%`,
+        value: `${entry.avgHandAccLeft.toFixed(2)}% | ${entry.rightHandAccuracy.toFixed(2)}%`,
     });
 
-    if(typeof entry.avgHandTDLeft == `number` && typeof entry.avgHandTDRight == `number`) expanded.push({
+    if(typeof entry.leftHandTimeDependency == `number` && typeof entry.rightHandTimeDependency == `number`) expanded.push({
         key: `td`,
-        title: `Time Dependency\n\nLeft: ${entry.avgHandTDLeft}\nRight: ${entry.avgHandTDRight}`,
+        title: `Time Dependency\n\nLeft: ${entry.leftHandTimeDependency}\nRight: ${entry.avgHandTDRight}`,
         icon: icon({name: 'clock', style: 'regular'}),
-        value: `${entry.avgHandTDLeft.toFixed(4)}% | ${entry.avgHandTDRight.toFixed(4)}%`,
+        value: `${entry.leftHandTimeDependency.toFixed(4)}% | ${entry.avgHandTDRight.toFixed(4)}%`,
     });
 
     return expanded;

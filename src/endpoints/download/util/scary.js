@@ -1,1 +1,1 @@
-module.exports = (user) => btoa(`${user.key},${user.game_id}`);
+module.exports = (user) => btoa(`${user.key},${user.gameID}`);

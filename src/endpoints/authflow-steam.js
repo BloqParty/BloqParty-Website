@@ -95,12 +95,12 @@ module.exports = [
                     const body = JSON.parse(text);
                     console.debug(`User exists:`, body);
 
-                    const thisTest = test(body.game_id, true);
+                    const thisTest = test(body.gameID, true);
 
                     if(thisTest === true) {
-                        superagent.post(api.bpApiLocation + `/user/${body.game_id}/apikey`).set(`Authorization`, api.bpApi).then(({ text }) => {
+                        superagent.post(api.bpApiLocation + `/user/${body.gameID}/apikey`).set(`Authorization`, api.bpApi).then(({ text }) => {
                             res.finishLogin({
-                                id: body.game_id,
+                                id: body.gameID,
                                 key: JSON.parse(text).apiKey
                             });
                         }).catch(e => {

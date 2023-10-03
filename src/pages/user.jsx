@@ -41,7 +41,7 @@ function Login({ query, bpApiLocation, userState }) {
 
     const [ modifications, setModifications ] = useState(initialMods);
 
-    const styleOverrides = userOverrides[userState.user?.game_id] || {};
+    const styleOverrides = userOverrides[userState.user?.gameID] || {};
 
     const mapScores = data => data.slice().map(o => {
         o.username = o.map?.metadata?.songName || o.name;
@@ -60,7 +60,7 @@ function Login({ query, bpApiLocation, userState }) {
         setRecent(defaultRecent);
 
         recentScores({
-            id: userState.user.game_id,
+            id: userState.user.gameID,
             offset: page-1,
         }).then((data) => {
             if(Array.isArray(data.scores) && data.scores.length) data.scores = data.scores.map(o => Object.assign({}, o, o.hash ? {
@@ -109,7 +109,7 @@ function Login({ query, bpApiLocation, userState }) {
 
         setState(newState)
 
-        console.log(`user loading ${bpApiLocation}`, userState.user.game_id);
+        console.log(`user loading ${bpApiLocation}`, userState.user.gameID);
 
         if(userState.exists) {
             if(styleOverrides.rain) styleOverrides.rain(`.tg`)
@@ -129,7 +129,7 @@ function Login({ query, bpApiLocation, userState }) {
                 description={styleOverrides.embed?.description}
                 image={styleOverrides.embed?.image || userState.user?.avatar}
                 color={styleOverrides.embed?.color}
-                url={`https://thebedroom.party/user/${userState.user?.game_id}`}
+                url={`https://thebedroom.party/user/${userState.user?.gameID}`}
             />
 
             {
@@ -410,7 +410,7 @@ function Login({ query, bpApiLocation, userState }) {
                             ] : []
                         } 
                         diffTags={
-                            user.user?.id === userState.user.game_id ? [
+                            user.user?.id === userState.user.gameID ? [
                                 {
                                     value: `Set new Avatar`,
                                     key: `set-avatar`,
@@ -509,7 +509,7 @@ export async function getServerSideProps(req) {
                     loading: false,
                     exists: false,
                     user: {
-                        game_id: props.query.id,
+                        gameID: props.query.id,
                         username: `Not found`,
                     },
                 }

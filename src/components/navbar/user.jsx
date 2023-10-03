@@ -38,14 +38,14 @@ function User({ navbar, cookies }) {
                     user: {
                         key: user.key,
                         name: user.username,
-                        id: user.game_id,
+                        id: user.gameID,
                         avatarURL: user.avatar,
                     }
                 });
                 navbar.set([
                     <DetailBlock href="/logout" value={`Log out`} icon={icon({name: 'arrow-right-from-bracket'})} color="#c24c44" />,
                     <DetailBlock href="/download" value={`Download`} icon={icon({name: 'download'})} />,
-                    <DetailBlock href={`/user/${user.game_id}`} value={user.username} icon={icon({name: 'user'})} />,
+                    <DetailBlock href={`/user/${user.gameID}`} value={user.username} icon={icon({name: 'user'})} />,
                 ]);
             })
             .catch(e => {
