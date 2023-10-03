@@ -212,7 +212,9 @@ export default function LeaderboardList({ bpApiLocation, query, mapDetails }) {
                         if(typeof o != `object`) {
                             o = {
                                 empty: true,
-                            }
+                            };
+
+                            return o;
                         }
 
                         Object.assign(o, { 
