@@ -84,9 +84,9 @@ export const expandedInfo = (entry) => {
 
     if(typeof entry.leftHandAverageScore == `number` && typeof entry.rightHandAverageScore == `number`) expanded.push({
         key: `handacc`,
-        title: `Hand Accuracy\n\nLeft: ${entry.leftHandAverageScore}%\nRight: ${entry.rightHandAverageScore}%`,
+        title: `Hand Accuracy\n\nLeft: ${entry.leftHandAverageScore}\nRight: ${entry.rightHandAverageScore}`,
         icon: icon({name: 'hand'}),
-        value: `${entry.leftHandAverageScore.toFixed(2)}% | ${entry.rightHandAverageScore.toFixed(2)}%`,
+        value: `${entry.leftHandAverageScore.toFixed(2)} | ${entry.rightHandAverageScore.toFixed(2)}`,
     });
 
     if(typeof entry.leftHandTimeDependency == `number` && typeof entry.rightHandTimeDependency == `number`) expanded.push({
