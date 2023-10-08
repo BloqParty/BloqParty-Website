@@ -50,6 +50,20 @@ export default function LeaderboardList({ bpApiLocation, query, mapDetails }) {
         mapper: mapDetails.metadata.levelAuthorName,
         mapOverview: {},
         difficultyMap: {},
+        buttons: [
+            {
+                icon: icon({name: 'hand-pointer'}),
+                title: `OneClick`,
+                key: `oneclick`,
+                href: `beatsaver://${mapDetails.id}`,
+            },
+            {
+                icon: icon({name: 'link'}),
+                title: `BeatSaver page`,
+                key: `beatsaver`,
+                href: `https://beatsaver.com/maps/${mapDetails.id}`,
+            },
+        ],
         tags: [
             {
                 icon: icon({name: 'angle-up'}),
@@ -320,7 +334,7 @@ export default function LeaderboardList({ bpApiLocation, query, mapDetails }) {
                 image={(mapHash && `/leaderboard/${mapHash}/embed`) || state.image}
             />
 
-            <Heading loading={state.loading} mapper={state.mapper} image={state.image} artist={state.artist} title={state.title} description={state.description} tags={state.tags} diffTags={state.diffTags} />
+            <Heading loading={state.loading} mapper={state.mapper} image={state.image} artist={state.artist} title={state.title} description={state.description} buttons={state.buttons} tags={state.tags} diffTags={state.diffTags} />
             <Leaderboard
                 loading={scores.loading} 
                 error={scores.error} 
