@@ -31,7 +31,7 @@ module.exports = [
                 console.debug(`No avatar provided`);
                 res.send({ error: `No avatar provided` });
             } else {
-                superagent.post(`${api.bpApiLocation}/user/${id}/avatar/upload`).set(`Authorization`, api.bpApi).send({
+                superagent.post(`${api.bpApiLocation}/user/${id}/update`).set(`Authorization`, api.bpApi).send({
                     avatar: req.body.avatar,
                 }).then(r => {
                     console.debug(`Avatar uploaded:`, r.text);
