@@ -35,6 +35,20 @@ function block(props) {
         } else color = colorInput;
     };
 
+    const leftIconStyle = {}, rightIconStyle = {};
+
+    if((props.value || props.iconR) && props.icon) {
+        Object.assign(leftIconStyle, {
+            marginRight: `4px`,
+        })
+    };
+
+    if((props.value || props.icon) && props.iconR) {
+        Object.assign(rightIconStyle, {
+            marginLeft: `4px`,
+        })
+    };
+
     return (
         <div title={props.title || props.value} style={{
             display: `flex`,
@@ -42,11 +56,15 @@ function block(props) {
             alignItems: `center`,
             justifyContent: `center`,
             //marginLeft: `8px`,
-            minWidth: props.width || `50px`,
+            ...(props.value && {
+                minWidth: props.width || `50px`,
+                padding: `2px 8px`,
+            } || {
+                minWidth: props.width || `28px`,
+            }),
             minHeight: props.height || `28px`,
             maxHeight: props.height || `28px`,
             height: props.height || `28px`,
-            padding: `2px 8px`,
             boxSizing: `border-box`,
             textAlign: `center`,
             fontSize: `10px`,
@@ -57,9 +75,9 @@ function block(props) {
             color: `white`,
             ...props.style,
         }}>
-            {props.icon ? <FontAwesomeIcon icon={props.icon} style={{marginRight: `4px`}} /> : null}
+            {props.icon ? <FontAwesomeIcon icon={props.icon} style={leftIconStyle} /> : null}
             <h3>{props.value}</h3>
-            {props.iconR ? <FontAwesomeIcon icon={props.iconR} style={{marginLeft: `4px`}} /> : null}
+            {props.iconR ? <FontAwesomeIcon icon={props.iconR} style={rightIconStyle} /> : null}
         </div>
     );
 }

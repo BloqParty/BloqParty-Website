@@ -66,11 +66,34 @@ export default class Heading extends Component {
         ) : null;
     }
 
+    tagGroups() {
+        const arr = [ this.props.buttons, this.props.tags, this.props.diffTags ].filter(e => e && Array.isArray(e) && e.length);
+
+        return arr.length ? (
+            <div id="tags" className="heading-tags" style={{
+                display: `flex`,
+                flexDirection: `row`,
+                alignItems: `center`,
+                justifyContent: `start`,
+                marginTop: `20px`,
+                marginLeft: `-4px`,
+                flexWrap: `wrap`,
+            }}>
+                {
+                    arr.map((e, i) => (
+                        <>
+                            { this.tags(e) }
+                            { i < arr.length - 1 ? <Splitter height="20px" /> : null }
+                        </>
+                    ))
+                }
+            </div>
+        ) : null;
+    }
+
     content() {
         const text = this.text();
         const image = this.image();
-        const tags = this.tags(this.props.tags);
-        const diffTags = this.tags(this.props.diffTags);
 
         return (
             <>
@@ -89,31 +112,7 @@ export default class Heading extends Component {
                     {text}
                 )}
 
-                <div id="tags" className="heading-tags" style={{marginLeft: `-4px`}}>
-                    { tags && diffTags ? (
-                        <div style={{
-                            display: `flex`,
-                            flexDirection: `row`,
-                            alignItems: `center`,
-                            justifyContent: `center`,
-                            marginTop: `20px`,
-                        }}>
-                            {tags}
-                            <Splitter height="20px"/>
-                            {diffTags}
-                        </div>
-                    ) : tags || diffTags ? (
-                        <div style={{
-                            display: `flex`,
-                            flexDirection: `row`,
-                            alignItems: `center`,
-                            justifyContent: `center`,
-                            marginTop: `20px`,
-                        }}>
-                            {tags || diffTags}
-                        </div>
-                    ) : null }
-                </div>
+                { this.tagGroups(this.props) }
             </>
         )
     }
