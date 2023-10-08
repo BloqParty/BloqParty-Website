@@ -1,6 +1,7 @@
 const superagent = require(`superagent`);
 const { api } = require(`../../core/config`);
 const login = require(`../../core/login`);
+const loginMiddleware = require(`../../core/middleware/login`);
 const getRelease = require(`../../core/mod/getRelease`)
 
 module.exports = [
@@ -19,26 +20,25 @@ module.exports = [
         },
     },
     {
-        name: `uploadAvatar`,
+        name: `updateUser`,
         method: `post`,
-        endpoint: `/internal/avatar/upload`,
+        endpoint: `/internal/updateUser`,
+        middleware: [loginMiddleware()],
         handle: ({ app }, req, res) => {
-            const { id, key } = req.universalCookies.get(`auth`);
+            const { gameID } = req.user
 
-            console.debug(`Uploading avatar for ${id} with body length of ${req.body?.avatar.length}`);
+            console.debug(`Updating user ${gameID} with body length of ${req.body && JSON.stringify(req.body).length || `(none, where the fuck is the body)`}`);
 
-            if(!req.body?.avatar) {
-                console.debug(`No avatar provided`);
-                res.send({ error: `No avatar provided` });
+            if(!Object.keys(req.body).length) {
+                console.debug(`No body provided`);
+                res.send({ error: `No body provided` });
             } else {
-                superagent.post(`${api.bpApiLocation}/user/${id}/update`).set(`Authorization`, api.bpApi).send({
-                    avatar: req.body.avatar,
-                }).then(r => {
-                    console.debug(`Avatar uploaded:`, r.text);
+                superagent.post(`${api.bpApiLocation}/user/${gameID}/update`).set(`Authorization`, api.bpApi).send(req.body).then(r => {
+                    console.debug(`User updated:`, r.text);
                     res.send({ success: true });
                 }).catch(e => {
-                    console.error(`Error uploading avatar:`, e);
-                    res.send({ error: `Error uploading avatar: ${e}` });
+                    console.error(`Error updating user:`, e);
+                    res.send({ error: `Error updating user: ${e}` });
                 });
             }
         }

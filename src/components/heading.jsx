@@ -23,13 +23,13 @@ export default class Heading extends Component {
             <a onClick={this.props.imageOnClick} style={{
                 ...(this.props.imageOnClick ? {
                     cursor: `pointer`,
-                } : {}),
-                ...(this.props.imageStyle || {})
+                } : {})
             }}>
                 { this.props.image ? <img src={this.props.image} style={{
                     width: `100px`,
                     borderRadius: `10px`,
                     marginRight: `20px`,
+                    ...(this.props.imageStyle || {})
                 }} /> : null }
             </a>
         )

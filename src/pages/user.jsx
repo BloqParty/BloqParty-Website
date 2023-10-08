@@ -15,13 +15,53 @@ import { recentScores, recentBeatSaverLookup } from '../scripts/leaderboard/rece
 
 import userOverrides from '../styles/overrides/user'
 
-function Login({ query, bpApiLocation, userState }) {
+const userDetails = (userState) => {
+    console.log(`userDetails`, userState);
+
+    const exists = {
+        username: userState.user.username ? true : false,
+        description: userState.user.description && userState.user.description != `null` ? true : false,
+    };
+
+    if(!userState.exists) {
+        for(const key in Object.keys(exists)) {
+            exists[key] = false;
+        }
+    };
+
+    const rawValues = {
+        username: exists.username ? userState.user.username : null,
+        description: exists.description ? userState.user.description : null,
+    };
+
+    const values = {
+        username: rawValues.username,
+        description: (
+            rawValues.description || (
+                <div style={{
+                    display: `flex`,
+                    flexDirection: `row`,
+                    alignItems: `center`,
+                }}>
+                    <FontAwesomeIcon icon={icon({name: 'circle-exclamation'})} style={{marginRight: `4px`, width: `14px`, height: `14px`}} />
+                    <i>This user hasn't set a description yet.</i>
+                </div>
+            )
+        ),
+    };
+
+    return { exists, rawValues, values }
+}
+
+function Login({ query, bpApiLocation, userData }) {
+    const [ userState, setUserState ] = useState(userData);
     const { user, setUser } = useContext(Context.User);
 
     let avatarEditor;
 
     const initialMods = {
         avatar: null,
+        user: null,
     }
 
     const [ state, setState ] = useState({
@@ -41,7 +81,7 @@ function Login({ query, bpApiLocation, userState }) {
 
     const [ modifications, setModifications ] = useState(initialMods);
 
-    const styleOverrides = userOverrides[userState.user?.gameID] || {};
+    const styleOverrides = userOverrides[userData.user?.gameID] || {};
 
     const mapScores = data => data.slice().map(o => {
         o.username = o.map?.metadata?.songName || o.name;
@@ -60,7 +100,7 @@ function Login({ query, bpApiLocation, userState }) {
         setRecent(defaultRecent);
 
         recentScores({
-            id: userState.user.gameID,
+            id: userData.user.gameID,
             offset: page-1,
         }).then((data) => {
             if(Array.isArray(data.scores) && data.scores.length) data.scores = data.scores.map(o => Object.assign({}, o, o.hash ? {
@@ -109,12 +149,12 @@ function Login({ query, bpApiLocation, userState }) {
 
         setState(newState)
 
-        console.log(`user loading ${bpApiLocation}`, userState.user.gameID);
+        console.log(`user loading ${bpApiLocation}`, userData.user.gameID);
 
-        if(userState.exists) {
+        if(userData.exists) {
             if(styleOverrides.rain) styleOverrides.rain(`.tg`)
     
-            newState.wallpaper.set({ url: userState.user.avatar });
+            newState.wallpaper.set({ url: userData.user.avatar });
 
             if(!recent.loading && !recent.entries.length) getScores();
         }
@@ -125,11 +165,11 @@ function Login({ query, bpApiLocation, userState }) {
     return (
         <div>
             <SEO
-                title={styleOverrides.embed?.title || `${userState.user?.username || `Unknown Player`} - Bedroom Party Leaderboard`}
-                description={styleOverrides.embed?.description}
-                image={styleOverrides.embed?.image || userState.user?.avatar}
+                title={styleOverrides.embed?.title || `${userData.user?.username || `Unknown Player`} - Bedroom Party Leaderboard`}
+                description={styleOverrides.embed?.description || userData.user?.description || `View the scores of ${userData.user?.username || `Unknown Player`} on the Bedroom Party Leaderboard.`}
+                image={styleOverrides.embed?.image || userData.user?.avatar}
                 color={styleOverrides.embed?.color}
-                url={`https://thebedroom.party/user/${userState.user?.gameID}`}
+                url={`https://thebedroom.party/user/${userData.user?.gameID}`}
             />
 
             {
@@ -233,7 +273,7 @@ function Login({ query, bpApiLocation, userState }) {
                                     ),
                                 },
                             ]} 
-                            diffTags={[
+                            buttons={[
                                 {
                                     value: `Cancel`,
                                     key: `cancel`,
@@ -250,7 +290,7 @@ function Login({ query, bpApiLocation, userState }) {
                                 {
                                     value: `Save`,
                                     key: `save`,
-                                    icon: icon({ name: 'check' }),
+                                    icon: icon({ name: 'floppy-disk' }),
                                     color: "linear-gradient(135deg, rgb(112,143,255) 0%, rgb(198,128,237) 100%)",
                                     onClick: () => {
                                         setModifications({
@@ -268,8 +308,6 @@ function Login({ query, bpApiLocation, userState }) {
                                         const canvas = avatarEditor;
 
                                         if(canvas) {
-                                            state.wallpaper.hide();
-
                                             setModifications({
                                                 ...modifications,
                                                 avatar: {
@@ -288,81 +326,16 @@ function Login({ query, bpApiLocation, userState }) {
                                             // convert canvas to png with base64 encoding
                                             const data = scaledCanvas.toDataURL(`image/png`, 1).split(';base64,')[1];
 
-                                            // upload to server
-                                            fetch(`/internal/avatar/upload`, {
-                                                method: `POST`,
-                                                headers: {
-                                                    'Content-Type': `application/json`
-                                                },
-                                                body: JSON.stringify({
+                                            // add to user object
+
+                                            setModifications({
+                                                ...modifications,
+                                                user: {
+                                                    ...modifications.user,
                                                     avatar: data
-                                                })
-                                            }).then(async res => {
-                                                try {
-                                                    const json = await res.json();
-
-                                                    if(json.error) {
-                                                        console.log(`error: ${json.error}`);
-                                                        setModifications({
-                                                            ...modifications,
-                                                            avatar: {
-                                                                ...modifications.avatar,
-                                                                error: `${json.error}`
-                                                            }
-                                                        });
-                                                    } else {
-                                                        console.log(`no error`);
-                                                        setModifications({
-                                                            ...modifications,
-                                                            avatar: null
-                                                        });
-
-                                                        userState.user.avatar = userState.user.avatar.split(`?`)[0] + `?${Date.now()}`;
-
-                                                        if(state.wallpaper) {
-                                                            console.log(`setting wallpaper`);
-                                                            state.wallpaper.set({ url: userState.user.avatar });
-                                                        } else console.log(`wallpaper not found`);
-
-                                                        const u = user.user;
-
-                                                        const newUser = {
-                                                            ...user,
-                                                            user: {
-                                                                ...u,
-                                                                avatarURL: userState.user.avatar
-                                                            }
-                                                        };
-
-                                                        console.log(`new user`, newUser);
-
-                                                        setUser(newUser);
-                                                    };
-
-                                                    return;
-                                                } catch(e) {
-                                                    console.log(`avatar not updated`);
-                                                    console.log(`error: ${e}`);
-                                                    state.wallpaper.set({ url: userState.user.avatar });
-                                                    setModifications({
-                                                        ...modifications,
-                                                        avatar: {
-                                                            ...modifications.avatar,
-                                                            error: `${e}`
-                                                        }
-                                                    });
-                                                };
-                                            }).catch(e => {
-                                                console.log(`avatar not updated`);
-                                                console.log(`error: ${e}`);
-                                                setModifications({
-                                                    ...modifications,
-                                                    avatar: {
-                                                        ...modifications.avatar,
-                                                        error: `${e}`
-                                                    }
-                                                });
-                                            })
+                                                },
+                                                avatar: null
+                                            });
                                         } else {
                                             console.log(`canvas not found`);
                                             setModifications({
@@ -378,6 +351,209 @@ function Login({ query, bpApiLocation, userState }) {
                             ]}
                         />
                     </div>
+                ) : modifications.user ? (
+                    <Heading 
+                        loading={modifications.user.saving}
+                        reverseLoadingAnimate={true}
+                        image={modifications.user.avatar ? `data:image/png;base64,${modifications.user.avatar}` : userState.user.avatar}
+                        imageStyle={{
+                            width: `150px`,
+                            height: `150px`,
+                            ...(modifications.user.avatar && {
+                                padding: `4px`,
+                                borderStyle: `dashed`,
+                                borderColor: `rgba(255, 255, 255, 0.5)`,
+                            } || {})
+                        }}
+                        style={{ ...(styleOverrides && styleOverrides.heading) }}
+                        title={modifications.user.error || `Edit Profile`}
+                        description={(
+                            <div style={{
+                                display: `flex`,
+                                width: `100%`,
+                                flexDirection: `column`,
+                                alignItems: `start`,
+                                justifyContent: `center`,
+                            }}>
+                                <p style={{ marginBottom: `2px` }}>Username</p>
+                                <input type='text' value={modifications.user.username}  style={{
+                                    width: `100%`,
+                                }} onChange={e => {
+                                    setModifications({
+                                        ...modifications,
+                                        user: {
+                                            ...modifications.user,
+                                            username: e.target.value,
+                                        }
+                                    });
+                                }} />
+
+                                <p style={{ marginTop: `8px`, marginBottom: `2px` }}>Bio</p>
+                                <textarea name='description' cols="40" rows="5" style={{
+                                    resize: `vertical`,
+                                    width: `100%`,
+                                }} value={modifications.user.description} onChange={e => {
+                                    setModifications({
+                                        ...modifications,
+                                        user: {
+                                            ...modifications.user,
+                                            description: e.target.value,
+                                        }
+                                    });
+                                }} />
+                            </div>
+                        )}
+                        buttons={[
+                            {
+                                value: `Set new Avatar`,
+                                key: `set-avatar`,
+                                icon: icon({ name: 'upload' }),
+                                onClick: () => {
+                                    console.log(`set avatar`);
+
+                                    const input = document.createElement(`input`);
+                                    input.type = `file`;
+                                    input.accept = `image/png`;
+        
+                                    input.addEventListener(`change`, () => {
+                                        const file = input.files[0];
+                                        const reader = new FileReader();
+        
+                                        reader.addEventListener(`load`, () => {
+                                            setModifications({
+                                                ...modifications,
+                                                avatar: {
+                                                    scale: 1,
+                                                    rotate: 0,
+                                                    file: reader.result,
+                                                }
+                                            });
+                                        });
+        
+                                        reader.readAsDataURL(file);
+                                    });
+        
+                                    input.click();
+                                }
+                            },
+                        ]}
+                        tags={[
+                            {
+                                value: `Save`,
+                                key: `save-user-details`,
+                                icon: icon({ name: 'floppy-disk' }),
+                                onClick: () => {
+                                    setModifications({
+                                        ...modifications,
+                                        user: {
+                                            ...modifications.user,
+                                            saving: true
+                                        }
+                                    });
+
+                                    if(modifications.user.avatar) state.wallpaper.hide();
+                                    
+                                    // upload to server
+                                    fetch(`/internal/updateUser`, {
+                                        method: `POST`,
+                                        headers: {
+                                            'Content-Type': `application/json`
+                                        },
+                                        body: JSON.stringify(modifications.user)
+                                    }).then(async res => {
+                                        try {
+                                            const json = await res.json();
+
+                                            if(json.error) {
+                                                console.log(`error: ${json.error}`);
+                                                setModifications({
+                                                    ...modifications,
+                                                    user: {
+                                                        ...modifications.user,
+                                                        saving: false,
+                                                        error: `${json.error}`
+                                                    }
+                                                });
+                                            } else {
+                                                console.log(`no error`);
+
+                                                if(modifications.user.avatar) {
+                                                    userState.user.avatar = userState.user.avatar.split(`?`)[0] + `?${Date.now()}`;
+
+                                                    if(state.wallpaper) {
+                                                        console.log(`setting wallpaper`);
+                                                        state.wallpaper.set({ url: userState.user.avatar });
+                                                    } else console.log(`wallpaper not found`);
+                                                }
+
+                                                const u = user.user;
+
+                                                const newUser = {
+                                                    ...user,
+                                                    user: {
+                                                        ...u,
+                                                        ...(modifications.user.avatar && {
+                                                            avatarURL: userState.user.avatar
+                                                        } || {}),
+                                                        username: modifications.user.username || u.username,
+                                                        description: modifications.user.description || u.description,
+                                                    }
+                                                };
+
+                                                console.log(`new user`, newUser);
+
+                                                setModifications(initialMods);
+                                                setUser(newUser);
+                                                setUserState({
+                                                    ...userState,
+                                                    user: {
+                                                        ...userState.user,
+                                                        ...(modifications.user.avatar && {
+                                                            avatar: userState.user.avatar
+                                                        } || {}),
+                                                        username: modifications.user.username || userState.user.username,
+                                                        description: modifications.user.description || userState.user.description,
+                                                    }
+                                                });
+                                            };
+
+                                            return;
+                                        } catch(e) {
+                                            console.log(`avatar not updated`);
+                                            console.log(`error: ${e}`);
+                                            if(modifications.user.avatar) state.wallpaper.set({ url: userState.user.avatar });
+                                            setModifications({
+                                                ...modifications,
+                                                avatar: {
+                                                    ...modifications.avatar,
+                                                    saving: false,
+                                                    error: `${e}`
+                                                }
+                                            });
+                                        };
+                                    }).catch(e => {
+                                        console.log(`avatar not updated`);
+                                        console.log(`error: ${e}`);
+                                        setModifications({
+                                            ...modifications,
+                                            avatar: {
+                                                ...modifications.avatar,
+                                                error: `${e}`
+                                            }
+                                        });
+                                    })
+                                }
+                            },
+                            {
+                                value: `Cancel`,
+                                key: `cancel-user-details`,
+                                icon: icon({ name: 'x' }),
+                                onClick: () => {
+                                    setModifications(initialMods);
+                                }
+                            },
+                        ]}
+                    />
                 ) : (
                     <Heading 
                         loading={userState.loading}
@@ -390,65 +566,32 @@ function Login({ query, bpApiLocation, userState }) {
                             })
                         }}
                         title={
-                            importantMessage || userState.user.username ? 
-                                importantMessage || userState.user.username : 
+                            importantMessage || userDetails(userState).values.username ? 
+                                importantMessage || userDetails(userState).values.username : 
                             <>
                                 <FontAwesomeIcon icon={icon({name: 'circle-exclamation'})} style={{marginRight: `8px`, width: `20px`, height: `20px`}} />
                                 <span>Something went wrong.</span>
                             </>
                         }
                         description={
-                            importantMessage ? null :
-                            userState.exists ? 
-                                "plays beat saber or something" : 
-                            userState.error ? `Error: ${userState.error}` : null
-                        } 
-                        tags={
-                            importantMessage ? [] :
-                            userState.exists ? [
-
-                            ] : []
-                        } 
-                        diffTags={
-                            user.user?.id === userState.user.gameID ? [
-                                {
-                                    value: `Set new Avatar`,
-                                    key: `set-avatar`,
-                                    icon: icon({ name: 'user' }),
-                                    onClick: () => {
-                                        console.log(`set avatar`);
-
-                                        const input = document.createElement(`input`);
-                                        input.type = `file`;
-                                        input.accept = `image/png`;
-            
-                                        input.addEventListener(`change`, () => {
-                                            const file = input.files[0];
-                                            const reader = new FileReader();
-            
-                                            reader.addEventListener(`load`, () => {
-                                                setModifications({
-                                                    ...modifications,
-                                                    avatar: {
-                                                        scale: 1,
-                                                        rotate: 0,
-                                                        file: reader.result,
-                                                    }
-                                                });
-                                            });
-            
-                                            reader.readAsDataURL(file);
-                                        });
-            
-                                        input.click();
-                                    }
-                                },
+                            importantMessage ? null : userDetails(userState).values.description
+                        }
+                        buttons={
+                            importantMessage ? [] : 
+                            userState.exists && user.user?.id === userState.user.gameID ? [
                                 {
                                     value: `Edit Profile`,
                                     key: `edit-profile`,
                                     icon: icon({ name: 'pencil' }),
                                     onClick: () => {
-                                        console.log(`edit profile`);
+                                        const values = userDetails(userState).rawValues;
+
+                                        for(const key in values) values[key] = values[key] || ``;
+                                        
+                                        setModifications({
+                                            ...initialMods,
+                                            user: values,
+                                        });
                                     }
                                 },
                             ] : null
@@ -494,7 +637,7 @@ export async function getServerSideProps(req) {
         return {
             props: {
                 ...props,
-                userState: {
+                userData: {
                     loading: false,
                     exists: true,
                     user: u,
@@ -505,7 +648,7 @@ export async function getServerSideProps(req) {
         return {
             props: {
                 ...props,
-                userState: {
+                userData: {
                     loading: false,
                     exists: false,
                     user: {
