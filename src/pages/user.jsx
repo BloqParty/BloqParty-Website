@@ -365,7 +365,6 @@ function Login({ query, bpApiLocation, userData }) {
                                 borderColor: `rgba(255, 255, 255, 0.5)`,
                             } || {})
                         }}
-                        style={{ ...(styleOverrides && styleOverrides.heading) }}
                         title={modifications.user.error || `Edit Profile`}
                         description={(
                             <div style={{
