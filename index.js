@@ -20,6 +20,12 @@ const logMiddleware = require(`./util/logMiddleware`);
     console.log(`Running in ${session.dev ? `development` : `production`} mode!`);
 
     if(!session.dev) {
+        console.log(`Creating static vars...`);
+    
+        const static = require(`./core/static`);
+
+        console.log(`Static vars:`, static);
+
         console.log(`Building pages...`);
 
         const proc = require(`child_process`).exec(`npm run build`);
@@ -43,10 +49,6 @@ const logMiddleware = require(`./util/logMiddleware`);
     const app = next({ dev: session.dev });
     
     const handle = app.getRequestHandler();
-    
-    const static = require(`./core/static`);
-    
-    console.debug(`Static variables:`, static);
     
     app.prepare().then(() => {
         console.debug('Starting server...');
