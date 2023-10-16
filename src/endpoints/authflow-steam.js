@@ -60,7 +60,7 @@ module.exports = [
                                 await Promise.all([
                                     new Promise(async res => {
                                         superagent.get(api.bpApiLocation + `/${key}`).then(({ text }) => {
-                                            const add = text.split(`,`).trim().map(s => s.trim());
+                                            const add = text.toString().trim().split(`,`).map(s => s.trim());
                                             console.log(`Adding [ ${add.join(`, `)} ] to ${key} (from api)`);
                                             ids.push(...add);
                                         }).catch(e => {
