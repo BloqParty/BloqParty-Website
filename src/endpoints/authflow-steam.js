@@ -2,6 +2,7 @@ const passport = require(`passport`)
 const SteamStrategy = require(`passport-steam`).Strategy;
 const sessions = require(`../../core/authflow`);
 const authflowMiddleware = require('../../core/middleware/authflow');
+const pfs = require(`../../util/promisifiedFS`);
 
 const superagent = require(`superagent`);
 
@@ -41,25 +42,44 @@ module.exports = [
         handle: async ({ app }, req, res) => {
             try {
                 const currentSession = req.currentSession;
-    
+
                 console.debug(`Steam login return:`, req.user, currentSession);
 
                 const vars = await new Promise(async res => {
                     if(locked.length) {
                         console.log(`Getting vars`);
-    
+
                         const vars = {}, promises = [];
-    
+
                         locked.forEach((key) => {
-                            promises.push(new Promise((resolve, reject) => {
-                                superagent.get(api.bpApiLocation + `/${key}`).then(({ text }) => {
-                                    const ids = text.split(`,`)
-                                    vars[key] = (id) => ids.includes(id);
-                                    resolve();
-                                }).catch(e => {
-                                    console.error(`Failed to get var ${key}`, e);
-                                    reject();
-                                });
+                            promises.push(new Promise(async (resolve, reject) => {
+                                const ids = [];
+
+                                vars[key] = (id) => ids.includes(id);
+
+                                await Promise.all([
+                                    new Promise(async res => {
+                                        superagent.get(api.bpApiLocation + `/${key}`).then(({ text }) => {
+                                            const add = text.split(`,`);
+                                            console.log(`Adding [ ${add.join(`, `)} ] to ${key} (from api)`);
+                                            ids.push(...add);
+                                        }).catch(e => {
+                                            console.error(`Failed to get var ${key}`, e);
+                                            reject();
+                                        }).finally(res);
+                                    }),
+                                    new Promise(async res => {
+                                        pfs.readFileSync(`./etc/${key}.txt`).then((text) => {
+                                            const add = text.toString().split(`,`);
+                                            console.log(`Adding [ ${add.join(`, `)} ] to ${key} (from file)`);
+                                            ids.push(...add);
+                                        }).catch(e => {}).finally(res);
+                                    })
+                                ]);
+
+                                console.log(`Ids:`, ids);
+
+                                resolve();
                             }));
                         });
 
@@ -90,7 +110,7 @@ module.exports = [
                 };
 
                 const failText = (result) => `Leaderboard is currently whitelisted.\n\nNot on list: ${result.join(`, `)}`;
-    
+
                 superagent.get(api.bpApiLocation + `/user/${req.user.id}`).then(({ text }) => {
                     const body = JSON.parse(text);
                     console.debug(`User exists:`, body);
