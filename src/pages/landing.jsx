@@ -82,7 +82,7 @@ export default function Landing() {
     return (
         <>
             <SEO />
-            <Heading image="/static/icon.png" title="Bedroom Party Leaderboard" description="can i get a uhhhhhhhhhhhhhhhh" />
+            <Heading image="/static/help.png" title="Bedroom Party Leaderboard" description="can i get a uhhhhhhhhhhhhhhhh" />
             <Leaderboard
                 loading={recent.loading} 
                 error={recent.error}
