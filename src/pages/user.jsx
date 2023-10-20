@@ -115,7 +115,7 @@ function Login({ query, bpApiLocation, userData }) {
                 page: page,
                 entries: mapScores(data.scores),
                 total: data.scoreCount,
-                totalPages: Math.min(1, data.scoreCount && Math.ceil(data.scoreCount / 10) || 1),
+                totalPages: Math.max(1, data.scoreCount && Math.ceil(data.scoreCount / 10) || 1),
                 loading: false,
                 error: null
             };

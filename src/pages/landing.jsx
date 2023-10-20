@@ -46,7 +46,7 @@ export default function Landing() {
                 ...recent,
                 page: page,
                 entries: data.scores,
-                totalPages: Math.min(5, Math.min(1, data.scoreCount && Math.ceil(data.scoreCount / 10) || 1)),
+                totalPages: Math.min(5, Math.max(1, data.scoreCount && Math.ceil(data.scoreCount / 10) || 1)),
                 loading: false,
                 error: null
             };
