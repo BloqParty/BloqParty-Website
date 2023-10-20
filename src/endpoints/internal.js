@@ -29,11 +29,31 @@ module.exports = [
 
             console.debug(`Updating user ${gameID} with body length of ${req.body && JSON.stringify(req.body).length || `(none, where the fuck is the body)`}`);
 
+            const body = {};
+        
+            if(typeof req.body.username == `string`) {
+                if(req.body.username.length <= 32 && req.body.username.length >= 2) {
+                    body.username = req.body.username;
+                } else {
+                    return res.status(400).send({ error: `Username must be between 2 and 32 characters.` });
+                }
+            };
+    
+            if(typeof req.body.description == `string`) {
+                if(req.body.description.length <= 512) {
+                    body.description = req.body.description;
+                } else {
+                    return res.status(400).send({ error: `Description must be less than 512 characters.` });
+                }
+            };
+    
+            if(req.body.avatar) body.avatar = req.body.avatar;
+
             if(!Object.keys(req.body).length) {
                 console.debug(`No body provided`);
                 res.send({ error: `No body provided` });
             } else {
-                superagent.post(`${api.bpApiLocation}/user/${gameID}/update`).set(`Authorization`, api.bpApi).send(req.body).then(r => {
+                superagent.post(`${api.bpApiLocation}/user/${gameID}/update`).set(`Authorization`, api.bpApi).send(body).then(r => {
                     console.debug(`User updated:`, r.text);
                     res.send({ success: true });
                 }).catch(e => {
