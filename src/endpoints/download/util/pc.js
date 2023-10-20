@@ -19,7 +19,7 @@ if(Object.values(params).every(Boolean)) {
     console.log(`downloading dll`, params.dll);
 
     superagent.get(params.dll.url)
-        .set(`Authorization`, config.api.githubAccessToken)
+        //.set(`Authorization`, config.api.githubAccessToken)
         .set(`User-Agent`, `node`)
         .set(`Accept`, `application/octet-stream`)
         .buffer(true)
