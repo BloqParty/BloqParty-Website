@@ -69,13 +69,27 @@ function Login({ cookies }) {
                             icon: icon({name: 'computer'}),
                             value: `PC ${state.pc || `download`}`,
                             key: `pc`,
-                            href: `/download/pc`,
+                            ...(state.pc && {
+                                href: `/download/pc`
+                            } || {
+                                style: {
+                                    opacity: 0.5,
+                                },
+                                title: `Unavailable right now. Check back later!`
+                            }),
                         },
                         {
                             icon: icon({name: 'vr-cardboard'}),
                             value: `Quest ${state.quest || `download`}`,
                             key: `quest`,
-                            href: `/download/quest`,
+                            ...(state.quest && {
+                                href: `/download/quest`
+                            } || {
+                                style: {
+                                    opacity: 0.5,
+                                },
+                                title: `Unavailable right now. Check back later!`
+                            }),
                         },
                     ] : !user.loading ? [
                         {

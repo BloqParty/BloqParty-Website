@@ -1,5 +1,5 @@
 const { parentPort, workerData } = require('worker_threads');
-const { user, config, release } = workerData;
+const { user, config, release, target } = workerData;
 
 const superagent = require('superagent');
 const AdmZip = require('adm-zip');
@@ -11,7 +11,7 @@ const params = {
     user,
     config,
     release,
-    dll: release.assets.find(o => o.name.endsWith(`.qmod`))
+    dll: release.assets.find(o => o.name.includes(target))
 }
 
 if(Object.values(params).every(Boolean)) {

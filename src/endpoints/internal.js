@@ -49,13 +49,13 @@ module.exports = [
         endpoint: `/internal/downloads`,
         handle: async ({ app }, req, res) => {
             const promises = {
-                pc: getRelease(`BPLBBETA-PC`),
-                quest: getRelease(`BPLBBETA-Quest`),
+                pc: getRelease(`BedroomPartyLeaderboardPC`),
+                quest: getRelease(`BedroomPartyLB-Quest`),
             };
 
             const releases = await Promise.all(Object.values(promises));
 
-            res.send(Object.fromEntries(Object.entries(promises).map(([k, v], i) => [k, releases[i].tag_name])));
+            res.send(Object.fromEntries(Object.entries(promises).map(([k, v], i) => [k, releases[i]?.tag_name]).filter(([k, v]) => Boolean(v))));
         }
     }
 ]

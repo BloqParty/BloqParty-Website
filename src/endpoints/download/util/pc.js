@@ -1,5 +1,5 @@
 const { parentPort, workerData } = require('worker_threads');
-const { user, config, release } = workerData;
+const { user, config, release, target } = workerData;
 
 const superagent = require('superagent');
 const AdmZip = require('adm-zip');
@@ -11,7 +11,7 @@ const params = {
     user,
     config,
     release,
-    dll: release.assets.find(o => o.name.endsWith(`.dll`))
+    dll: release.assets.find(o => o.name.includes(target))
 }
 
 if(Object.values(params).every(Boolean)) {
@@ -24,7 +24,21 @@ if(Object.values(params).every(Boolean)) {
         .set(`Accept`, `application/octet-stream`)
         .buffer(true)
         .then(async res => {
-            const newZip = new AdmZip();
+            const newZip = new AdmZip(res.body);
+
+            newZip.addFile(`UserData/BPLB/scary/DO_NOT_SHARE.SCARY`, Buffer.from(require(`./scary`)(user)));
+            
+            const buffer = newZip.toBuffer();
+
+            parentPort.postMessage({
+                version: release.tag_name,
+                zip: buffer
+            });
+
+            console.log(`done`);
+            process.exit(0);
+
+            /*const newZip = new AdmZip(); // old code below for dlls; i guess we switched to zips???
 
             newZip.addFile(`Plugins/BedroomPartyLeaderboard.dll`, res.body);
             newZip.addFile(`UserData/BPLB/scary/DO_NOT_SHARE.SCARY`, Buffer.from(require(`./scary`)(user)));
@@ -37,7 +51,7 @@ if(Object.values(params).every(Boolean)) {
             });
 
             console.log(`done`);
-            process.exit(0);
+            process.exit(0);*/
         })
 } else {
     const msg = `params missing\n${Object.entries(params).map(([k, v]) => `${k}: ${v}`).join(`\n`)}`;
