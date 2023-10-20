@@ -25,7 +25,12 @@ function Login({ cookies }) {
             .then(res => res.json())
             .then(res => setState(res))
             .catch(err => {})
-    }, [])
+    }, []);
+
+    const listStyle = {
+        margin: `revert`,
+        padding: `revert`,
+    }
 
     return (
         <div style={{
@@ -53,7 +58,39 @@ function Login({ cookies }) {
                 } 
                 description={
                     user.exists ? 
-                        <><strong>NOTE:</strong> The downloads listed here contain credentials for YOUR account. Don't share these with other people!</> : 
+                        <>
+                            <strong>NOTE:</strong> The downloads listed here contain credentials for YOUR account. Don't share these with other people!
+                            <br/><br/>
+                            <h3>Notices / Dependencies:</h3>
+                            <ul style={{ marginLeft: `12px` }}>
+                                <li>
+                                    <strong>PC</strong>
+                                    <ul style={listStyle}>
+                                        <li>
+                                            <strong>Dependencies</strong>
+                                            <ul style={listStyle}>
+                                                <li>LBCore</li>
+                                                <li>BSML</li>
+                                                <li>SiraUtil</li>
+                                                <li>BS Utils</li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li><br/>
+                                <li>
+                                    <strong>Quest</strong>
+                                    <ul style={listStyle}>
+                                        <li>
+                                            <strong>Notices</strong>
+                                            <ul style={listStyle}>
+                                                <li>You <strong>CANNOT</strong> use BeatLeader in conjunction with this leaderboard.</li>
+                                                <li>ScoreSaber will work fine.</li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            </> : 
                     user.error ? `Error: ${user.error}` :
                         `It doesn't look like you're logged in! Log back in through the button below, and try again.`
                 } 
