@@ -1,4 +1,5 @@
 import React, { Component, useState, useEffect, useContext } from 'react';
+import MarkdownView from 'react-showdown';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { icon } from '@fortawesome/fontawesome-svg-core/import.macro';
 import { withCookies, Cookies } from 'react-cookie';
@@ -573,7 +574,23 @@ function Login({ query, bpApiLocation, userData }) {
                             </>
                         }
                         description={
-                            importantMessage ? null : userDetails(userState).values.description
+                            importantMessage ? null : (
+                                <div style={{
+                                    fontWeight: 'revert',
+                                    fontSize: 'revert',
+                                    fontStyle: 'revert',
+                                }}>
+                                    <MarkdownView
+                                        markdown={ userDetails(userState).values.description }
+                                        options={{
+                                            simplifiedAutoLink: true,
+                                            emoji: true,
+                                            strikethrough: true,
+                                            headerLevelStart: 2
+                                        }}
+                                    />
+                                </div>
+                            )
                         }
                         buttons={
                             importantMessage ? [] : 
