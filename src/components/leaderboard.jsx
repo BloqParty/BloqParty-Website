@@ -60,12 +60,57 @@ function navButton(props, direction) {
     }
 }
 
+function navButtons(props, {
+    showText = true
+}={}) {
+    const { page } = props;
+
+    return (
+        <div style={{
+            padding: `0px 14px`,
+            width: `calc(100% - 28px)`,
+            display: `flex`,
+            flexDirection: `row`,
+            alignItems: `center`,
+            width: `100%`,
+            marginBottom: `25px`,
+            justifyContent: `space-between`,
+        }}>
+            {showText && ( <h3 style={{paddingBottom: `4px`}}>{props.heading || (typeof props.total == `number` ? `${props.total} score${props.total == 1 ? `` : `s`}` : props.total)}</h3> ) || null}
+            <Splitter style={{ flexGrow: 1, margin: `0px 16px`, ...(!showText && {marginLeft: `0px`} || {}) }} />
+            <AnimatePresence>
+            { 
+                (page && (page.total == -1 || (page.current <= page.total && page.total != 0))) ? (
+                    <motion.div 
+                        transition={{ duration: 0.2, ease: circOut }}
+                        initial={{ opacity: 0, margin: `0px -50px`, scaleX: 0, x: 50 }}
+                        animate={{ opacity: 1, margin: `0px 0px`, scaleX: 1, x: 0, }}
+                        exit={{ opacity: 0, margin: `0px -50px`, scaleX: 0, x: 50 }}
+                        style={{
+                            display: `flex`,
+                            flexDirection: `row`,
+                            alignItems: `center`,
+                            justifyContent: `center`,
+                        }}
+                    >
+                        { navButton(props, `prev`) }
+                        <h3 style={{paddingBottom: `4px`}}>page {page.current}{page.total > 0 && ` / ${page.total}`}</h3>
+                        { navButton(props, `next`) }
+                    </motion.div>
+                ) : null 
+            }
+            </AnimatePresence>
+        </div>
+    )
+}
+
 function Leaderboard(props) {
-    const { offset, error, page, loading } = props;
+    const { offset, error, loading } = props;
 
     const entries = !loading ? props.entries : [];
 
     console.log(`entries`, entries.length ? `[ ${entries.map(e => e.key).join(`, `)} ]` : entries.length);
+    console.log(`error`, error)
 
     if(Array.isArray(props.entries) && (!error || !Object.keys(error).length)) {
         return (
@@ -73,41 +118,7 @@ function Leaderboard(props) {
                 width: `75vw`,
                 maxWidth: `750px`,
             }}>
-                <div style={{
-                    padding: `0px 14px`,
-                    width: `calc(100% - 28px)`,
-                    display: `flex`,
-                    flexDirection: `row`,
-                    alignItems: `center`,
-                    width: `100%`,
-                    marginBottom: `25px`,
-                    justifyContent: `space-between`,
-                }}>
-                    <h3 style={{paddingBottom: `4px`}}>{props.heading || (typeof props.total == `number` ? `${props.total} score${props.total == 1 ? `` : `s`}` : props.total)}</h3>
-                    <Splitter style={{ flexGrow: 1, margin: `0px 16px` }} />
-                    <AnimatePresence>
-                    { 
-                        (page && (page.total == -1 || (page.current <= page.total && page.total != 0))) ? (
-                            <motion.div 
-                                transition={{ duration: 0.2, ease: circOut }}
-                                initial={{ opacity: 0, margin: `0px -50px`, scaleX: 0, x: 50 }}
-                                animate={{ opacity: 1, margin: `0px 0px`, scaleX: 1, x: 0, }}
-                                exit={{ opacity: 0, margin: `0px -50px`, scaleX: 0, x: 50 }}
-                                style={{
-                                    display: `flex`,
-                                    flexDirection: `row`,
-                                    alignItems: `center`,
-                                    justifyContent: `center`,
-                                }}
-                            >
-                                { navButton(props, `prev`) }
-                                <h3 style={{paddingBottom: `4px`}}>page {page.current}{page.total > 0 && ` / ${page.total}`}</h3>
-                                { navButton(props, `next`) }
-                            </motion.div>
-                        ) : null 
-                    }
-                    </AnimatePresence>
-                </div>
+                { navButtons(props) }
                 <div style={{
                     display: `flex`,
                     flexDirection: `column`,
@@ -147,6 +158,7 @@ function Leaderboard(props) {
                         }
                     </AnimatePresence>
                 </div>
+                { navButtons(props, { showText: false }) }
             </div>
         );
     } else if(error) return (

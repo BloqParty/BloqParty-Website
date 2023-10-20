@@ -209,7 +209,7 @@ export default function LeaderboardList({ bpApiLocation, query, mapDetails }) {
                     const newScores = {
                         ...scores,
                         page: page || 1,
-                        totalPages: data.scoreCount ? Math.ceil(data.scoreCount / perPage) : 1,
+                        totalPages: Math.min(1, data.scoreCount && Math.ceil(data.scoreCount / perPage) || 1),
                         total: Number(data.scoreCount) || 0,
                         offset: (page - 1) * perPage,
                         mapHash: mapHash,
@@ -298,8 +298,6 @@ export default function LeaderboardList({ bpApiLocation, query, mapDetails }) {
             })
         })
     };
-    
-    let ran = false;
 
     useEffect(() => {
         if(!query.id) return console.log(`no map`);

@@ -44,6 +44,8 @@ export const recentScores = ({
         .then((r) => {
             console.log(`got recentscores [pre]`, r);
 
+            if(!r.scores) r.scores = [];
+
             r.scores.push(...Array.from(Array(limit - (r.scores || []).length).keys()).map((o,i) => ({ empty: true, id: `${i}` })));
 
             r.scores = r.scores.map((o, i) => {
