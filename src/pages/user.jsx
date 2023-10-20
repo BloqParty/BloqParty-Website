@@ -576,6 +576,11 @@ function Login({ query, bpApiLocation, userData }) {
                         description={
                             importantMessage ? null : (
                                 <div style={{
+                                    display: `flex`,
+                                    flexDirection: `column`,
+                                    alignItems: `start`,
+                                    justifyContent: `center`,
+                                    width: `100%`,
                                     fontWeight: 'revert',
                                     fontSize: 'revert',
                                     fontStyle: 'revert',
