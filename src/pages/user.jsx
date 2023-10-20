@@ -32,7 +32,7 @@ const userDetails = (userState) => {
 
     const rawValues = {
         username: exists.username ? userState.user.username : null,
-        description: exists.description ? userState.user.description : null,
+        description: exists.description && exists.description != `null` ? userState.user.description : null,
     };
 
     const values = {
@@ -585,15 +585,19 @@ function Login({ query, bpApiLocation, userData }) {
                                     fontSize: 'revert',
                                     fontStyle: 'revert',
                                 }}>
-                                    <MarkdownView
-                                        markdown={ userDetails(userState).values.description }
-                                        options={{
-                                            simplifiedAutoLink: true,
-                                            emoji: true,
-                                            strikethrough: true,
-                                            headerLevelStart: 2
-                                        }}
-                                    />
+                                    {
+                                        userDetails(userState).rawValues.description && (
+                                            <MarkdownView
+                                                markdown={ userDetails(userState).rawValues.description }
+                                                options={{
+                                                    simplifiedAutoLink: true,
+                                                    emoji: true,
+                                                    strikethrough: true,
+                                                    headerLevelStart: 2
+                                                }}
+                                            />
+                                        ) || userDetails(userState).values.description
+                                    }
                                 </div>
                             )
                         }
