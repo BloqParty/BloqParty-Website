@@ -73,6 +73,7 @@
     margin: 10px 0px;
     justify-content: right;
     flex-grow: 1;
+    min-width: 180px;
 }
 
 /* window size */
