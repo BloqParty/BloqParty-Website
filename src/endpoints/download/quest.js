@@ -3,7 +3,9 @@ const { Worker } = require(`worker_threads`);
 const getRelease = require(`../../../core/mod/getRelease`)
 
 module.exports = (req, res) => {
-    getRelease(`BedroomPartyLB-Quest`, false).then(release => {
+    const repo = `BedroomPartyLB-Quest`
+
+    getRelease(repo, false).then(release => {
         if(!release) return res.status(500).send(`No release found`);
 
         const worker = new Worker(`${__dirname}/util/quest.js`, {
@@ -11,6 +13,7 @@ module.exports = (req, res) => {
                 user: req.user,
                 config: require(`../../../core/config`),
                 release,
+                repo,
                 target: `.qmod`
             }
         });
