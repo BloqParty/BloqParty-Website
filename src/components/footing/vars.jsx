@@ -3,6 +3,7 @@ import DetailBlock from '../detailblock';
 import { icon } from '@fortawesome/fontawesome-svg-core/import.macro'
 
 import staticVars from '../../../static.json';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const authors = [
     "Nuggo",
@@ -41,4 +42,20 @@ export default [
         </div>
     ),
     `made with an unhealthy amount of headbanging by ${authors.slice(0, -1).join(`, `)} and ${authors.slice(-1)[0]}`,
+    (
+        <>
+            <a href="https://discord.gg/JJHbTGchgx">
+                <FontAwesomeIcon icon={icon({style: "brands", name: "discord"})} style={{
+                    color: `white`,
+                    margin: `5px`,
+                }} />
+            </a>
+            <a href="https://github.com/BedroomParty">
+                <FontAwesomeIcon icon={icon({style: "brands", name: "github"})} style={{
+                    color: `white`,
+                    margin: `5px`,
+                }} />
+            </a>
+        </>
+    )
 ]

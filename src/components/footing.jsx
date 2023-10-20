@@ -31,6 +31,7 @@ export default class Footing extends Component {
                     width: `100vw`,
                     minHeight: `${this.height}px`,
                     padding: `0px 20px`,
+                    margin: `15px 0px`,
                     //backgroundColor: `rgba(8, 8, 8, 0.5)`,
                     //boxShadow: `0 3px 10px rgb(0 0 0 / 0.2)`,
                     //backdropFilter: `blur(10px)`,
