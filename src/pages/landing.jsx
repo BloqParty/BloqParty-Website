@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, { Component, useEffect, useState, useContext } from 'react';
 
 import Heading from '../components/heading';
 import Leaderboard from '../components/leaderboard';
@@ -11,6 +11,8 @@ import { recentScores, recentBeatSaverLookup } from '../scripts/leaderboard/rece
 import { Context } from '../util/context';
 
 export default function Landing() {
+    const { user, setUser } = useContext(Context.User);
+
     const [ recent, setRecent ] = useState({
         entries: [],
         page: 1,
@@ -82,7 +84,18 @@ export default function Landing() {
     return (
         <>
             <SEO />
-            <Heading image="/static/help.png" title="Bedroom Party Leaderboard" description="can i get a uhhhhhhhhhhhhhhhh" />
+            <Heading image="/static/help.png" title="Bedroom Party Leaderboard" description={
+                <>
+                    <p>can i get a uhhhhhhhhhhhhhhhh</p>
+                {user.exists ? (
+                    <a href="/download">
+                        <img src="/static/download.png" style={{
+                            marginTop: `20px`,
+                        }}/>
+                    </a>
+                ) : null}
+                </>
+            } />
             <Leaderboard
                 loading={recent.loading} 
                 error={recent.error}
