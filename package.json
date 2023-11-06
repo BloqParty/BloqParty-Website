@@ -36,7 +36,7 @@
     "jimp": "^0.22.10",
     "jimp-native": "^0.1.0",
     "json-bigint": "^1.0.0",
-    "next": "^13.5.6",
+    "next": "^14.0.1",
     "passport": "^0.6.0",
     "passport-steam": "^1.0.18",
     "prop-types": "^15.8.1",
