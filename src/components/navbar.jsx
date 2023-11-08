@@ -74,6 +74,7 @@ export default function Navbar() {
             alignItems: `center`,
             justifyContent: `center`,
             backdropFilter: `blur(10px)`,
+            WebkitBackdropFilter: `blur(10px)`,
             flexDirection: `column`,
             width: `100vw`,
             boxSizing: `border-box`,

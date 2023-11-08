@@ -4,9 +4,11 @@ import anime from "animejs";
 const fgStyles = [
     {
         backdropFilter: ``,
+        WebkitBackdropFilter: ``,
     },
     {
         backdropFilter: `blur(40px) grayscale(40%)`,
+        WebkitBackdropFilter: `blur(40px) grayscale(40%)`,
     }
 ];
 

@@ -284,7 +284,7 @@ export class Entry extends Component {
                         {<EntryNoStyle { ...this.props } style={{ 
                             ...this.props.style,
                             borderRadius: `10px`,
-                            backdropFilter: `blur(10px) grayscale(40%) brightness(0.6)`,
+                            WebkitBackdropFilter: `blur(10px) grayscale(40%) brightness(0.6)`,
                             position: `relative`, 
                             top: `0px`, 
                             left: `0px`,

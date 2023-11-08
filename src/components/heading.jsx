@@ -154,7 +154,8 @@ export default class Heading extends Component {
             }}>
                 <div id="heading" style={{
                     ...(this.props.bgimage ? {
-                        backdropFilter: this.props.image ? `blur(10px) grayscale(40%) brightness(0.6)` : null
+                        backdropFilter: this.props.image ? `blur(10px) grayscale(40%) brightness(0.6)` : null,
+                        WebkitBackdropFilter: this.props.image ? `blur(10px) grayscale(40%) brightness(0.6)` : null
                     } : {}),
                     ...headingStyle
                 }}>
