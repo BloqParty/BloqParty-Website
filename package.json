@@ -20,7 +20,7 @@
   "homepage": "https://github.com/BedroomParty/BedroomPartyWebsite#readme",
   "dependencies": {
     "@babel/preset-env": "^7.23.2",
-    "@babel/preset-react": "^7.22.15",
+    "@babel/preset-react": "^7.23.3",
     "@fontsource/alata": "^5.0.8",
     "@fortawesome/fontawesome-svg-core": "^6.4.2",
     "@fortawesome/free-brands-svg-icons": "^6.4.2",
