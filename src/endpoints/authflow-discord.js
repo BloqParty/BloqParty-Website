@@ -46,10 +46,10 @@ module.exports = [
                     console.debug(`User lookup:`, id);
 
                     superagent.get(`https://discord.com/api/v10/users/@me/guilds`).set(`Authorization`, `${body.token_type} ${body.access_token}`).then(({ body }) => {
-                        const inBedroomParty = body.find(o => o.id == api.discordGuildID);
+                        const inServer = body.find(o => o.id == api.discordGuildID);
     
-                        if(inBedroomParty) {
-                            console.debug(`User in Bedroom Party.`, req.cookies);
+                        if(inServer) {
+                            console.debug(`User in server.`, req.cookies);
                             superagent.post(api.bpApiLocation + `/user/create`).set(`Authorization`, api.bpApi).send({
                                 username: steam.steamName,
                                 discordID: id,
@@ -66,7 +66,7 @@ module.exports = [
                                 res.status(500).send(`Internal Server Error (at user creation in BP API) -- ${e}`);
                             })
                         } else {
-                            console.error(`User not in Bedroom Party`);
+                            console.error(`User not in server.`);
                             res.redirect(`/login?error=NotInDiscordServer`);
                         }
                     }).catch(e => {

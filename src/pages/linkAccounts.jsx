@@ -65,7 +65,7 @@ function LinkAccounts({ cookies }) {
                 }
                 description={
                     state.exists ? 
-                        "Complete your account creation by linking your Discord account! This helps us verify that you are in the Bedroom Party server." : 
+                        "Complete your account creation by linking your Discord account! This helps us verify that you are in the Bloq Party server." : 
                     state.loading ? null :
                     state.error ? `Error: ${state.error}` :
                         `Your Steam account details were not saved from the initial login. Please make sure the website has access to save cookies, and try again.`

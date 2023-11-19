@@ -31,7 +31,7 @@ const blockStyle = {
 export default [
     (
         <div style={strStyle}>
-            Bedroom Party
+            Bloq Party
             <DetailBlock value="GitHub" icon={icon({style: "brands", name: "github"})} title="GitHub Organization" href={staticVars.organization} color="#080808" style={blockStyle}/>
         </div>
     ),
@@ -50,7 +50,7 @@ export default [
                     margin: `5px`,
                 }} />
             </a>
-            <a href="https://github.com/BedroomParty">
+            <a href={staticVars.organization}>
                 <FontAwesomeIcon icon={icon({style: "brands", name: "github"})} style={{
                     color: `white`,
                     margin: `5px`,

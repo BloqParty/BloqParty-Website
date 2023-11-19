@@ -18,6 +18,8 @@ import time from '../../util/time';
 
 import { notFound } from 'next/navigation';
 
+import staticVars from '../../static.json';
+
 export default function LeaderboardList({ bpApiLocation, query, mapDetails }) {
     if(!mapDetails || !mapDetails.versions) return notFound();
 
@@ -327,8 +329,8 @@ export default function LeaderboardList({ bpApiLocation, query, mapDetails }) {
     return (
         <div>
             <SEO
-                title={`${(state.title && `[MAP] ${state.title}`) || `Unknown Map`} - Bedroom Party Leaderboard`}
-                url={`https://thebedroom.party/leaderboard/${mapHash}`}
+                title={`${(state.title && `[MAP] ${state.title}`) || `Unknown Map`} - Bloq Party Leaderboard`}
+                url={`${staticVars.locations.website}/leaderboard/${mapHash}`}
                 image={(mapHash && `/leaderboard/${mapHash}/embed`) || state.image}
             />
 

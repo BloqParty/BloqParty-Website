@@ -13,7 +13,7 @@ module.exports = {
 
         const font = await jimp.loadFont(`./src/endpoints/render/font/blanka-24-p.fnt`);
 
-        const text = `bedroom party`;
+        const text = `bloq party`;
         const width = jimp.measureText(font, text);
 
         await img.print(font, (854 - (10 + width)), 320, text);

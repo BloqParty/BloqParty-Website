@@ -16,6 +16,8 @@ import { recentScores, recentBeatSaverLookup } from '../scripts/leaderboard/rece
 
 import userOverrides from '../styles/overrides/user'
 
+import staticVars from '../../static.json';
+
 const userDetails = (userState) => {
     console.log(`userDetails`, userState);
 
@@ -166,11 +168,11 @@ function Login({ query, bpApiLocation, userData }) {
     return (
         <div>
             <SEO
-                title={styleOverrides.embed?.title || `${userData.user?.username || `Unknown Player`} - Bedroom Party Leaderboard`}
-                description={styleOverrides.embed?.description || userData.user?.description || `View the scores of ${userData.user?.username || `Unknown Player`} on the Bedroom Party Leaderboard.`}
+                title={styleOverrides.embed?.title || `${userData.user?.username || `Unknown Player`} - Bloq Party Leaderboard`}
+                description={styleOverrides.embed?.description || userData.user?.description || `View the scores of ${userData.user?.username || `Unknown Player`} on the Bloq Party Leaderboard.`}
                 image={styleOverrides.embed?.image || userData.user?.avatar}
                 color={styleOverrides.embed?.color}
-                url={`https://thebedroom.party/user/${userData.user?.gameID}`}
+                url={`${staticVars.locations.website}/user/${userData.user?.gameID}`}
             />
 
             {

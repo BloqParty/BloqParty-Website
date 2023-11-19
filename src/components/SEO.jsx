@@ -1,10 +1,12 @@
 import Head from 'next/head';
 import React, { Component } from 'react';
 
+import staticVars from '../../static.json';
+
 export default function SEO({
-    title = "Bedroom Party Leaderboard",
+    title = "Bloq Party Leaderboard",
     description = "one of the leaderboards ever",
-    url = "https://thebedroom.party",
+    url = staticVars.locations.website,
     image = "/static/banner.png",
     color = "#A5CFE3"
 }) {

@@ -84,7 +84,7 @@ export default function Landing() {
     return (
         <>
             <SEO />
-            <Heading image="/static/help.png" title="Bedroom Party Leaderboard" description={
+            <Heading image="/static/help.png" title="Bloq Party Leaderboard" description={
                 <>
                     <p>can i get a uhhhhhhhhhhhhhhhh</p>
                 {user.exists ? (
