@@ -8,13 +8,13 @@ const defaults = {
 
     web: {
         protocol: `https`,
-        hostname: `thebedroom.party`,
+        hostname: `bloqparty.net`,
     },
 
     api: {
         bpPrivateApi: null,
         bpApi: null,
-        bpApiLocation: `https://api.thebedroom.party`,
+        bpApiLocation: `https://api.bloqparty.net`,
         sessionSecret: crypto.randomBytes(32).toString(`hex`),
         steam: null,
         discordClientID: null,
