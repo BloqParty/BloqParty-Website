@@ -1,7 +1,10 @@
 const superagent = require(`superagent`);
-const pfs = require(`../../util/promisifiedFS`)
+const pfs = require(`../../util/promisifiedFS`);
 
-const { api } = require(`../config`)
+const { api } = require(`../config`);
+const staticVars = require(`../../static.json`);
+
+const organization = staticVars.organization.split(`/`).pop();
 
 const versions = {};
 
@@ -14,11 +17,11 @@ module.exports = (repo, auth=true) => {
         return Promise.resolve(versions[repo].latest);
     } else {
         versions[repo].promise = new Promise(async res => {
-            const url = `https://api.github.com/repos/BedroomParty/${repo}/releases/latest`;
+            const url = `https://api.github.com/repos/${organization}/${repo}/releases/latest`;
 
             console.log(`Fetching latest release (at "${url}")... (token: "${api.githubAccessToken}" -- required: ${auth && true || false})`);
 
-            const req = superagent.get(`https://api.github.com/repos/BedroomParty/${repo}/releases/latest`).set(`User-Agent`, `node`)
+            const req = superagent.get(`https://api.github.com/repos/${organization}/${repo}/releases/latest`).set(`User-Agent`, `node`)
 
             if(auth) req.set(`Authorization`, api.githubAccessToken);
 
