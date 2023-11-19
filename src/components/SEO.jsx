@@ -3,13 +3,15 @@ import React, { Component } from 'react';
 
 import staticVars from '../../etc/static.json';
 
-export default function SEO({
-    title = "Bloq Party Leaderboard",
-    description = "one of the leaderboards ever",
-    url = staticVars.locations.website,
-    image = "/static/banner.png",
-    color = "#A5CFE3"
-}) {
+export default function SEO(opt) {
+    const { title, description, url, image, color } = Object.assign({
+        title: "Bloq Party Leaderboard",
+        description: "one of the leaderboards ever",
+        url: staticVars.locations.website,
+        image: "/static/banner.png",
+        color: "#A5CFE3"
+    }, opt || {})
+
     return (
         <Head>
             <title>{title}</title>
