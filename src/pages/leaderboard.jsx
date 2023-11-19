@@ -20,11 +20,11 @@ import { notFound } from 'next/navigation';
 
 import staticVars from '../../static.json';
 
-export default function LeaderboardList({ bpApiLocation, query, mapDetails }) {
+export default function LeaderboardList({ query, mapDetails }) {
     if(!mapDetails || !mapDetails.versions) return notFound();
 
+    const apiLocation = staticVars.locations.api;
     const mapHash = `${query.id}`.toUpperCase();
-
     const perPage = 10;
 
     const [opts, setOpts] = useState({
@@ -127,7 +127,7 @@ export default function LeaderboardList({ bpApiLocation, query, mapDetails }) {
             setState(newState);
         }
 
-        fetch(bpApiLocation + `/leaderboard/${mapHash}/overview`)
+        fetch(apiLocation + `/leaderboard/${mapHash}/overview`)
             .then(res => res.text())
             .then(res => Promise.resolve(JSONbig.parse(res)))
             .then(data => {
@@ -194,7 +194,7 @@ export default function LeaderboardList({ bpApiLocation, query, mapDetails }) {
     
             setOpts(newOpts);
             
-            const link = bpApiLocation + `/leaderboard/${mapHash}?limit=${perPage}&sort=${newOpts.sort}&page=${page-1}&char=${newOpts.char}&diff=${newOpts.diff}&id=${newOpts.id}`;
+            const link = apiLocation + `/leaderboard/${mapHash}?limit=${perPage}&sort=${newOpts.sort}&page=${page-1}&char=${newOpts.char}&diff=${newOpts.diff}&id=${newOpts.id}`;
             console.log(`fetching ${link}`);
 
             fetch(link)

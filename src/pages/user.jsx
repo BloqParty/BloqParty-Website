@@ -8,6 +8,7 @@ import AvatarEditor from 'react-avatar-editor';
 import Heading from '../components/heading';
 import Spinner from '../components/spinner';
 import Leaderboard from '../components/leaderboard';
+import SEO from '../components/SEO';
 
 import { Context } from '../util/context';
 
@@ -56,7 +57,7 @@ const userDetails = (userState) => {
     return { exists, rawValues, values }
 }
 
-function Login({ query, bpApiLocation, userData }) {
+function Login({ query, userData }) {
     const [ userState, setUserState ] = useState(userData);
     const { user, setUser } = useContext(Context.User);
 
@@ -152,7 +153,7 @@ function Login({ query, bpApiLocation, userData }) {
 
         setState(newState)
 
-        console.log(`user loading ${bpApiLocation}`, userData.user.gameID);
+        console.log(`user loading ${staticVars.locations.api}`, userData.user.gameID);
 
         if(userData.exists) {
             if(styleOverrides.rain) styleOverrides.rain(`.tg`)
@@ -644,20 +645,18 @@ function Login({ query, bpApiLocation, userData }) {
 
 export default withCookies(Login);
 
-import SEO from '../components/SEO';
-
 export async function getServerSideProps(req) {
     const props = Object.assign({}, req.query, { query: req.query });
 
     console.log(`props`, props);
 
     try {
-        const u = await fetch(props.bpApiLocation + `/user/${props.query.id}`).then(r => r.json());
+        const u = await fetch(staticVars.locations.api + `/user/${props.query.id}`).then(r => r.json());
 
         console.log(`user`, u);
 
         if(u.avatar) {
-            u.avatar = props.bpApiLocation + `/user` + u.avatar.split(`/user`).slice(1).join(`/user`);
+            u.avatar = staticVars.locations.api + `/user` + u.avatar.split(`/user`).slice(1).join(`/user`);
             console.log(`avatar`, u.avatar);
         }
 

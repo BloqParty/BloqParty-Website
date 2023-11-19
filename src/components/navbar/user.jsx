@@ -10,6 +10,8 @@ import login from '../../scripts/api/login';
 
 import { Context } from '../../util/context';
 
+import staticVars from '../../../static.json';
+
 function User({ navbar, cookies }) {
     const { user, setUser } = useContext(Context.User);
 
@@ -19,7 +21,7 @@ function User({ navbar, cookies }) {
         console.log(`cookies`, cookies?.cookies?.auth)
 
         if(cookies?.cookies?.auth) {    
-            const { bpApiLocation } = Context.Props;
+            const apiLocation = staticVars.locations.api;
     
             if(!user.loading) return;
     
@@ -28,7 +30,7 @@ function User({ navbar, cookies }) {
                 console.log(`user.avatar`, user.avatar, Context.Props)
     
                 if(user.avatar) {
-                    user.avatar = bpApiLocation + `/user` + user.avatar.split(`/user`).slice(1).join(`/user`);
+                    user.avatar = apiLocation + `/user` + user.avatar.split(`/user`).slice(1).join(`/user`);
                     console.log(`avatar`, user.avatar);
                 }
     

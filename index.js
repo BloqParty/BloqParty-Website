@@ -103,7 +103,6 @@ const logMiddleware = require(`./util/logMiddleware`);
                         return app.render(req, res, `/${endpoint.name}`, {
                             ...(req.query || {}),
                             ...(req.params || {}),
-                            bpApiLocation: config.api.bpApiLocation,
                             path: req.path,
                         });
                     });

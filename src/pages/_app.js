@@ -19,8 +19,8 @@ import { out } from '../../util/easings';
 import { Context } from '../util/context';
 import SEO from '../components/SEO';
 
-export default function MyApp({ Component, pageProps, path, query, bpApiLocation }) {
-    console.log(`MyApp`, {query, bpApiLocation, pageProps});
+export default function MyApp({ Component, pageProps, path, query }) {
+    console.log(`MyApp`, {query, pageProps});
 
     Context.Props = pageProps;
 

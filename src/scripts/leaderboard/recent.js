@@ -1,5 +1,7 @@
 import removeArrayDuplicates from '../../../util/removeArrayDuplicates';
 
+import staticVars from '../../../static.json';
+
 export const recentBeatSaverLookup = (data) => new Promise(async res => {
     const hashes = removeArrayDuplicates(data.map(o => o.hash).filter(Boolean)).map(s => s.toLowerCase());
 
@@ -39,7 +41,7 @@ export const recentScores = ({
 }={}) => new Promise(async (res, rej) => {
     console.log(`getting recentscores`, { id, limit, offset });
 
-    fetch(`https://api.thebedroom.party/leaderboard/recent?limit=${limit}&page=${offset}${id ? `&id=${id}` : ''}`)
+    fetch(`${staticVars.locations.api}/leaderboard/recent?limit=${limit}&page=${offset}${id ? `&id=${id}` : ''}`)
         .then(r => r.json())
         .then((r) => {
             console.log(`got recentscores [pre]`, r);
