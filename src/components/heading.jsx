@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import DetailBlock from './detailblock';
 import Splitter from './splitter';
 import Spinner from './spinner';
+import Image from './image';
 
 import { motion, circOut, AnimatePresence } from 'framer-motion';
 import { out } from '../../util/easings';
@@ -20,18 +21,20 @@ const block = {
 export default class Heading extends Component {
     image() {
         return (
-            <a onClick={this.props.imageOnClick} style={{
-                ...(this.props.imageOnClick ? {
-                    cursor: `pointer`,
-                } : {})
+            <div style={{
+                marginRight: `20px`,
             }}>
-                { this.props.image ? <img src={this.props.image} style={{
-                    width: `100px`,
-                    borderRadius: `10px`,
-                    marginRight: `20px`,
-                    ...(this.props.imageStyle || {})
-                }} /> : null }
-            </a>
+                <Image 
+                    image={this.props.image} 
+                    onClick={this.props.imageOnClick} 
+                    imageStyle={{
+                        width: `100px`,
+                        height: `100px`,
+                        borderRadius: `10px`,
+                        ...(this.props.imageStyle || {})
+                    }}
+                />
+            </div>
         )
     }
 

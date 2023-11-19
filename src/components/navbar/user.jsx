@@ -5,6 +5,7 @@ import { withCookies, Cookies } from 'react-cookie';
 import DetailBlock from '../detailblock';
 import Spinner from '../spinner';
 import Dropdown from '../dropdown';
+import Image from '../image';
 
 import login from '../../scripts/api/login';
 
@@ -92,17 +93,21 @@ function User({ navbar, cookies }) {
                     !user.exists ? 
                         <DetailBlock value="Not logged in" /> 
                     : (
-                        <img src={user.user.avatarURL} style={{
-                            backgroundSize: `cover`,
-                            backgroundPosition: `center`,
-                            backgroundRepeat: `no-repeat`,
-                            backgroundColor: `rgba(0, 0, 0, 0.5)`,
-                            boxShadow: `0 3px 10px rgb(0 0 0 / 0.2)`,
-                            borderRadius: `100%`,
-                            marginRight: `6px`,
-                            width: `30px`,
-                            height: `30px`,
-                        }} />
+                        <Image
+                            image={user.user.avatarURL} 
+                            imageStyle={{
+                                boxShadow: `0 3px 10px rgb(0 0 0 / 0.2)`,
+                                borderRadius: `100%`,
+                                marginRight: `6px`,
+                                width: `30px`,
+                                height: `30px`,
+                                borderRadius: `100%`,
+                                backgroundSize: `cover`,
+                                backgroundPosition: `center`,
+                                backgroundRepeat: `no-repeat`,
+                                backgroundColor: `rgba(0, 0, 0, 0.5)`,
+                            }}
+                        />
                     )
                 )
             }

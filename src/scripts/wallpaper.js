@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import anime from "animejs";
 
+import asyncLoadImage from '../util/asyncLoadImage';
+
 const fgStyles = [
     {
         backdropFilter: ``,
@@ -99,9 +101,7 @@ export default class Wallpaper {
 
             this.current = url;
 
-            const img = new Image();
-
-            img.addEventListener(`load`, () => {
+            asyncLoadImage(url).then(() => {
                 if(this.current == url) {
                     anime.remove(this.bg);
                     anime({
@@ -117,8 +117,6 @@ export default class Wallpaper {
                     });
                 }
             });
-
-            img.src = url;
         }
     })
 };
