@@ -76,7 +76,7 @@ export default function Landing() {
     }
 
     useEffect(() => {
-        new Wallpaper().set({ url: `/static/banner.png` });
+        new Wallpaper().set({ url: `/static/bg/clouds.png` });
 
         getScores();
     }, []);
