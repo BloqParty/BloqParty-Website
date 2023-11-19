@@ -1,7 +1,7 @@
 const fs = require('fs');
 const { execSync } = require('child_process');
 
-const pkg = require(`../package.json`)
+const config = require(`../core/config`);
 
 console.debug(`Generating variables...`);
 
@@ -9,10 +9,7 @@ const date = new Date();
 
 const offset = date.getTimezoneOffset() / 60
 
-let repo = pkg.repository.url;
-
-if(repo.startsWith(`git+`)) repo = repo.slice(4);
-if(repo.endsWith(`.git`)) repo = repo.slice(0, -4);
+let repo = execSync(`git config --get remote.origin.url`).toString().trim();
 
 let staticVars = {
     version: {
@@ -22,6 +19,10 @@ let staticVars = {
     },
     organization: repo.split(`/`).slice(0, -1).join(`/`),
     repository: repo,
+    locations: {
+        website: `${config.web.protocol}://${config.web.hostname}`,
+        api: config.api.bpApiLocation
+    },
     buildDate: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()} UTC${offset < 0 ? `+` : `-`}${Math.abs(offset)}`,
     authors: [
         `Nuggo`, 
