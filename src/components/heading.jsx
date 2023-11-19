@@ -21,19 +21,24 @@ const block = {
 export default class Heading extends Component {
     image() {
         return (
-            <div style={{
-                marginRight: `20px`,
-            }}>
-                <Image 
-                    image={this.props.image} 
-                    onClick={this.props.imageOnClick} 
-                    imageStyle={{
-                        width: `100px`,
-                        height: `100px`,
-                        borderRadius: `10px`,
-                        ...(this.props.imageStyle || {})
-                    }}
-                />
+            <div>
+                {
+                    this.props.image && (
+                        <Image 
+                            image={this.props.image} 
+                            onClick={this.props.imageOnClick} 
+                            style={{
+                                marginRight: `20px`,
+                            }}
+                            imageStyle={{
+                                width: `100px`,
+                                height: `100px`,
+                                borderRadius: `10px`,
+                                ...(this.props.imageStyle || {})
+                            }}
+                        />
+                    ) || null
+                }
             </div>
         )
     }
