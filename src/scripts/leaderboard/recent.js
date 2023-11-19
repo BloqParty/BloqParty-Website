@@ -1,6 +1,6 @@
 import removeArrayDuplicates from '../../../util/removeArrayDuplicates';
 
-import staticVars from '../../../static.json';
+import staticVars from '../../../etc/static.json';
 
 export const recentBeatSaverLookup = (data) => new Promise(async res => {
     const hashes = removeArrayDuplicates(data.map(o => o.hash).filter(Boolean)).map(s => s.toLowerCase());

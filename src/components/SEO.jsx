@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import React, { Component } from 'react';
 
-import staticVars from '../../static.json';
+import staticVars from '../../etc/static.json';
 
 export default function SEO({
     title = "Bloq Party Leaderboard",

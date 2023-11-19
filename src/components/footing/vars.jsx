@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import DetailBlock from '../detailblock';
 import { icon } from '@fortawesome/fontawesome-svg-core/import.macro'
 
-import staticVars from '../../../static.json';
+import staticVars from '../../../etc/static.json';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const authors = [

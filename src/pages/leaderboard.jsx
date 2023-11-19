@@ -18,7 +18,7 @@ import time from '../../util/time';
 
 import { notFound } from 'next/navigation';
 
-import staticVars from '../../static.json';
+import staticVars from '../../etc/static.json';
 
 export default function LeaderboardList({ query, mapDetails }) {
     if(!mapDetails || !mapDetails.versions) return notFound();

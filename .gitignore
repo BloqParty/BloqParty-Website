@@ -134,7 +134,6 @@ dist
 .pnp.*
 
 # related to this repo
+etc/
 config.json
 config-example.json
-static.json
-etc/

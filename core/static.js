@@ -32,7 +32,7 @@ let staticVars = {
     ]
 };
 
-fs.writeFileSync(`./static.json`, JSON.stringify(staticVars, null, 4));
+fs.writeFileSync(`./etc/static.json`, JSON.stringify(staticVars, null, 4));
 
 console.debug(`Successfully generated variables!`);
 

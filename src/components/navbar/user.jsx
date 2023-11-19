@@ -10,7 +10,7 @@ import login from '../../scripts/api/login';
 
 import { Context } from '../../util/context';
 
-import staticVars from '../../../static.json';
+import staticVars from '../../../etc/static.json';
 
 function User({ navbar, cookies }) {
     const { user, setUser } = useContext(Context.User);

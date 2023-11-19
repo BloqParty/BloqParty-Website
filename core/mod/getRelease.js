@@ -2,7 +2,7 @@ const superagent = require(`superagent`);
 const pfs = require(`../../util/promisifiedFS`);
 
 const { api } = require(`../config`);
-const staticVars = require(`../../static.json`);
+const staticVars = require(`../../etc/static.json`);
 
 const organization = staticVars.organization.split(`/`).pop();
 

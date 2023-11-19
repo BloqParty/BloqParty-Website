@@ -17,7 +17,7 @@ import { recentScores, recentBeatSaverLookup } from '../scripts/leaderboard/rece
 
 import userOverrides from '../styles/overrides/user'
 
-import staticVars from '../../static.json';
+import staticVars from '../../etc/static.json';
 
 const userDetails = (userState) => {
     console.log(`userDetails`, userState);
