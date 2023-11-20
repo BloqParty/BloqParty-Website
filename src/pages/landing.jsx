@@ -1,6 +1,9 @@
 import React, { Component, useEffect, useState, useContext } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { icon } from '@fortawesome/fontawesome-svg-core/import.macro';
 
 import Heading from '../components/heading';
+import DetailBlock from '../components/detailblock';
 import Leaderboard from '../components/leaderboard';
 import SEO from '../components/SEO';
 
@@ -81,21 +84,69 @@ export default function Landing() {
         getScores();
     }, []);
 
+    const [ downloadsState, setDownloadsState ] = useState({
+        loading: false,
+        data: null
+    });
+
+    useEffect(() => {
+        console.log(`downloads`, downloadsState.loading, downloadsState.data, !user.exists);
+
+        if(downloadsState.loading || downloadsState.data || !user.exists) return;
+
+        setDownloadsState({ ...downloadsState, loading: true })
+
+        fetch(`/internal/downloads`)
+            .then(res => res.json())
+            .then(res => {
+                console.log(`downloads`, res);
+                setDownloadsState({ loading: false, data: res })
+            })
+            .catch(err => {})
+    }, [user.exists]);
+
     return (
         <>
             <SEO />
-            <Heading image="/static/help.png" title="Bloq Party Leaderboard" description={
-                <>
-                    <p>can i get a uhhhhhhhhhhhhhhhh</p>
-                {user.exists ? (
-                    <a href="/download">
-                        <img src="/static/download.png" style={{
-                            marginTop: `20px`,
-                        }}/>
-                    </a>
-                ) : null}
-                </>
-            } />
+            <Heading 
+                image="/static/help.png" 
+                title="Bloq Party Leaderboard" 
+                description="can i get a uhhhhhhhhhhhhhhhh"
+                buttons={user.exists && [
+                    {
+                        value: `Welcome back, ${user.user.name}!`,
+                        icon: icon({ name: 'hand-peace' }),
+                        key: `user`,
+                        href: `/user/${user.user.id}`,
+                    },
+                ] || !user.loading && [
+                    {
+                        value: `Log in or create an account`,
+                        icon: icon({ name: 'arrow-right-from-bracket' }),
+                        key: `login`,
+                        href: `/login`,
+                    },
+                ]}
+                tags={user.exists && [
+                    {
+                        value: `Download the leaderboard mod`,
+                        color: `#b335b8`,
+                        icon: icon({ name: 'cloud-download' }),
+                        key: `download`,
+                        href: `/download`,
+                    },
+                ] || !user.loading && [
+                    {
+                        value: `You must be logged in to download the mod`,
+                        color: `#b335b8`,
+                        icon: icon({ name: 'cloud-download' }),
+                        key: `download-alt`,
+                        style: {
+                            opacity: 0.5,
+                        }
+                    },
+                ]}
+            />
             <Leaderboard
                 loading={recent.loading} 
                 error={recent.error}
