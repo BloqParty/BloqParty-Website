@@ -3,7 +3,7 @@ run-name: ${{ github.actor }} - ${{ github.event_name }} - ${{ github.sha }}
 
 on: 
   push:
-    branches: [ main ]
+    branches: [ rename ]
   workflow_dispatch:
 
 jobs:
@@ -20,4 +20,4 @@ jobs:
     steps:
       - name: Send request lol
         run: |
-          curl -X GET -H "Authorization:$PULLANDRESTART" http://$WEBSITEIP/pullAndRestart
+          curl -X GET -H "Authorization:$PULLANDRESTART" http://bloqparty.net/pullAndRestart
