@@ -5,6 +5,8 @@ process.on(`unhandledRejection`, (err) => console.error(err))
 
 const fs = require('fs');
 
+if(!fs.existsSync(`./etc/`)) fs.mkdirSync(`./etc/`);
+
 const config = require(`./core/config`);
 const session = require(`./core/session`);
 
