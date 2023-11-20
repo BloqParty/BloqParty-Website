@@ -103,7 +103,7 @@ export default function Navbar() {
                         fontFamily: `Alata`,
                         fontWeight: `normal`,
                         margin: `0px`,
-                    }}>bedorom partyh</h3>
+                    }}>thje bloq partyh</h3>
                 </div>
 
                 <div id="nav-right" style={{
