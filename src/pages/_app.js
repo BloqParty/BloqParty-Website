@@ -30,6 +30,10 @@ export default function MyApp({ Component, pageProps, path, query }) {
             sameSite: `strict`,
             expires: new Date(Date.now() * 1.98e+7), // 5.5 hours; supposed to expire at 6 hours so let's keep it safe or something?
         }}>
+            <Head>
+                <link rel="icon" href="/static/icon.png" />
+            </Head>
+
             <div
                 className="bg" 
                 style={{
@@ -137,4 +141,5 @@ export default function MyApp({ Component, pageProps, path, query }) {
 }
 
 import getServerSideProps from '../util/getServerSideProps';
+import Head from 'next/head';
 export { getServerSideProps }
