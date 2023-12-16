@@ -39,7 +39,7 @@ export const recentScores = ({
 }={}) => new Promise(async (res, rej) => {
     console.log(`getting recentscores`, { id, limit, offset });
 
-    fetch(`https://api.thebedroom.party/leaderboard/recent?limit=${limit}&page=${offset}${id ? `&id=${id}` : ''}`)
+    fetch(`https://api.thebedroom.party/recent?limit=${limit}&page=${offset}${id ? `&id=${id}` : ''}`)
         .then(r => r.json())
         .then((r) => {
             console.log(`got recentscores [pre]`, r);
