@@ -1,1 +1,1 @@
-# BedroomPartyLeaderboardWebsite
+# BloqParty-Website

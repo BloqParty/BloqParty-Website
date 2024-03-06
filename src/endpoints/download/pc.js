@@ -3,7 +3,7 @@ const { Worker } = require(`worker_threads`);
 const getRelease = require(`../../../core/mod/getRelease`)
 
 module.exports = (req, res) => {
-    const repo = `BedroomPartyLeaderboardPC`
+    const repo = `BloqParty-PC`
 
     getRelease(repo, false).then(release => {
         if(!release) return res.status(500).send(`No release found`);

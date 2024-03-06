@@ -134,3 +134,4 @@ config.json
 config-example.json
 static.json
 etc/
+.vs/

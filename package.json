@@ -1,11 +1,11 @@
 {
-  "name": "bedroom-party-website",
+  "name": "bloqparty-website",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/BedroomParty/BedroomPartyWebsite.git"
+    "url": "git+https://github.com/BloqParty/BloqParty-Website.git"
   },
   "author": "Syl <hi@sylviiu.dev>",
   "license": "GPL-3.0",
@@ -15,9 +15,9 @@
     "start": "node index production"
   },
   "bugs": {
-    "url": "https://github.com/BedroomParty/BedroomPartyWebsite/issues"
+    "url": "https://github.com/BloqParty/BloqParty-Website/issues"
   },
-  "homepage": "https://github.com/BedroomParty/BedroomPartyWebsite#readme",
+  "homepage": "https://github.com/BloqParty/BloqParty-Website#readme",
   "dependencies": {
     "@babel/preset-env": "^7.23.3",
     "@babel/preset-react": "^7.23.3",

@@ -50,7 +50,7 @@ export default [
                     margin: `5px`,
                 }} />
             </a>
-            <a href="https://github.com/BedroomParty">
+            <a href="https://github.com/BloqParty">
                 <FontAwesomeIcon icon={icon({style: "brands", name: "github"})} style={{
                     color: `white`,
                     margin: `5px`,

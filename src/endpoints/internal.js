@@ -69,8 +69,8 @@ module.exports = [
         endpoint: `/internal/downloads`,
         handle: async ({ app }, req, res) => {
             const promises = {
-                pc: getRelease(`BedroomPartyLeaderboardPC`, false),
-                quest: getRelease(`BedroomPartyLB-Quest`, false),
+                pc: getRelease(`BloqParty-PC`, false),
+                quest: getRelease(`BloqParty-Quest`, false),
             };
 
             const releases = await Promise.all(Object.values(promises));

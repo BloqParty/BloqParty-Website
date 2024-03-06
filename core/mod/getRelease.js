@@ -14,11 +14,11 @@ module.exports = (repo, auth=true) => {
         return Promise.resolve(versions[repo].latest);
     } else {
         versions[repo].promise = new Promise(async res => {
-            const url = `https://api.github.com/repos/BedroomParty/${repo}/releases/latest`;
+            const url = `https://api.github.com/repos/BloqParty/${repo}/releases/latest`;
 
             console.log(`Fetching latest release (at "${url}")... (token: "${api.githubAccessToken}" -- required: ${auth && true || false})`);
 
-            const req = superagent.get(`https://api.github.com/repos/BedroomParty/${repo}/releases/latest`).set(`User-Agent`, `node`)
+            const req = superagent.get(`https://api.github.com/repos/BloqParty/${repo}/releases/latest`).set(`User-Agent`, `node`)
 
             if(auth) req.set(`Authorization`, api.githubAccessToken);
 
